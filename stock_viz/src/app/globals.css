@@ -1,0 +1,166 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --color-primary: #57aefb;
+  --color-secondary: #c3c6d0;
+  --color-tertiary: #a3a8b9;
+  --color-green: #00a449;
+  --color-red: #fb5057;
+  --color-button:#353945;
+  --text-2xs: 10px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: #22262f;
+}
+
+* {
+  box-sizing: border-box;
+  /* font-size: 62.5%; */
+}
+
+.table-container {
+  border-radius: 4px; /* Bo tròn bảng */
+  overflow: hidden; /* Giữ viền bo tròn khi có border */
+  border: 1px solid #ccc;
+  display: inline-block; /* Giữ kích thước vừa khít bảng */
+}
+
+.custom-table th,
+.custom-table td {
+  /* border: 1px solid #ccc; */
+  padding: 3px;
+  text-align: left;
+}
+
+
+
+
+
+
+/* ************************** */
+
+.candlestick-chart{
+  /* padding: 80px 0px 10px ; */
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+  /* border: 1px solid #616a7a;
+  border-radius: 10px;
+  background-color:#22262f ; */
+}
+.y-axis{
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+  padding: 0 10px;
+  border-right: 1px solid #616a7a;
+}
+
+.vertextLabel{
+  padding: 10px;
+  background-color: blue;
+  font-size: 8px;
+}
+
+.draggable {
+  cursor: grab; /* Open hand cursor */
+}
+
+/* Cursor when dragging */
+.dragging {
+  cursor: grabbing; /* Closed hand cursor */
+}
+.grid-row,.grid line {
+  stroke: #e0e0e0; /* Light gray color */
+  stroke-width: 0.3; /* Line thickness */
+  stroke-dasharray: 3, 3; /* Dashed pattern: 4px dash, 4px gap */
+}
+.grid .tick:first-child,
+.grid .tick:last-child {
+  display: none;
+}
+.chart-filter{
+  animation: fadeIn ease-in-out 0.4s;
+}
+
+.rsi-y-axis{
+  color: white;
+  /* transform: translateX(1120px); */
+}
+.y-axis-text{
+
+  /* transform: translateX(1120px); */
+
+}
+
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}::-webkit-scrollbar {
+  width: 12px; /* Độ rộng của thanh cuộn dọc */
+  height: 12px; /* Độ cao của thanh cuộn ngang */
+}
+
+/* Nền của thanh cuộn */
+::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Màu nền */
+  border-radius: 10px; /* Góc bo tròn */
+}
+
+/* Thanh trượt (thumb) */
+::-webkit-scrollbar-thumb {
+  background: #888; /* Màu thanh trượt */
+  border-radius: 10px; /* Góc bo tròn */
+}
+
+/* Thanh trượt khi hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555; /* Màu khi hover */
+}
+
+/* Góc của thanh cuộn (trên các phần tử nhỏ) */
+::-webkit-scrollbar-corner {
+  background: #f1f1f1;
+} 
