@@ -31,7 +31,7 @@ export const candleStickChartOptions = {
 };
 
 export const lineChartOptions = {
-  lineWidth:2,
+  lineWidth: 2,
   color: "#2196F3",
 };
 export const areaChartOptions = {
@@ -46,5 +46,8 @@ export const barChartOptions = {
 };
 
 export const histogramChartOptions = {
-  color: "#26a69a",
+  // priceFormat: {
+  //   type: "volume",
+  // },
+  // priceScaleId: "", //
 };

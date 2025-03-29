@@ -1,16 +1,9 @@
 "use client";
-import { FaPenNib, FaRegLightbulb, FaRegEye } from "react-icons/fa";
-import { IoMdArrowDropdown, IoMdClose } from "react-icons/io";
+import { FaPenNib, FaRegLightbulb } from "react-icons/fa";
+import { IoMdArrowDropdown } from "react-icons/io";
 import { SlCalender } from "react-icons/sl";
 import { option3, option4, dateFilter, indicatorFilter } from "@/constants";
-import { removeBBLine } from "@/d3/indicators/BBLine";
-import { removeSMALine } from "@/d3/indicators/SMALine";
-import { removeMACDLine } from "@/d3/indicators/MACDLine";
-import { removeMFILine } from "@/d3/indicators/MFILine";
-import { removeRSILine } from "@/d3/indicators/RSILine";
 import { useCanCreatePdfStore, useChartControlStore } from "@/store";
-import { removeSMA50Line } from "@/d3/indicators/SMA50";
-import { removeSMA20Line } from "@/d3/indicators/SMA20Line";
 import { FaFilePdf } from "react-icons/fa6";
 import React from "react";
 
@@ -131,7 +124,6 @@ const ChartControl = () => {
               </p>
             ))}
           </div>
-
           <div className="bg-button rounded-lg p-2 hover:cursor-pointer">
             <SlCalender size={14} color="#e8e9eb" />
           </div>

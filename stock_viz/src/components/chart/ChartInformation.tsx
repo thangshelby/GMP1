@@ -84,6 +84,10 @@ const stockKeyMapValue = [
     key: "close",
     value: "Close",
   },
+  // {
+  //   key: "volume",
+  //   value: "Volume",
+  // }
 ];
 const convertMonth = (month: number) => {
   switch (month) {

@@ -65,6 +65,10 @@ const headerLinks = [
 
 export const indicatorFilter = [
   {
+    title: "Volume",
+    key: "volume",
+  },
+  {
     title: "Moving Average 10",
     key: "sma",
   },

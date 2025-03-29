@@ -74,6 +74,30 @@ const Chart = () => {
       candleStickChartOptions,
     );
 
+    const volumeSeries = chart.addSeries(HistogramSeries, {
+      color: "#26a69a",
+      priceFormat: {
+        type: "volume",
+      },
+      priceScaleId: "", // set as an overlay by setting a blank priceScaleId
+      // set the positioning of the volume series
+      scaleMargins: {
+        top: 0.7, // highest point of the series will be 70% away from the top
+        bottom: 0,
+      },
+    });
+    volumeSeries.priceScale().applyOptions({
+      scaleMargins: {
+        top: 0.9, // highest point of the series will be 70% away from the top
+        bottom: 0,
+      },
+    });
+    volumeSeries.setData(stockData.map((d)=>({
+      time:d.date || d.time || '',
+      value:d.volume || 0 ,
+      color:d.open > d.close ? "#813539" : "#1c5e5e", 
+    })))
+
     currentChartRef.current = candlestickSeries;
 
     candlestickSeries.setData(
@@ -85,8 +109,13 @@ const Chart = () => {
         low: d.low,
       })),
     );
-    chart.timeScale().fitContent();
+    const lastBar = Date.now() / 1000; // Lấy timestamp hiện tại (đơn vị giây)
+    const rangeDays = 90 * 24 * 60 * 60; // Lấy dữ liệu 90 ngày gần đây
 
+    // chart.timeScale().setVisibleRange({
+    //   from: Math.floor(new Date().getTime() / 1000),
+    //   to: Math.floor(Math.abs(lastBar - rangeDays * 1000) / 1000),
+    // });
     chart.subscribeCrosshairMove((param) => {
       if (!param || !param.seriesData) return;
 
@@ -147,26 +176,30 @@ const Chart = () => {
 
   //HANDLE INDICATOR CHANGE
   useEffect(() => {
-    if (selectedIndicators.length == 0|| !chart) return;
+    if (selectedIndicators.length == 0 || !chart) return;
 
-    const bb20 = BollingerBands.calculate({
-      period: 20,
-      values: stockData.map((d) => d.close),
-      stdDev: 2,
-    });
+    if (selectedIndicators.includes("sma")) {
+      const bb20 = BollingerBands.calculate({
+        period: 20,
+        values: stockData.map((d) => d.close),
+        stdDev: 2,
+      });
 
-    const middleLine = chart.addSeries(LineSeries, {
-      lineWidth: 1,
-      color: "#2196F3",
-    });
-    middleLine.setData(
-      bb20.map((d, i) => ({
-        time: stockData[i + 19].time || "",
-        value: d.middle,
-      })),
-    );
-    const bandIndicator = new BandsIndicator();
-    middleLine.attachPrimitive(bandIndicator);
+      const middleLine = chart.addSeries(LineSeries, {
+        lineWidth: 1,
+        color: "#2196F3",
+      });
+      middleLine.setData(
+        bb20.map((d, i) => ({
+          time: stockData[i + 19].time || "",
+          value: d.middle,
+        })),
+      );
+      const bandIndicator = new BandsIndicator();
+      middleLine.attachPrimitive(bandIndicator);
+    }
+
+ 
   }, [selectedIndicators, stockData]);
 
   if (loading) {
