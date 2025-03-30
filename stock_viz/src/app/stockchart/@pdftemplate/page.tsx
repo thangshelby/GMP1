@@ -3,7 +3,7 @@ import React from "react";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
 import { footerContent } from "@/constants";
-import BusinessSummary from "@/components/pdf/BusinessSummary";
+import { BusinessSummary, FinancialSummary } from "@/components";
 export default function PdfTemplate() {
   const generatePDF = async () => {
     const container = document.getElementById("a4-container");
@@ -33,10 +33,10 @@ export default function PdfTemplate() {
   };
 
   return (
-    <div className="relative flex w-full flex-col items-center justify-center">
+    <div className="relative flex w-full flex-col items-center justify-center space-y-4">
       <button
         onClick={generatePDF}
-        className="rounded z-50  bg-blue-500 p-2 text-white hover:bg-blue-700"
+        className="z-50 rounded bg-blue-500 p-2 text-white hover:bg-blue-700"
       >
         Generate PDF
       </button>
@@ -44,17 +44,39 @@ export default function PdfTemplate() {
       {/* A4 Container */}
       <div
         id="a4-container"
-        className="h-[1123px] absolute w-[794px] bg-white p-4 shadow-md"
+        className="h-[1123px] w-[794px] bg-white p-4 shadow-md"
       >
-        <div className="flex flex-col justify-between h-full w-full">
+        <div className="flex h-full w-full flex-col justify-between">
           <HeaderSection />
+          <BusinessSummary />
+          <FooterSection />
+        </div>
+      </div>
 
+      <div
+        id="a41-container"
+        className="h-[1123px] w-[794px] bg-white p-4 shadow-md"
+      >
+        <div className="flex h-full w-full flex-col justify-between">
+          <HeaderSection />
+          <FinancialSummary />
           <FooterSection />
         </div>
       </div>
     </div>
   );
 }
+
+const pdfPages = [
+  {
+    title: "Business Summary",
+    content: <BusinessSummary />,
+  },
+  {
+    title: "Financial Summary",
+    content: <FinancialSummary />,
+  },
+];
 
 const HeaderSection = () => {
   return (
@@ -69,8 +91,8 @@ const HeaderSection = () => {
 };
 
 const FooterSection = () => (
-  <div className="flex w-full flex-row items-center justify-between border-t-2  pt-2 text-[#fb5057]">
-    <p className="w-[80%] text-[6px] ">{footerContent}</p>
+  <div className="flex w-full flex-row items-center justify-between border-t-2 pt-2 text-[#6a7282]">
+    <p className="text-3xs w-[80%]">{footerContent}</p>
     <div className="h-24 w-24">
       <img
         src="https://upload.wikimedia.org/wikipedia/commons/8/88/Logo_Tr%C6%B0%E1%BB%9Dng_%C4%90%E1%BA%A1i_h%E1%BB%8Dc_kinh_t%E1%BA%BF_-_Lu%E1%BA%ADt_%28UEL%29%2C_%C4%90HQG-HCM%2C_220px.png"

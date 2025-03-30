@@ -1,5 +1,9 @@
 import { create } from "zustand";
-import { StockPriceDataType } from "@/types";
+import {
+  StockPriceDataType,
+  FinancialDataType,
+  BusinessDataType,
+} from "@/types";
 
 interface GlobalStateType {
   chartContainerWidth: number;
@@ -22,16 +26,24 @@ export const useGlobalState = create<GlobalStateType>((set) => ({
   setGlobalState: (newValue: any) => set((prev) => ({ ...prev, ...newValue })),
 }));
 
-interface CanCreatePdfStore {
+interface PdfStore {
+  financialData: FinancialDataType;
+  setFinancialData: (newVal: FinancialDataType) => void;
+  businessData: BusinessDataType;
+  setBusinessData: (newVal: BusinessDataType) => void;
   canCreatePdf: boolean;
   setCanCreatePdf: (newVal: boolean) => void;
 }
 
-export const useCanCreatePdfStore = create<CanCreatePdfStore>((set) => ({
+export const usePdfStore = create<PdfStore>((set) => ({
+  financialData: {} as FinancialDataType,
+  setFinancialData: (newVal: FinancialDataType) =>
+    set({ financialData: newVal }),
+  businessData: {} as BusinessDataType,
+  setBusinessData: (newVal: BusinessDataType) => set({ businessData: newVal }),
   canCreatePdf: false,
   setCanCreatePdf: (newVal: boolean) => set({ canCreatePdf: newVal }),
 }));
-
 
 interface ChartControlStore {
   selectedIndicators: string[];
@@ -56,4 +68,3 @@ export const useChartControlStore = create<ChartControlStore>((set) => ({
   interval: "1D",
   setInterval: (newVal: string) => set({ interval: newVal }),
 }));
-

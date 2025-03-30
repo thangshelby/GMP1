@@ -3,7 +3,7 @@ import { FaPenNib, FaRegLightbulb } from "react-icons/fa";
 import { IoMdArrowDropdown } from "react-icons/io";
 import { SlCalender } from "react-icons/sl";
 import { option3, option4, dateFilter, indicatorFilter } from "@/constants";
-import { useCanCreatePdfStore, useChartControlStore } from "@/store";
+import { usePdfStore, useChartControlStore } from "@/store";
 import { FaFilePdf } from "react-icons/fa6";
 import React from "react";
 
@@ -20,7 +20,7 @@ const ChartControl = () => {
     interval,
   } = useChartControlStore();
 
-  const { canCreatePdf, setCanCreatePdf } = useCanCreatePdfStore();
+  const { canCreatePdf, setCanCreatePdf } = usePdfStore();
 
   const generatePDF = () => {};
   return (

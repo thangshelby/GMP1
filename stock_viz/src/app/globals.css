@@ -15,8 +15,12 @@
   --color-tertiary: #a3a8b9;
   --color-green: #00a449;
   --color-red: #fb5057;
+  --color-gray: #6a7282;
+  --color-gray-2:#d1d5dc;
   --color-button: #353945;
+  --color-blue:#2d80ff;
   --text-2xs: 10px;
+  --text-3xs: 8px;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -58,9 +62,9 @@ body {
   height: 1123px; /* A4 height */
   background: white;
   overflow: hidden; /* Prevents overflow content */
-  position: absolute;
-  left:0;
-  top:10;
+  /* position: absolute; */
+  left: 0;
+  top: 10;
   /* left: -9999px; */
   /* top: -9999px; */
 }
