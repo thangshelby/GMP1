@@ -6,6 +6,7 @@ import { fetchAPI } from "@/lib/utils";
 import { useSearchParams } from "next/navigation";
 import { usePdfStore } from "@/store";
 import { formatNumber } from "@/constants";
+
 const BusinessSummary = () => {
   const { businessData, setBusinessData } = usePdfStore();
   const symbol = useSearchParams().get("symbol") || "VCB";
@@ -23,84 +24,39 @@ const BusinessSummary = () => {
   }, []);
 
   return (
-    businessData.general_info  && (
-      <div className="container mx-auto flex flex-col justify-between bg-white p-8">
+    businessData.general_infomation && (
+      <div className="container mx-auto flex h-full flex-col justify-between bg-white p-8">
         {/* BODY */}
-        <div className="flex flex-col space-y-4">
+        <div className="flex h-full flex-col justify-between">
           {/* COMPANY DETAIL AND COMPANY INFO */}
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-            {/* General Information */}
-            <div className="border-blue rounded border-t-[2px] bg-white">
-              <h2 className="border-b-gray text-md border-b-[1px] border-dashed pb-3 font-medium text-blue uppercase">
-                General Information
-              </h2>
-              <ul className="mt-2">
-                <li className="text-xs text-black">
-                  <strong className="text-xs text-black">Exchange Code:</strong>{" "}
-                  {businessData?.general_info?.exchange}
-                </li>
-                <li className="text-xs text-black">
-                  <strong className="text-xs text-black">TRBC Industry:</strong>{" "}
-                  {businessData?.general_info.industry}
-                </li>
-                <li className="text-xs text-black">
-                  <strong className="text-xs text-black">
-                    No. of Employees:
-                  </strong>{" "}
-                  {businessData?.general_info.noe}
-                </li>
-                <li className="text-xs text-black">
-                  <strong className="text-xs text-black">
-                    Company Market Cap (VND):
-                  </strong>{" "}
-                  169,720.61B
-                </li>
-              </ul>
-            </div>
+          <div className="flex flex-row justify-between space-x-6">
+            <RenderCategory
+              category={businessData?.general_infomation}
+              title={"General Information"}
+            />
 
-            {/* Company Details */}
-            <div className="border-blue rounded border-t-[2px] bg-white">
-              <h2 className="border-b-gray text-md border-b-[1px] border-dashed pb-3 font-medium text-blue uppercase">
-                Company Details
-              </h2>
-              <ul className="mt-2">
-                <li className="text-xs text-black">
-                  <strong className="text-xs text-black">Address: </strong>
-                  VIET NAM
-                </li>
-                <li className="text-xs text-black">
-                  <strong className="text-xs text-black">Telephone:</strong> +84
-                  (22) 8 3724 4555
-                </li>
-                <li className="text-xs text-black">
-                  <strong className="text-xs text-black">Company Link:</strong>{" "}
-                  <a
-                    href="https://www.hoaphat.com.vn"
-                    className="text-lg text-blue underline"
-                  >
-                    {businessData?.company_detail.website}
-                  </a>
-                </li>
-              </ul>
-            </div>
+            <RenderCategory
+              category={businessData?.company_detail}
+              title={"Company Detail"}
+            />
           </div>
 
           {/* Business Summary */}
-          <div className="border-blue rounded border-t-[0px] bg-white">
-            <h2 className="border-b-gray text-md border-b-[1px] border-dashed pb-3 font-medium text-blue uppercase">
+          <div className="border-blue rounded border-t-[2px] bg-white">
+            <h2 className="border-b-gray text-xs text-blue  border-dashed pb-1 font-medium uppercase">
               Business Summary
             </h2>
-            <p className="pb-8 text-xs text-black">
+            <p className="text-xs text-black">
               {businessData?.business_summary}
             </p>
           </div>
 
           {/* Charts Section */}
-          <div className="grid grid-cols-1 gap-12 md:grid-cols-2">
-            <div className="border-blue rounded border-t-[2px] bg-white">
-              <h2 className="text-gray mb-2 text-lg font-semibold">6 Months</h2>
+          <div className="flex flex-row justify-between space-x-6">
+            <div className="border-t-blue w-full rounded border-t-[2px]">
+              <h2 className="text-gray text-xs mb-2 font-semibold">6 Months</h2>
 
-              <div className="w-full bg-gray-2">
+              <div className="bg-gray-2 w-full">
                 <LineChart
                   duration="6 Months"
                   setClosePrice={(close: number) => {
@@ -110,225 +66,38 @@ const BusinessSummary = () => {
               </div>
             </div>
 
-            <div className="border-blue rounded border-t-[2px] bg-white">
-              <h2 className="text-gray mb-2 text-lg font-semibold">5 Years</h2>
-              <div className="w-full bg-gray-2">
+            <div className="border-t-blue w-full rounded border-t-[2px]">
+              <h2 className="text-gray text-xs mb-2 font-semibold">5 Years</h2>
+              <div className="bg-gray-2 w-full">
                 <LineChart duration="5 Years" />
               </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+          {/* Share Detail AND Percentage Change */}
+          <div className="flex flex-row justify-between space-x-6">
             {/* Share Detail */}
-            {businessData && (
-              <div className="border-blue rounded border-t-[2px] bg-white">
-                <h2 className="border-b-gray text-md border-b-[1px] border-dashed pb-3 font-medium text-blue uppercase">
-                  Share Detail
-                </h2>
-                <ul className="mt-2">
-                  <li className="flex flex-row text-xs text-black">
-                    <strong className="w-[60%] text-xs text-black">
-                      Close Price
-                    </strong>{" "}
-                    <p className="text-xs text-black">{formatNumber(0)}</p>
-                  </li>
-                  <li className="flex flex-row text-xs text-black">
-                    <strong className="w-[60%] text-xs text-black">
-                      5 Days Average Volumne
-                    </strong>{" "}
-                    <p className="text-xs text-black">
-                      {formatNumber(
-                        businessData?.share_detail["5_day_avg_volume"]!,
-                      )}
-                    </p>
-                  </li>
-                  <li className="flex flex-row text-xs text-black">
-                    <strong className="w-[60%] text-xs text-black">
-                      10 Days Average Volumne
-                    </strong>{" "}
-                    <p className="text-xs text-black">
-                      {formatNumber(
-                        businessData?.share_detail["10_day_avg_volume"]!,
-                      )}
-                    </p>
-                  </li>
-                  <li className="flex flex-row text-xs text-black">
-                    <strong className="w-[60%] text-xs text-black">
-                      52 Wk high
-                    </strong>{" "}
-                    <p className="text-xs text-black">
-                      {businessData?.share_detail["52_wk_high_high"]! || "-.-"}
-                    </p>
-                  </li>
 
-                  <li className="flex flex-row text-xs text-black">
-                    <strong className="w-[60%] text-xs text-black">
-                      Beta Value
-                    </strong>{" "}
-                    <p className="text-xs text-black">
-                      {formatNumber(businessData?.share_detail.beta_value!)}
-                    </p>
-                  </li>
-                  <li className="flex flex-row text-xs text-black">
-                    <strong className="w-[60%] text-xs text-black">
-                      Currency
-                    </strong>{" "}
-                    <p className="text-xs text-black">VND</p>
-                  </li>
-                  <li className="flex flex-row text-xs text-black">
-                    <strong className="w-[60%] text-xs text-black">
-                      Shares Outstanding
-                    </strong>{" "}
-                    <p className="text-xs text-black">
-                      {formatNumber(
-                        businessData?.share_detail.shares_outstanding!,
-                      )}
-                    </p>
-                  </li>
-                </ul>
-              </div>
-            )}
-
+            <RenderCategory
+              category={businessData?.share_detail}
+              title={"Share Detail"}
+            />
             {/* Percentage Change */}
-            <div className="border-blue rounded border-t-[2px] bg-white">
-              <h2 className="border-b-gray text-md border-b-[1px] border-dashed pb-3 font-medium text-blue uppercase">
-                Percentage Change
-              </h2>
-              {businessData && (
-                <ul className="mt-2">
-                  <li className="flex flex-row text-xs text-black">
-                    <strong className="w-[40%] text-xs text-black">
-                      1 Day
-                    </strong>{" "}
-                    <p className="text-xs text-black">
-                      {formatNumber(businessData.percentage_change["1_day"])}
-                    </p>
-                  </li>
-                  <li className="flex flex-row text-xs text-black">
-                    <strong className="w-[40%] text-xs text-black">
-                      5 Days
-                    </strong>{" "}
-                    <p className="text-xs text-black">
-                      {formatNumber(businessData.percentage_change["5_day"])}
-                    </p>
-                  </li>
-                  <li className="flex flex-row text-xs text-black">
-                    <strong className="w-[40%] text-xs text-black">
-                      3 Months
-                    </strong>{" "}
-                    <p className="text-xs text-black">
-                      {formatNumber(businessData.percentage_change["3_months"])}
-                    </p>
-                  </li>
-                  <li className="flex flex-row text-xs text-black">
-                    <strong className="w-[40%] text-xs text-black">
-                      6 Months
-                    </strong>{" "}
-                    <p className="text-xs text-black">
-                      {formatNumber(businessData.percentage_change["6_months"])}
-                    </p>
-                  </li>
-                  <li className="flex flex-row text-xs text-black">
-                    <strong className="w-[40%] text-xs text-black">
-                      Month To Date
-                    </strong>{" "}
-                    <p className="text-xs text-black">
-                      {formatNumber(
-                        businessData.percentage_change.month_to_date,
-                      )}
-                    </p>
-                  </li>
-                  <li className="flex flex-row text-xs text-black">
-                    <strong className="w-[40%] text-xs text-black">
-                      Year To Date
-                    </strong>{" "}
-                    <p className="text-xs text-black">
-                      {formatNumber(
-                        businessData.percentage_change.year_to_date,
-                      )}
-                    </p>
-                  </li>
-                </ul>
-              )}
-            </div>
+            <RenderCategory
+              category={businessData?.percentage_change}
+              title={"Percentage Change"}
+            />
           </div>
 
-          {/* Analyst Outlook */}
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-            <div className="border-blue rounded border-t-[2px] bg-white">
-              <h2 className="border-b-gray text-md border-b-[1px] border-dashed pb-3 font-medium text-blue uppercase">
-                Analyst Outlook
-              </h2>
-              <ul className="mt-2">
-                <li className="flex flex-row text-xs text-black">
-                  <strong className="w-[40%] text-xs text-black">
-                    Month To Date
-                  </strong>{" "}
-                  <p className="text-xs text-black">
-                    {businessData?.analyst_outlook.buy}
-                  </p>
-                </li>
-
-                <li className="flex flex-row text-xs text-black">
-                  <strong className="w-[40%] text-xs text-black">
-                    Month To Date
-                  </strong>{" "}
-                  <p className="text-xs text-black">
-                    {businessData?.analyst_outlook.hold}
-                  </p>
-                </li>
-
-                <li className="flex flex-row text-xs text-black">
-                  <strong className="w-[40%] text-xs text-black">
-                    Month To Date
-                  </strong>{" "}
-                  <p className="text-xs text-black">
-                    {businessData?.analyst_outlook.sell}
-                  </p>
-                </li>
-                <li className="flex flex-row text-xs text-black">
-                  <strong className="w-[40%] text-xs text-black">
-                    Month To Date
-                  </strong>{" "}
-                  <p className="text-xs text-black">
-                    {businessData?.analyst_outlook.suggest}
-                  </p>
-                </li>
-              </ul>
-            </div>
+          {/* Analyst Outlook AND Ratio */}
+          <div className="flex flex-row justify-between space-x-6">
+            <RenderCategory
+              category={businessData?.analyst_outlook}
+              title={"Analyst Outlook"}
+            />
 
             {/* Ratios */}
-            <div className="border-blue rounded border-t-[2px] bg-white">
-              <h2 className="border-b-gray text-md border-b-[1px] border-dashed pb-3 font-medium text-blue uppercase">
-                Ratios
-              </h2>
-              <ul className="mt-2">
-                <li className="flex flex-row text-xs text-black">
-                  <strong className="w-[40%] text-xs text-black">
-                    Month To Date
-                  </strong>{" "}
-                  <p className="text-xs text-black">
-                    {businessData?.ratio.dividend_yield}
-                  </p>
-                </li>
-                <li className="flex flex-row text-xs text-black">
-                  <strong className="w-[40%] text-xs text-black">
-                    Month To Date
-                  </strong>{" "}
-                  <p className="text-xs text-black">
-                    {businessData?.ratio.dividend_yield}
-                  </p>
-                </li>
-                <li className="flex flex-row text-xs text-black">
-                  <strong className="w-[40%] text-xs text-black">
-                    Month To Date
-                  </strong>{" "}
-                  <p className="text-xs text-black">
-                    {businessData?.ratio.pe_ttm}
-                  </p>
-                </li>
-              </ul>
-            </div>
+            <RenderCategory category={businessData?.ratio} title={"Ratios"} />
           </div>
         </div>
       </div>
@@ -337,3 +106,42 @@ const BusinessSummary = () => {
 };
 
 export default BusinessSummary;
+
+const renderTitle = (title: string) => {
+  const res = title
+    .split("_")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(" ");
+
+  return res;
+};
+
+const RenderCategory = ({
+  category,
+  title,
+}: {
+  category: any;
+  title: string;
+}) => {
+  return (
+    <div className="border-t-blue flex-1 rounded border-t-[2px] bg-white">
+      <h2 className="border-b-gray text-xs text-blue border-b-[1px] border-dashed pb-1 font-medium uppercase">
+        {title}
+      </h2>
+      <ul className="mt-2 flex flex-col ">
+        {Object.keys(category).map((key: any, index) => (
+          <li key={key} className={`flex align-text-top flex-row pb-1 px-1 text-2xs text-black
+          ${index % 2 === 0 ? "bg-[#e6e6e6] rounded-[2px]" : "bg-white"}
+          `}>
+            <strong className="w-[40%] text-2xs text-black">
+              {renderTitle(key)}
+            </strong>{" "}
+            {typeof category[key] === "number"
+              ? formatNumber(category[key])
+              : category[key]}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};

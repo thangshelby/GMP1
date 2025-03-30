@@ -4,9 +4,17 @@ import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
 import { footerContent } from "@/constants";
 import { BusinessSummary, FinancialSummary } from "@/components";
+import { useSearchParams } from "next/navigation";
+import { format, subMonths } from "date-fns";
+import { usePdfStore } from "@/store";
 export default function PdfTemplate() {
+  const symbol = useSearchParams().get("symbol") || "VCB";
+  const { closePrice } = usePdfStore();
+  const currentDate = format(subMonths(new Date(), 1), "yyyy-MM-dd");
   const generatePDF = async () => {
-    const container = document.getElementById("a4-container");
+    const container = document.getElementById(
+      "business-summary",
+    ) as HTMLElement;
 
     if (!container) return;
 
@@ -14,7 +22,7 @@ export default function PdfTemplate() {
     window.scrollTo(0, 0);
 
     const canvas = await html2canvas(container, {
-      scale: 2, // Improves quality
+      scale: 3, // Improves quality
       useCORS: true, // Fixes external images
       logging: false, // Reduces console spam
     });
@@ -23,13 +31,13 @@ export default function PdfTemplate() {
 
     // Create PDF with A4 dimensions
     const pdf = new jsPDF({
-      orientation: "portrait",
+      // orientation: "portrait",
       unit: "px",
       format: [794, 1123], // A4 Size in px
     });
 
     pdf.addImage(imgData, "PNG", 0, 0, 794, 1123);
-    pdf.save("document.pdf");
+    pdf.save(`Financial Report for ${symbol}.pdf`);
   };
 
   return (
@@ -42,27 +50,25 @@ export default function PdfTemplate() {
       </button>
 
       {/* A4 Container */}
-      <div
-        id="a4-container"
-        className="h-[1123px] w-[794px] bg-white p-4 shadow-md"
-      >
-        <div className="flex h-full w-full flex-col justify-between">
-          <HeaderSection />
-          <BusinessSummary />
-          <FooterSection />
+      {pdfPages.map((page) => (
+        <div
+          key={page.id}
+          id={page.id}
+          className="h-[1123px] w-[794px] bg-white p-4 shadow-md"
+        >
+          <div className="flex h-full w-full flex-col justify-between">
+            <HeaderSection
+              companyName="Vietcombank"
+              currentDate={currentDate}
+              closePrice={closePrice}
+            />
+            <div className="flex-1 overflow-hidden">
+            {page.component}
+            </div>
+            <FooterSection />
+          </div>
         </div>
-      </div>
-
-      <div
-        id="a41-container"
-        className="h-[1123px] w-[794px] bg-white p-4 shadow-md"
-      >
-        <div className="flex h-full w-full flex-col justify-between">
-          <HeaderSection />
-          <FinancialSummary />
-          <FooterSection />
-        </div>
-      </div>
+      ))}
     </div>
   );
 }
@@ -70,21 +76,37 @@ export default function PdfTemplate() {
 const pdfPages = [
   {
     title: "Business Summary",
-    content: <BusinessSummary />,
+    id: "business-summary",
+    component: <BusinessSummary />,
   },
   {
     title: "Financial Summary",
-    content: <FinancialSummary />,
+    id: "financial-summary",
+    component: <FinancialSummary />,
   },
 ];
 
-const HeaderSection = () => {
+const HeaderSection = ({
+  companyName,
+  currentDate,
+  closePrice,
+}: {
+  companyName: string;
+  currentDate: string;
+  closePrice: number;
+}) => {
   return (
     <div className="flex flex-row justify-end">
       <div className="flex flex-col items-end">
-        <h1 className="text-lg font-bold text-black">VCB</h1>
-        <h1 className="text-lg font-semibold text-black">Close Price100</h1>
-        <h1 className="text-lg font-normal text-black">Document Date:</h1>
+        <h1 className="text-lg font-bold text-black">
+          {companyName.toLocaleUpperCase()}
+        </h1>
+        <h1 className="text-md font-semibold text-black">
+          Close Price: {closePrice}
+        </h1>
+        <h1 className="text-sm font-light text-black">
+          Document Date: {currentDate}
+        </h1>
       </div>
     </div>
   );

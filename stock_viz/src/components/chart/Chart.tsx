@@ -22,14 +22,13 @@ import {
   histogramChartOptions,
 } from "@/constants/chartConfig";
 import { format, subMonths } from "date-fns";
-import { useChartControlStore } from "@/store";
+import { useChartControlStore,usePdfStore } from "@/store";
 import { useSearchParams } from "next/navigation";
-
 import { SMA, BollingerBands } from "technicalindicators";
 
 const Chart = () => {
   const chartContainerRef = useRef<HTMLDivElement>(null);
-
+  const {setClosePrice} = usePdfStore()
   const [chart, setChart] = React.useState<any>(null);
 
   const currentChartRef = useRef<any>(null);
@@ -53,6 +52,7 @@ const Chart = () => {
       );
       setCurrentStockPriceData(data[data.length - 1]);
       setStockData(data);
+      setClosePrice(data[data.length - 1].close)
       setLoading(false);
     };
     fetchData();

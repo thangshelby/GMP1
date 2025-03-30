@@ -43,10 +43,10 @@ body {
 }
 
 .table-container {
-  border-radius: 4px; /* Bo tròn bảng */
-  overflow: hidden; /* Giữ viền bo tròn khi có border */
+  border-radius: 4px; 
+  overflow: hidden; 
   border: 1px solid #ccc;
-  display: inline-block; /* Giữ kích thước vừa khít bảng */
+  display: inline-block;
 }
 
 .custom-table th,

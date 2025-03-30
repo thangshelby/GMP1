@@ -65,11 +65,14 @@ export interface BusinessDataType {
     website: string;
   };
   date: string; // ISO Date format (YYYY-MM-DD)
-  general_info: {
-    exchange: string;
+  general_infomation: {
+    ISSN_code:string,
+    issue_share:number,
+
+    exchange_code: string;
     industry: string;
-    noe: number;
-    stock_rate: number;
+    'no._of_employees': number;
+    // stock_rate: number;
   };
   percentage_change: {
     "1_day": number;

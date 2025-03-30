@@ -126,7 +126,7 @@ const LineChart = ({
   };
 
   return (
-    <div className="w-[115%] bg-white">
+    <div className="w-[100%] bg-white">
       <Line data={data} options={options} />
     </div>
   );
