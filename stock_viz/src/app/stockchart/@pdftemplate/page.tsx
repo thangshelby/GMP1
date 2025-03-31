@@ -7,36 +7,24 @@ import { BusinessSummary, FinancialSummary } from "@/components";
 import { useSearchParams } from "next/navigation";
 import { format, subMonths } from "date-fns";
 import { usePdfStore } from "@/store";
+import * as htmlToImage from "html-to-image";
+import { toPng, toJpeg, toBlob, toPixelData, toSvg } from "html-to-image";
 export default function PdfTemplate() {
   const symbol = useSearchParams().get("symbol") || "VCB";
   const { closePrice } = usePdfStore();
   const currentDate = format(subMonths(new Date(), 1), "yyyy-MM-dd");
+
   const generatePDF = async () => {
-    const container = document.getElementById(
-      "business-summary",
-    ) as HTMLElement;
-
-    if (!container) return;
-
-    // Scroll to top to avoid capturing unexpected portions
-    window.scrollTo(0, 0);
-
-    const canvas = await html2canvas(container, {
-      scale: 3, // Improves quality
-      useCORS: true, // Fixes external images
-      logging: false, // Reduces console spam
-    });
-
-    const imgData = canvas.toDataURL("image/png");
-
-    // Create PDF with A4 dimensions
     const pdf = new jsPDF({
-      // orientation: "portrait",
+      orientation: "portrait",
       unit: "px",
       format: [794, 1123], // A4 Size in px
     });
 
-    pdf.addImage(imgData, "PNG", 0, 0, 794, 1123);
+    const node = document.getElementById("business-summary") as HTMLElement;
+    const newPageData = await htmlToImage.toPng(node);
+
+    pdf.addImage(newPageData, "PNG", 0, 0, 794, 1123);
     pdf.save(`Financial Report for ${symbol}.pdf`);
   };
 
@@ -62,9 +50,7 @@ export default function PdfTemplate() {
               currentDate={currentDate}
               closePrice={closePrice}
             />
-            <div className="flex-1 overflow-hidden">
-            {page.component}
-            </div>
+            <div className="flex-1 overflow-hidden">{page.component}</div>
             <FooterSection />
           </div>
         </div>

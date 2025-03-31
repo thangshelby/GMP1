@@ -26,13 +26,7 @@ ChartJS.register(
   Legend,
 );
 
-const LineChart = ({
-  duration,
-  setClosePrice,
-}: {
-  duration: string;
-  setClosePrice?: (close: number) => void;
-}) => {
+const LineChart = ({ duration }: { duration: string }) => {
   const [stockData, setStockData] = useState<StockPriceDataType[]>([]);
   const symbol = useSearchParams().get("symbol") || "VCB";
 

@@ -1,22 +1,23 @@
 "use client";
 import { useEffect } from "react";
 import LineChart from "./LineChart";
-import { subMonths, format } from "date-fns";
+import { subMonths, format,subYears } from "date-fns";
 import { fetchAPI } from "@/lib/utils";
 import { useSearchParams } from "next/navigation";
 import { usePdfStore } from "@/store";
 import { formatNumber } from "@/constants";
 
 const BusinessSummary = () => {
-  const { businessData, setBusinessData } = usePdfStore();
+  const { businessData, setBusinessData ,setFinancialData} = usePdfStore();
   const symbol = useSearchParams().get("symbol") || "VCB";
 
   useEffect(() => {
     const fetchPdfInfo = async () => {
       const response = await fetchAPI(
-        `/reports/business?symbol=${symbol}&date=${format(subMonths(new Date(), 1), "yyyy-MM-dd")}`,
+        `/reports/business?symbol=${symbol}&date=${format(subYears(new Date(), 1), "yyyy-MM-dd")}`,
       );
 
+      setFinancialData(response.financial_summary);
       setBusinessData(response);
     };
 
@@ -59,9 +60,6 @@ const BusinessSummary = () => {
               <div className="bg-gray-2 w-full">
                 <LineChart
                   duration="6 Months"
-                  setClosePrice={(close: number) => {
-                    // setClosePrice(close);
-                  }}
                 />
               </div>
             </div>
@@ -125,13 +123,13 @@ const RenderCategory = ({
 }) => {
   return (
     <div className="border-t-blue flex-1 rounded border-t-[2px] bg-white">
-      <h2 className="border-b-gray text-xs text-blue border-b-[1px] border-dashed pb-1 font-medium uppercase">
+      <h2 className="border-b-gray text-xs text-blue border-b-[1px] border-dashed py-[2px] font-medium uppercase">
         {title}
       </h2>
       <ul className="mt-2 flex flex-col ">
         {Object.keys(category).map((key: any, index) => (
-          <li key={key} className={`flex align-text-top flex-row pb-1 px-1 text-2xs text-black
-          ${index % 2 === 0 ? "bg-[#e6e6e6] rounded-[2px]" : "bg-white"}
+          <li key={key} className={`flex align-text-top flex-row p-1 text-2xs text-black
+          ${index % 2 === 0 ? "bg-[#e6e6e6] rounded-[1px]" : "bg-white"}
           `}>
             <strong className="w-[40%] text-2xs text-black">
               {renderTitle(key)}

@@ -7,10 +7,10 @@ import { formatNumber } from "@/constants";
 import { fetchAPI } from "@/lib/utils";
 import { useSearchParams } from "next/navigation";
 const FinancialSummary = () => {
-  const financialSummary = "Hello World";
+
   const symbol = useSearchParams().get("symbol") || "VCB";
 
-  const { financialData, setFinancialData } = usePdfStore();
+  const { financialData, setFinancialData,businessData } = usePdfStore();
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -36,7 +36,7 @@ const FinancialSummary = () => {
                 FINANCIAL SUMMARY
               </h2>
             </div>
-            <p className="text-xs text-black">{financialSummary}</p>
+            <p className="text-xs text-black">{businessData.financial_summary}</p>
           </div>
           {/* BALANCE SHEET */}
           <div className="flex flex-col gap-y-2">
