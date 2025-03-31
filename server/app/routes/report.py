@@ -1,11 +1,10 @@
 from flask import Blueprint,request,jsonify
-
 import pandas as pd
 from vnstock import Vnstock
 import google.generativeai as genai
 import redis
 import json
-from app.utils.business import get_stock_data, get_finance_data,calculate_stock_metrics,get_general_info_and_detail,get_summary
+from app.utils.business import get_general_information,get_company_detail,get_summary,caculte_analyst_outlook,caculate_share_detail,caculate_percentage_change,caculate_ratio
 from app.utils.financial import get_report_info
 
 redis_client = redis.Redis(host='localhost', port=6379, db=0)
@@ -17,24 +16,30 @@ bankCompany=['ABB', 'ACB', 'BAB', 'BID', 'BVB', 'CTG', 'EIB', 'HDB', 'KLB', 'LPB
 def create_report():
     
     symbol= request.args.get('symbol')
-    date=   request.args.get('date')
+    start_date= request.args.get('start_date')
+    end_date= request.args.get('end_date')
     
-    cache_key = f"report_business_{symbol}_{date}"
+    cache_key =f"report_business_{symbol}_{start_date}_{end_date}"
     cached_data = redis_client.get(cache_key)
     if cached_data:
         return jsonify(json.loads(cached_data))
     
-    res = calculate_stock_metrics(symbol, pd.to_datetime(date))
-        
-    general_info,company_detail= get_general_info_and_detail(symbol)
-    business_summary= get_summary(symbol,"Business")
-    financial_summary= get_summary(symbol,"Financial")
+    stock = Vnstock().stock(symbol=symbol,source='TCBS')
+    df= stock.quote.history(start=start_date, end=end_date, interval='1D')
     
-    res['general_infomation']= general_info
-    res['company_detail']= company_detail
-    res['business_summary']= business_summary
-    res['financial_summary']= financial_summary
-  
+    # res = calculate_stock_metrics(symbol, pd.to_datetime(date))
+        
+    res={}
+    res['general_information']= get_general_information(stock.company.overview())
+    res['company_detail']= get_company_detail(stock.company.overview())
+    res['business_summary']= get_summary(symbol,"Business")
+    res['financial_summary']= get_summary(symbol,"Financial")
+    
+    res['analyst_outlook']= caculte_analyst_outlook(df)
+    res['share_detail']= caculate_share_detail(df,stock.company.overview(),start_date,end_date)
+    res['percentage_change']= caculate_percentage_change(df,end_date)
+    res['ratio']= caculate_ratio(symbol)
+    
     redis_client.set(cache_key, json.dumps(res), ex=3600)
     
     

@@ -55,24 +55,23 @@ export interface StockInfomationType {
 
 export interface BusinessDataType {
   analyst_outlook: {
-      buy: number;
-      hold: number;
-      sell: number;
-      suggest:string
+    buy: number;
+    hold: number;
+    sell: number;
+    recommendation: string; // Đã sửa tên từ "recomendation" thành "recommendation"
   };
   company_detail: {
-    short_name: string;
+    address: string;
+    phone_number: string;
+    company_short_name: string;
     website: string;
   };
-  date: string; // ISO Date format (YYYY-MM-DD)
-  general_infomation: {
-    ISSN_code:string,
-    issue_share:number,
-
+  general_information: { // Đã sửa từ "infomation" thành "information"
+    ISSN_code: string;
+    issue_share: number;
     exchange_code: string;
     industry: string;
-    'no._of_employees': number;
-    // stock_rate: number;
+    number_of_employees: number; // Đã sửa tên từ 'no._of_employees'
   };
   percentage_change: {
     "1_day": number;
@@ -88,13 +87,13 @@ export interface BusinessDataType {
     dividend_yield: number | null; // NaN in JSON is represented as null in TypeScript
     pe_ttm: number | null;
   };
-  share_detail: {    
-    "52_wk_high_high": number | 10;
+  share_detail: {
+    "52_wk_high_high": number; // Sửa từ "number | 10" thành "number" vì 10 không phải kiểu
     "52_wk_high_low": number;
     "5_day_avg_volume": number;
     "10_day_avg_volume": number;
     beta_value: number;
-    Currency: "VND";
+    currency: "VND"; // Đổi từ "Currency" thành "currency" theo quy tắc camelCase
     shares_outstanding: number | null;
   };
   symbol: string;

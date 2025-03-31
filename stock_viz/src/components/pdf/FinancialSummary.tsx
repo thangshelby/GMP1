@@ -22,7 +22,7 @@ const FinancialSummary = () => {
     };
     fetchData();
   }, []);
-
+  console.log("Financial Data", financialData);
   const years = ["2020", "2021", "2022", "2023", "2024"];
   return (
     financialData.balance_sheet && (

@@ -1,127 +1,29 @@
 from vnstock import Vnstock
+from vnstock.explorer.vci import Company
 import pandas as pd
 import numpy as np
 import requests
 import pandas_ta as ta
-
 import google.generativeai as genai
+import redis    
+import json
 
-def get_stock_data(symbol, start_date="2020-01-01", end_date="2024-12-31"):
-    stock = Vnstock().stock(symbol=symbol, source="VCI")
-    df = stock.quote.history(start=start_date, end=end_date, interval="1D")
-    market_data= Vnstock().stock(symbol='VNINDEX', source='VCI')
-    market_df= market_data.quote.history(start=start_date, end=end_date, interval="1D")
-    
-    if df is not None and not df.empty:
-        df["time"] = pd.to_datetime(df["time"])  
-        return df,market_df, stock
-    return None, None,None
+redis_client = redis.Redis(host='localhost', port=6379, db=0)
 
-
-def get_finance_data(stock, symbol, date):
-    finance_data = stock.finance.ratio()
-
-    if finance_data.empty:
-        return np.nan, np.nan, np.nan
-    year = date.year
-    quarter = (date.month - 1) // 3 + 1
-    finance_filtered = finance_data[
-        (finance_data[("Meta", "ticker")] ==symbol.upper() ) &
-        (finance_data[("Meta", "yearReport")] == year) &
-        (finance_data[("Meta", "lengthReport")] == quarter)
-    ]
-    
-    if finance_filtered.empty:
-        return np.nan, np.nan, np.nan
-   
-    
-    shares_outstanding = finance_filtered.get(("Chỉ tiêu định giá", "Outstanding Share (Mil. Shares)"), np.nan).values[-1]
-    pe_ttm = finance_filtered.get(("Chỉ tiêu định giá", "P/E"), np.nan).values[-1]
-    dividend_yield = finance_filtered.get(("Chỉ tiêu khả năng sinh lợi", "Dividend yield (%)"), np.nan).values[-1]
- 
-    return shares_outstanding, pe_ttm, dividend_yield
-
-def calculate_stock_metrics(symbol, date):
-    df,market_df ,stock = get_stock_data(symbol)
-    if df is None or df.empty:
-        return None
-
-    df = df[df["time"] <= date]
-    if df.empty:
-        return None
-    
-    
-    shares_outstanding, pe_ttm, dividend_yield = get_finance_data(stock, symbol, date)
-    
-    df_52wk = df[df["time"] >= (date - pd.Timedelta(days=365))]
-    high_52wk = df_52wk["high"].max() if not df_52wk.empty else np.nan
-    low_52wk = df_52wk["low"].min() if not df_52wk.empty else np.nan
-    ratio_52wk = high_52wk / low_52wk if low_52wk > 0 else np.nan
-    
-    avg_vol_5d = df["volume"].rolling(window=5, min_periods=1).mean().iloc[-1]
-    avg_vol_10d = df["volume"].rolling(window=10, min_periods=1).mean().iloc[-1]
-    
-    df["returns"] = df["close"].pct_change()
-    beta_value = df["returns"].cov(df["returns"]) / df["returns"].var() if df["returns"].var() != 0 else np.nan
-    
-    def percentage_change(days):
-        if len(df) < days:
-            return np.nan
-        return round(((df["close"].iloc[-1] - df["close"].iloc[-days]) / df["close"].iloc[-days]) * 100,2)
-    
-    percent_change = {
-        "1_day": percentage_change(1),
-        "5_day": percentage_change(5),
-        "3_months": percentage_change(63),
-        "6_months": percentage_change(126),
-        "month_to_date": percentage_change(df[df["time"].dt.month == date.month].shape[0]),
-        "year_to_date": percentage_change(df[df["time"].dt.year == date.year].shape[0]),
-    }
-    
-    analyst_outlook =analyze_stock_data(df)
-
-    return {
-    'symbol': symbol,
-    'date': date.strftime("%Y-%m-%d"),
-    'share_detail': {
-        '52_wk_high': round(high_52wk,2),
-        '52_wk_low': round(low_52wk,2),
-        '5_day_avg_volume': round(avg_vol_5d,2),
-        '10_day_avg_volume': round(avg_vol_10d,2),
-        'beta_value': round(beta_value,2),
-        'close_price': round(df['close'].iloc[-1],2)*1000,
-        'currency': 'VND',
-        'shares_outstanding': float(shares_outstanding) if isinstance(shares_outstanding, float) and not np.isnan(shares_outstanding) else 0
-    },
-    'ratio': {
-        'pe_ttm': float(pe_ttm) if isinstance(pe_ttm, float) and not np.isnan(pe_ttm) else 0,
-        'dividend_yield': float(dividend_yield) if isinstance(dividend_yield, float) and not np.isnan(dividend_yield) else 0
-    },
-    'percentage_change': percent_change,
-    'analyst_outlook': {
-    'buy': analyst_outlook['buy'],
-    'hold': analyst_outlook['hold'],
-    'sell': analyst_outlook['sell'],
-    'suggest': analyst_outlook['suggest']
-    }
-}
-
-
-
-def get_general_info_and_detail(symbol):
-    company = Vnstock().stock(symbol=symbol, source='TCBS').company
-    company_overview = company.overview()
-    
+def get_general_information(company_overview):
     general_info ={}
-    company_detail={}
     
     general_info['issue_share']= company_overview.get('issue_share', 'N/A').values[-1]
     general_info['ISIN_code']='VN000000HPG4'
-    general_info['exchange_code']=company_overview.get('exchange', 'N/A').values[-1]
-    general_info['industry']=company_overview.get('industry', 'N/A').values[-1]
+    general_info['exchange_code']=company_overview['exchange'].values[-1]
+    general_info['industry']=company_overview.get('industry').values[-1]
 
     general_info['no._of_employees']=int(company_overview.get('no_employees', 'N/A').values[-1])
+   
+    return general_info
 
+def get_company_detail(company_overview):
+    company_detail={}
     
     company_detail['address']='Viet Nam'
     company_detail['phone_number']= '028 7308 8888'    
@@ -129,9 +31,14 @@ def get_general_info_and_detail(symbol):
     company_detail['company_short_name']=company_overview.get('short_name', 'N/A').values[-1]
     # company_detail['charter_capital']=company_overview.get('charter_capital', 'N/A').values[-1]
     
-    return general_info,company_detail
-
+    return company_detail
+    
 def get_summary(symbol,type):
+    cache_key = f"summary_{symbol}_{type}"
+    cached_data = redis_client.get(cache_key)
+    if cached_data:
+        return cached_data.decode('utf-8')
+    
     genai.configure(api_key='AIzaSyAds6_jTjsyhi6ZrTT9dG0YfCkipccpNDY')
 
     # Cấu hình model
@@ -148,7 +55,7 @@ def get_summary(symbol,type):
     )
     # user_input = update.message.text
     sample='business and financial summary for VIB (Vietnam International Bank), presented in a formal and comprehensive manner: Vietnam International Bank (VIB) operates as a commercial bank, providing a comprehensive suite of financial products and services to a diverse clientele, including individual customers, small and medium-sized enterprises (SMEs), and corporate clients. The banks core business activities encompass deposit accounts, lending solutions (such as personal loans, mortgages, and business loans), credit cards, and wealth management services.'
-    user_input = f"Hãy cho tôi biết {type} Summary của công ty có ký hiệu là {symbol}(1 đoạn văn, ko xuống dòng và bằng tiếng anh formal nhất có thể dài dài 1 tí tầm 150 chữ, ko cần thêm biểu cảm. Mẫu nè {sample} )."   
+    user_input = f"Hãy cho tôi biết {type} Summary của công ty có ký hiệu là {symbol}(1 đoạn văn, ko xuống dòng và bằng tiếng anh formal nhất có thể dài dài 1 tí tầm 250 chữ, ko cần thêm biểu cảm. Mẫu nè {sample} )."   
 
     try:
         response = chat_session.send_message(user_input)
@@ -156,12 +63,66 @@ def get_summary(symbol,type):
         
         chat_session.history.append({"role": "user", "parts": [user_input]})
         chat_session.history.append({"role": "model", "parts": [model_response]})
+        
+        redis_client.set(cache_key, model_response, ex=3600)  
         return model_response
     except Exception as e:
         pass
 
+def caculate_share_detail(df,company_overview,start_date,end_date):
+    market_data= Vnstock().stock(symbol='VNINDEX', source='VCI')
+    market_df= market_data.quote.history(start=start_date, end=end_date, interval="1D")
+    
+    
+    share_detail = {}
+    
+    share_detail['close_price'] = df["close"].iloc[-1]
+    df_52wk = df[df["time"] >= (pd.to_datetime(end_date) - pd.Timedelta(days=365))]
+    share_detail['52_wk_high'] = df_52wk["high"].max() if not df_52wk.empty else np.nan
+    share_detail['52_wk_low'] = df_52wk["low"].min() if not df_52wk.empty else np.nan
+    
+    
+    share_detail['5_day_average_volume'] = df["volume"].rolling(window=5, min_periods=1).mean().iloc[-1]
+    share_detail['10_day_average_volume']= df["volume"].rolling(window=10, min_periods=1).mean().iloc[-1]
+    share_detail['currency'] = 'VND'
+    # share_detail['shares_outstanding'] = folat(shares_outstanding) if isinstance(shares_outstanding, float) and not np.isnan(shares_outstanding) else 0
+    
+    df = df[['time', 'close']].rename(columns={'close': 'Stock'})
+    market_df = market_df[['time', 'close']].rename(columns={'close': 'Market'})
+    
+    merge_df = pd.merge(df, market_df, on="time", how="inner")
 
-def analyze_stock_data(df):
+    merge_df['Stock Return'] = np.log(merge_df['Stock'] / merge_df['Stock'].shift(1))
+    merge_df['Market Return'] = np.log(merge_df['Market'] / merge_df['Market'].shift(1))
+
+    merge_df = merge_df.dropna()
+
+    cov_matrix = merge_df[['Stock Return', 'Market Return']].cov()
+    share_detail['beta_value'] = cov_matrix.loc['Stock Return', 'Market Return'] / merge_df['Market Return'].var()
+    share_detail['outstanding_share'] = company_overview['outstanding_share'].values[-1]
+    
+    return share_detail
+    
+def caculate_percentage_change(df,date):
+    date= pd.to_datetime(date)
+    percentage_change = {}
+    def percentage_change(days):
+        if len(df) < days:
+            return np.nan
+        return round(((df["close"].iloc[-1] - df["close"].iloc[-days]) / df["close"].iloc[-days]) * 100,2)
+    
+    percent_change = {
+        "1_day": percentage_change(1),
+        "5_day": percentage_change(5),
+        "3_months": percentage_change(63),
+        "6_months": percentage_change(126),
+        "month_to_date": percentage_change(df[df["time"].dt.month == date.month].shape[0]),
+        "year_to_date": percentage_change(df[df["time"].dt.year == date.year].shape[0]),
+    }
+    
+    return percent_change
+    
+def caculte_analyst_outlook(df):
 
     # Tính các chỉ báo kỹ thuật
     #Tính MA
@@ -257,12 +218,21 @@ def analyze_stock_data(df):
         "buy": int(buy),
         "hold": int(hold),
         "sell": int(sell),
-        "suggest": signal
+        "recomendation": signal
     }
     # print(res)
     return res
 
-        
+def caculate_ratio(symbol):
+    company= Company(symbol)
+    company_ratio= company.ratio_summary()
+    
+    ratio={}
+    ratio['price_to_earning'] = round(float(company_ratio['pe'].iloc[-1]), 2)
+    ratio['earnings_per_share'] = round(float(company_ratio['eps'].iloc[-1]), 2)
+    ratio['current_ratio'] = round(float(company_ratio['current_ratio'].iloc[-1]), 2)
+    ratio['dividend'] = round(float(company_ratio['dividend'].iloc[-1]), 2)
+    return ratio    
 generation_config = {
   "temperature": 0,
   "top_p": 0.95,
