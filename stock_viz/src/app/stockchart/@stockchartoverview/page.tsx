@@ -15,7 +15,6 @@ export default function StockChartOverview() {
 
   useEffect(() => {
     const fetchData= async()=>{
-      console.log("Fetching data.l",symbol);
       const response= await fetchAPI(
         `stocks/stock_overview_information?symbol=${symbol}`,
       )

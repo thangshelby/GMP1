@@ -16,18 +16,15 @@ const BusinessSummary = () => {
     const fetchPdfInfo = async () => {
       const response = await fetchAPI(
         `/reports/business?symbol=${symbol}&start_date=${start_date}&end_date=${end_date}`,
-      );
+      );  
       setBusinessData(response);
     };
 
     fetchPdfInfo();
   }, []);
-
-  console.log("Business Data", businessData);
-
   return (
     businessData.general_information && (
-      <div className="container mx-auto flex h-full flex-col justify-between bg-white p-8">
+      <div id={'pdf-container'} >
         {/* BODY */}
         <div className="flex h-full flex-col justify-between">
           {/* COMPANY DETAIL AND COMPANY INFO */}
@@ -55,17 +52,17 @@ const BusinessSummary = () => {
 
           {/* Charts Section */}
           <div className="flex flex-row justify-between space-x-6">
-            <div className="border-t-blue w-full rounded border-t-[2px]">
+            <div className="border-t-blue w-full rounded border-t-[2px] flex-col">
               <h2 className="text-gray mb-2 text-xs font-semibold">6 Months</h2>
 
-              <div className="bg-gray-2 w-full">
+              <div className=" w-full">
                 <LineChart duration="6 Months" />
               </div>
             </div>
 
-            <div className="border-t-blue w-full rounded border-t-[2px]">
+            <div className=" border-t-blue w-full rounded border-t-[2px] flex-col">
               <h2 className="text-gray mb-2 text-xs font-semibold">5 Years</h2>
-              <div className="bg-gray-2 w-full">
+              <div className=" w-full">
                 <LineChart duration="5 Years" />
               </div>
             </div>

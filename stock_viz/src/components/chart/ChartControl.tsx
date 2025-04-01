@@ -20,9 +20,8 @@ const ChartControl = () => {
     interval,
   } = useChartControlStore();
 
-  const { canCreatePdf, setCanCreatePdf } = usePdfStore();
+  const { canCreatePdf, setCanCreatePdf,createPdf } = usePdfStore();
 
-  const generatePDF = () => {};
   return (
     <div className="relative flex flex-col px-4 py-2">
       <div className="flex flex-row items-center justify-between">
@@ -133,7 +132,7 @@ const ChartControl = () => {
           <div
             onClick={
               canCreatePdf
-                ? generatePDF
+                ? createPdf
                 : (e) => {
                     e.preventDefault();
                   }

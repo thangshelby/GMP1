@@ -16,9 +16,9 @@
   --color-green: #00a449;
   --color-red: #fb5057;
   --color-gray: #6a7282;
-  --color-gray-2:#d1d5dc;
+  --color-gray-2: #d1d5dc;
   --color-button: #353945;
-  --color-blue:#2d80ff;
+  --color-blue: #2d80ff;
   --text-2xs: 10px;
   --text-3xs: 8px;
 }
@@ -42,9 +42,27 @@ body {
   /* font-size: 62.5%; */
 }
 
+#pdf-container {
+  margin-left: auto;
+  margin-right: auto;
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+  background-color: white;
+  padding:  16px;
+  
+}
+.pdf--header--category {
+  border-color: #2d80ff;
+  color: #2d80ff;
+  border-top: 2px;
+  size:16px;
+  font-size: medium;
+  text-transform: uppercase;
+}
 .table-container {
-  border-radius: 4px; 
-  overflow: hidden; 
+  border-radius: 4px;
+  overflow: hidden;
   border: 1px solid #ccc;
   display: inline-block;
 }

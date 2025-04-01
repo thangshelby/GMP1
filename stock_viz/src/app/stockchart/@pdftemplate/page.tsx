@@ -1,14 +1,18 @@
 "use client";
 import React from "react";
 import { jsPDF } from "jspdf";
-import html2canvas from "html2canvas";
 import { footerContent } from "@/constants";
-import { BusinessSummary, FinancialSummary } from "@/components";
+import {
+  BusinessSummary,
+  FinancialSummary,
+  PDFPage3,
+  PDFPage4,
+} from "@/components";
 import { useSearchParams } from "next/navigation";
 import { format, subMonths } from "date-fns";
 import { usePdfStore } from "@/store";
 import * as htmlToImage from "html-to-image";
-import { toPng, toJpeg, toBlob, toPixelData, toSvg } from "html-to-image";
+
 export default function PdfTemplate() {
   const symbol = useSearchParams().get("symbol") || "VCB";
   const { closePrice } = usePdfStore();
@@ -21,12 +25,21 @@ export default function PdfTemplate() {
       format: [794, 1123], // A4 Size in px
     });
 
-    const node = document.getElementById("business-summary") as HTMLElement;
-    const newPageData = await htmlToImage.toPng(node);
+    for(let i=0; i<pdfPages.length; i++){
+      const node = document.getElementById(pdfPages[i].id) as HTMLElement;
+      const newPageData = await htmlToImage.toPng(node,{
+        quality:1,
+        pixelRatio: 2,
+      });
+      pdf.addImage(newPageData, "PNG", 0, 0, 794, 1123);
+      pdf.addPage(); // Add a new page for the next content
+    }
 
-    pdf.addImage(newPageData, "PNG", 0, 0, 794, 1123);
     pdf.save(`Financial Report for ${symbol}.pdf`);
   };
+  // setCreatePdf(generatePDF);  
+
+
 
   return (
     <div className="relative flex w-full flex-col items-center justify-center space-y-4">
@@ -69,6 +82,16 @@ const pdfPages = [
     title: "Financial Summary",
     id: "financial-summary",
     component: <FinancialSummary />,
+  },
+  {
+    title: "PDF Page 3",
+    id: "pdf-page-3",
+    component: <PDFPage3 />,
+  },
+  {
+    title: "PDF Page 4",
+    id: "pdf-page-4",
+    component: <PDFPage4 />,
   },
 ];
 

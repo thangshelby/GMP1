@@ -1,16 +1,15 @@
-"use client"
+"use client";
 
-import React,{ useEffect } from "react";
+import React, { useEffect } from "react";
 import SummaryChart from "./SummaryChart";
 import { usePdfStore } from "@/store";
 import { formatNumber } from "@/constants";
 import { fetchAPI } from "@/lib/utils";
 import { useSearchParams } from "next/navigation";
 const FinancialSummary = () => {
-
   const symbol = useSearchParams().get("symbol") || "VCB";
 
-  const { financialData, setFinancialData,businessData } = usePdfStore();
+  const { financialData, setFinancialData, businessData } = usePdfStore();
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -22,37 +21,39 @@ const FinancialSummary = () => {
     };
     fetchData();
   }, []);
-  console.log("Financial Data", financialData);
+
   const years = ["2020", "2021", "2022", "2023", "2024"];
   return (
     financialData.balance_sheet && (
-      <div className="container mx-auto flex flex-col justify-between bg-white p-8">
+      <div id={"pdf-container"}>
         {/* BODY */}
         <div className="flex flex-col space-y-12">
           {/* FINANCIAL SUMMARY */}
           <div className="flex flex-col gap-y-2">
-            <div className="border-b-[1px] border-dashed border-gray pb-3">
-              <h2 className="border-t-[2px] border-blue text-base font-medium text-blue uppercase">
+            <div className="border-t-blue flex-1 rounded border-t-[2px] bg-white">
+              <h2 className="border-b-gray text-blue border-b-[1px] border-dashed py-[2px] text-xs font-medium uppercase">
                 FINANCIAL SUMMARY
               </h2>
             </div>
-            <p className="text-xs text-black">{businessData.financial_summary}</p>
+            <p className="text-xs text-black">
+              {businessData.financial_summary}
+            </p>
           </div>
           {/* BALANCE SHEET */}
           <div className="flex flex-col gap-y-2">
-            <div className="border-b-[1px] border-dashed border-gray pb-3">
-              <h2 className="border-t-[2px] border-blue text-base font-medium text-blue uppercase">
+            <div className="border-t-blue flex-1 rounded border-t-[2px] bg-white">
+              <h2 className="border-b-gray text-blue border-b-[1px] border-dashed py-[2px] text-xs font-medium uppercase">
                 BALANCE SHEET
               </h2>
             </div>
-            <table className="min-w-full table-auto border border-gray-2">
+            <table className="border-gray-2 min-w-full table-auto border ">
               <thead className="">
-                <tr>
-                  <th className="border-r-[1px] border-gray-2 text-xs  text-blue"></th>
+                <tr className="pl-2">
+                  <th className="border-gray-2 text-blue border-r-[1px] text-xs"></th>
                   {years.map((year, index) => (
                     <th
                       key={index}
-                      className="border-r-[1px] border-gray-2 text-xs  text-blue"
+                      className="border-gray-2 text-blue border-r-[1px] text-xs"
                     >
                       {year}
                     </th>
@@ -62,10 +63,11 @@ const FinancialSummary = () => {
               <tbody>
                 {Object.keys(financialData?.balance_sheet!).map(
                   (key, index) => (
-                    <tr key={index} className={``}>
+                    <tr key={index} className={`${index % 2 === 0 ? "bg-[#e6e6e6]" : ""}`}>
                       <td
-                        className={`border-r-[1px] border-gray-2 align-top text-xs text-black`}
+                        className={`border-gray-2 border-r-[1px] align-top text-xs text-black p-1 pl-2`}
                       >
+                        
                         {key}
                       </td>
                       {key in financialData?.balance_sheet! &&
@@ -73,7 +75,7 @@ const FinancialSummary = () => {
                           (value, index) => (
                             <td
                               key={index}
-                              className={`border-r-[1px] border-gray-2 text-center align-top text-xs text-black`}
+                              className={`border-gray-2 border-r-[1px] text-center align-top text-xs text-black p-1`}
                             >
                               {formatNumber(parseFloat(value.toFixed(2)))}
                             </td>
@@ -88,8 +90,8 @@ const FinancialSummary = () => {
 
           {/* AI ANALYSIS FOR BALANCE SHEET */}
           <div className="flex flex-col gap-y-2 text-xs text-black">
-            <div className="border-b-[1px] border-dashed border-gray pb-3">
-              <h2 className="border-t-[2px] border-blue text-base font-medium text-blue uppercase">
+            <div className="border-t-blue flex-1 rounded border-t-[2px] bg-white">
+              <h2 className="border-b-gray text-blue border-b-[1px] border-dashed py-[2px] text-xs font-medium uppercase">
                 AI ANALYSIS FOR BALANCE SHEET
               </h2>
             </div>

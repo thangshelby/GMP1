@@ -22,13 +22,13 @@ import {
   histogramChartOptions,
 } from "@/constants/chartConfig";
 import { format, subMonths } from "date-fns";
-import { useChartControlStore,usePdfStore } from "@/store";
+import { useChartControlStore, usePdfStore } from "@/store";
 import { useSearchParams } from "next/navigation";
 import { SMA, BollingerBands } from "technicalindicators";
 
 const Chart = () => {
   const chartContainerRef = useRef<HTMLDivElement>(null);
-  const {setClosePrice} = usePdfStore()
+  const { setClosePrice } = usePdfStore();
   const [chart, setChart] = React.useState<any>(null);
 
   const currentChartRef = useRef<any>(null);
@@ -43,6 +43,7 @@ const Chart = () => {
   const [loading, setLoading] = React.useState(true);
   const symbol = useSearchParams().get("symbol");
 
+  //HANDLE FETCHDATA
   useEffect(() => {
     const fetchData = async () => {
       const end_date = format(subMonths(new Date(), 1), "yyyy-MM-dd");
@@ -52,12 +53,13 @@ const Chart = () => {
       );
       setCurrentStockPriceData(data[data.length - 1]);
       setStockData(data);
-      setClosePrice(data[data.length - 1].close)
+      setClosePrice(data[data.length - 1].close);
       setLoading(false);
     };
     fetchData();
   }, [symbol, interval]);
 
+  //HANDLE CREATE MAIN CHART
   useEffect(() => {
     if (!chartContainerRef.current || stockData.length == 0) return;
 
@@ -92,11 +94,13 @@ const Chart = () => {
         bottom: 0,
       },
     });
-    volumeSeries.setData(stockData.map((d)=>({
-      time:d.date || d.time || '',
-      value:d.volume || 0 ,
-      color:d.open > d.close ? "#813539" : "#1c5e5e", 
-    })))
+    volumeSeries.setData(
+      stockData.map((d) => ({
+        time: d.date || d.time || "",
+        value: d.volume || 0,
+        color: d.open > d.close ? "#813539" : "#1c5e5e",
+      })),
+    );
 
     currentChartRef.current = candlestickSeries;
 
@@ -141,9 +145,15 @@ const Chart = () => {
       chart.remove();
     };
   }, [stockData]);
+
   //HANDLE CHART TYPE CHANGE
   useEffect(() => {
-    if (stockData.length == 0 || !chart) return;
+    if (stockData.length == 0 || !chart || !currentChartRef.current) {
+      console.log("I will run this time");
+      return;
+    }
+
+    console.log(stockData.length,chart,currentChartRef.current);
     chart.removeSeries(currentChartRef.current);
 
     switch (selectedChart) {
@@ -172,7 +182,7 @@ const Chart = () => {
       default:
         break;
     }
-  }, [selectedChart, stockData]);
+  }, [selectedChart]);
 
   //HANDLE INDICATOR CHANGE
   useEffect(() => {
@@ -198,9 +208,7 @@ const Chart = () => {
       const bandIndicator = new BandsIndicator();
       middleLine.attachPrimitive(bandIndicator);
     }
-
- 
-  }, [selectedIndicators, stockData]);
+  }, [selectedIndicators]);
 
   if (loading) {
     return (

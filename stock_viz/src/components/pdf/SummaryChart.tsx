@@ -39,6 +39,14 @@ const SummaryChart = ({ symbol }: { symbol: string }) => {
     React.useState<ChartAssetEquityType>();
   const [chartLiabilitesAndEquity, setChartLiabilitesAndEquity] =
     React.useState<ChartLiabilitiesEquityType>();
+  const [chartAssetAndEquitySize, setChartAssetAndEquitySize] = React.useState({
+    width: 0,
+    height: 0,
+  });
+  const [chartLiabilitesAndEquitySize, setChartLiabilitesAndEquitySize] =
+    React.useState({ width: 0, height: 0 });
+  const chartAssetAndEquityRef = React.useRef<any>(null);
+  const chartLiabilitesAndEquityRef = React.useRef<any>(null);
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -50,13 +58,29 @@ const SummaryChart = ({ symbol }: { symbol: string }) => {
       setChartAssetAndEquity(result2.res1);
       setChartLiabilitesAndEquity(result2.res2);
     };
+    const updateSize = () => {
+      setChartAssetAndEquitySize({
+        width: chartAssetAndEquityRef.current.clientWidth,
+        height: chartAssetAndEquityRef.current.clientHeight,
+      });
+      setChartLiabilitesAndEquitySize({
+        width: chartLiabilitesAndEquityRef.current.clientWidth,
+        height: chartLiabilitesAndEquityRef.current.clientHeight,
+      });
+    };
 
-    fetchData();
-  },[]);
-
+    if (!chartAssetAndEquity && !chartLiabilitesAndEquity) {
+      fetchData();
+    }
+    if (chartAssetAndEquityRef.current && chartLiabilitesAndEquityRef.current) {
+      {
+        updateSize();
+      }
+    }
+  }, [chartAssetAndEquityRef]);
 
   const data1 = {
-    labels:chartAssetAndEquity?.years ,
+    labels: chartAssetAndEquity?.years,
     datasets: [
       {
         label: "Total Assets (Tỷ VND)",
@@ -70,7 +94,7 @@ const SummaryChart = ({ symbol }: { symbol: string }) => {
         data: chartAssetAndEquity?.equity,
         borderColor: "green",
         backgroundColor: "rgba(0, 255, 0, 0.5)",
-        borderDash: [3,3],
+        borderDash: [3, 3],
         yAxisID: "y1",
       },
     ],
@@ -78,9 +102,10 @@ const SummaryChart = ({ symbol }: { symbol: string }) => {
 
   const options1 = {
     responsive: true,
+    maintainAspectRatio: false, // Allow the chart to use custom width/height
     plugins: {
       legend: {
-        display:true,
+        display: true,
         position: "top" as const,
         labels: {
           font: {
@@ -142,7 +167,7 @@ const SummaryChart = ({ symbol }: { symbol: string }) => {
     },
   };
   const data2 = {
-    labels:chartLiabilitesAndEquity?.years ,
+    labels: chartLiabilitesAndEquity?.years,
     datasets: [
       {
         label: "Total Liabilities",
@@ -159,12 +184,13 @@ const SummaryChart = ({ symbol }: { symbol: string }) => {
 
   const options2 = {
     responsive: true,
+    maintainAspectRatio: false, // Allow the chart to use custom width/height
     plugins: {
-      legend: { position: "top" as const ,labels:{font:{size:8}}},
+      legend: { position: "top" as const, labels: { font: { size: 8 } } },
       title: {
-        font:{size:8},
+        font: { size: 8 },
         display: true,
-        text:`Total Liabilities and Equity (Stacked) - ${symbol.toUpperCase()}`,
+        text: `Total Liabilities and Equity (Stacked) - ${symbol.toUpperCase()}`,
       },
     },
     scales: {
@@ -197,12 +223,24 @@ const SummaryChart = ({ symbol }: { symbol: string }) => {
   };
 
   return (
-    <div className="flex-row flex items-center justify-between space-x-4">
-      <div className="w-[270px]">
-        <Line data={data1} options={options1} />;
+    <div className="flex flex-row items-center justify-between space-x-4">
+      <div ref={chartAssetAndEquityRef} className="w-full">
+        {chartLiabilitesAndEquitySize.width > 0 && (
+          <Line
+            width={chartAssetAndEquitySize.width}
+            data={data1}
+            options={options1}
+          />
+        )}
       </div>
-      <div className="w-[270px]">
-        <Bar data={data2} options={options2} />;
+      <div ref={chartLiabilitesAndEquityRef} className="w-full">
+        {chartLiabilitesAndEquitySize.width > 0 && (
+          <Bar
+            width={chartLiabilitesAndEquitySize.width}
+            data={data2}
+            options={options2}
+          />
+        )}
       </div>
     </div>
   );

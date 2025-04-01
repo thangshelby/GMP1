@@ -13,7 +13,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 // Đăng ký các thành phần của Chart.js
 ChartJS.register(
@@ -29,17 +29,23 @@ ChartJS.register(
 const LineChart = ({ duration }: { duration: string }) => {
   const [stockData, setStockData] = useState<StockPriceDataType[]>([]);
   const symbol = useSearchParams().get("symbol") || "VCB";
-
+  const lineChartRef = useRef<any>(null);
+  const [chartSize, setChartSize] = useState({ width: 0, height: 0 });
   useEffect(() => {
-    if (!symbol) return; // Tránh fetch khi symbol không hợp lệ
+    const updateChartSize = () => {
+      setChartSize({
+        width: lineChartRef.current.clientWidth,
+        height: lineChartRef.current.clientHeight,
+      });
+    };
 
-    let start_date =
-      duration === "6 Months"
-        ? format(subMonths(new Date(), 7), "yyyy-MM-dd")
-        : "2020-01-01";
-    const end_date = format(subMonths(new Date(), 1), "yyyy-MM-dd");
-    const interval = duration === "6 Months" ? "1D" : "1W";
     const fetchData = async () => {
+      let start_date =
+        duration === "6 Months"
+          ? format(subMonths(new Date(), 7), "yyyy-MM-dd")
+          : "2020-01-01";
+      const end_date = format(subMonths(new Date(), 1), "yyyy-MM-dd");
+      const interval = duration === "6 Months" ? "1D" : "1W";
       try {
         const result = await fetchAPI(
           `stocks/stock_quote?symbol=${symbol}&start_date=${start_date}&end_date=${end_date}&interval=${interval}`,
@@ -52,8 +58,13 @@ const LineChart = ({ duration }: { duration: string }) => {
       }
     };
 
-    fetchData();
-  }, [symbol, duration]);
+    if (lineChartRef.current) {
+      updateChartSize();
+    }
+    if (!stockData.length) {
+      fetchData();
+    }
+  }, [lineChartRef.current]);
 
   const labels = stockData.map((data) => data.date!);
   const values = stockData.map((data) => data.close);
@@ -75,7 +86,8 @@ const LineChart = ({ duration }: { duration: string }) => {
   let lastMonth: number | null = null;
 
   const options = {
-    // responsive: true,
+    responsive: true,
+    maintainAspectRatio: false, // Allow the chart to use custom width/height
     plugins: {
       legend: { display: false },
       tooltip: { enabled: false },
@@ -120,8 +132,15 @@ const LineChart = ({ duration }: { duration: string }) => {
   };
 
   return (
-    <div className="w-[100%] bg-white">
-      <Line data={data} options={options} />
+    <div ref={lineChartRef} className="w-[100%] bg-white">
+      {chartSize.width > 0 && (
+        <Line
+          width={chartSize.width}
+          // height={chartSize.height}
+          data={data}
+          options={options}
+        />
+      )}
     </div>
   );
 };
