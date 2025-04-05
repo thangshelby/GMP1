@@ -4,8 +4,9 @@ from vnstock import Vnstock
 import google.generativeai as genai
 import redis
 import json
-from app.utils.business import get_general_information,get_company_detail,get_summary,caculte_analyst_outlook,caculate_share_detail,caculate_percentage_change,caculate_ratio
+from app.utils.business import get_general_information,get_company_detail,caculte_analyst_outlook,caculate_share_detail,caculate_percentage_change,caculate_ratio
 from app.utils.financial import get_report_info
+from app.utils.utils import get_AI_analyze
 
 redis_client = redis.Redis(host='localhost', port=6379, db=0)
 
@@ -32,8 +33,8 @@ def create_report():
     res={}
     res['general_information']= get_general_information(stock.company.overview())
     res['company_detail']= get_company_detail(stock.company.overview())
-    res['business_summary']= get_summary(symbol,"Business")
-    res['financial_summary']= get_summary(symbol,"Financial")
+    res['business_summary']= get_AI_analyze(symbol, type='summary', summary_data='business')
+    res['financial_summary']= get_AI_analyze(symbol, type='summary', summary_data='financial')
     
     res['analyst_outlook']= caculte_analyst_outlook(df)
     res['share_detail']= caculate_share_detail(df,stock.company.overview(),start_date,end_date)
@@ -164,69 +165,11 @@ def fetch_financial_chart_roe():
     symbol= request.args.get('symbol')
     data= request.get_json()
     
-    
-    
     financial_data= data['financialData']
     business_data= data['businessData']
     
-    res= get_final_analysis(symbol,financial_data,business_data)
+    res= get_AI_analyze(symbol,type='final',final_data={'financial_data':financial_data,'business_data':business_data})
     
     return res
 
 
-def get_final_analysis(symbol,financial_data,business_data):
-    genai.configure(api_key='AIzaSyAds6_jTjsyhi6ZrTT9dG0YfCkipccpNDY')
-
-    # Cấu hình model
-
-    model = genai.GenerativeModel(
-    model_name="gemini-2.0-flash-exp",
-    safety_settings=safety_settings,
-    generation_config=generation_config,
-    system_instruction="Chatbot này sẽ hoạt động như một broker chứng khoán chuyên nghiệp, hỗ trợ người dùng trong việc mua bán cổ phiếu và cung cấp tư vấn đầu tư. Nó sẽ phân tích dữ liệu thị trường để đưa ra các khuyến nghị mua hoặc bán cổ phiếu, dựa trên xu hướng hiện tại và lịch sử giao dịch. Ngoài ra, chatbot còn cung cấp thông tin thị trường được cập nhật liên tục, bao gồm các chỉ số chứng khoán, tin tức về thị trường, và báo cáo phân tích tài chính của các công ty, giúp người dùng có được cái nhìn sâu sắc và đầy đủ về tình hình tài chính và kinh tế mà họ quan tâm.",
-    )
-
-    chat_session = model.start_chat(
-        history=[]
-    )
-    # user_input = update.message.text
-    
-    sample='based on the financial and business data you provided for Hoa Phat Group (HPG), heres a concise analysis to inform your investment decision: Hoa Phat Group demonstrates characteristics of a growing company, as evidenced by the increasing trend in total assets and equity on its balance sheet. The companys core steel manufacturing operations, spanning from iron ore mining to finished products, position it as a key player in the Vietnamese steel industry. Revenue has fluctuated over the period, impacting operating and net income, which suggests sensitivity to market conditions. Profitability metrics like ROE and ROA show variability, indicating inconsistent efficiency in utilizing equity and assets. However, the relatively stable and low Long Term Debt/Equity ratio suggests a conservative approach to long-term financing. Analyst outlook leans towards "Sell," which should be considered carefully. The compans strategic focus on technological innovation and capacity expansion aims to maintain its leading position. However, the financial performance is significantly influenced by steel price fluctuations and demand in the construction and manufacturing sectors. Given the'
-    user_input = f"Tôi sẽ cung cấp cho bạn financialData và businessData của mã cổ phiếu {symbol} để bạn có thể phần tích tổng quát về tình hình của công ty đưa ra quyết định có nên đầu tư. Dưới đây là financialData: {financial_data} và businessData: {business_data},chỉ cần làm đoạn văn, không xuống dòng tieeng anh cho tôi khoang tam 300 chu la duoc roi mẫu nè {sample}"   
-
-    try:
-        response = chat_session.send_message(user_input)
-        model_response = response.text
-        
-        chat_session.history.append({"role": "user", "parts": [user_input]})
-        chat_session.history.append({"role": "model", "parts": [model_response]})
-        return model_response
-    except Exception as e:
-        pass
-    
-    
-generation_config = {
-  "temperature": 0,
-  "top_p": 0.95,
-  "top_k": 64,
-  "max_output_tokens": 8192,
-  "response_mime_type": "text/plain",
-}
-safety_settings = [
-  {
-    "category": "HARM_CATEGORY_HARASSMENT",
-    "threshold": "BLOCK_NONE",
-  },
-  {
-    "category": "HARM_CATEGORY_HATE_SPEECH",
-    "threshold": "BLOCK_MEDIUM_AND_ABOVE",
-  },
-  {
-    "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
-    "threshold": "BLOCK_MEDIUM_AND_ABOVE",
-  },
-  {
-    "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
-    "threshold": "BLOCK_MEDIUM_AND_ABOVE",
-  },
-]

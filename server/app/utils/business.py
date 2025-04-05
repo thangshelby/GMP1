@@ -2,9 +2,7 @@ from vnstock import Vnstock
 from vnstock.explorer.vci import Company
 import pandas as pd
 import numpy as np
-import requests
 import pandas_ta as ta
-import google.generativeai as genai
 import redis    
 import json
 
@@ -14,7 +12,7 @@ def get_general_information(company_overview):
     general_info ={}
     
     general_info['issue_share']= company_overview.get('issue_share', 'N/A').values[-1]
-    general_info['ISIN_code']='VN000000HPG4'
+    general_info['ISIN_code']='VN000000PVS0'
     general_info['exchange_code']=company_overview['exchange'].values[-1]
     general_info['industry']=company_overview.get('industry').values[-1]
 
@@ -32,42 +30,6 @@ def get_company_detail(company_overview):
     # company_detail['charter_capital']=company_overview.get('charter_capital', 'N/A').values[-1]
     
     return company_detail
-    
-def get_summary(symbol,type):
-    cache_key = f"summary_{symbol}_{type}"
-    cached_data = redis_client.get(cache_key)
-    if cached_data:
-        return cached_data.decode('utf-8')
-    
-    genai.configure(api_key='AIzaSyAds6_jTjsyhi6ZrTT9dG0YfCkipccpNDY')
-
-    # Cấu hình model
-
-    model = genai.GenerativeModel(
-    model_name="gemini-2.0-flash-exp",
-    safety_settings=safety_settings,
-    generation_config=generation_config,
-    system_instruction="Chatbot này sẽ hoạt động như một broker chứng khoán chuyên nghiệp, hỗ trợ người dùng trong việc mua bán cổ phiếu và cung cấp tư vấn đầu tư. Nó sẽ phân tích dữ liệu thị trường để đưa ra các khuyến nghị mua hoặc bán cổ phiếu, dựa trên xu hướng hiện tại và lịch sử giao dịch. Ngoài ra, chatbot còn cung cấp thông tin thị trường được cập nhật liên tục, bao gồm các chỉ số chứng khoán, tin tức về thị trường, và báo cáo phân tích tài chính của các công ty, giúp người dùng có được cái nhìn sâu sắc và đầy đủ về tình hình tài chính và kinh tế mà họ quan tâm.",
-    )
-
-    chat_session = model.start_chat(
-        history=[]
-    )
-    # user_input = update.message.text
-    sample='business and financial summary for VIB (Vietnam International Bank), presented in a formal and comprehensive manner: Vietnam International Bank (VIB) operates as a commercial bank, providing a comprehensive suite of financial products and services to a diverse clientele, including individual customers, small and medium-sized enterprises (SMEs), and corporate clients. The banks core business activities encompass deposit accounts, lending solutions (such as personal loans, mortgages, and business loans), credit cards, and wealth management services.'
-    user_input = f"Hãy cho tôi biết {type} Summary của công ty có ký hiệu là {symbol}(1 đoạn văn, ko xuống dòng và bằng tiếng anh formal nhất có thể dài dài 1 tí tầm 250 chữ, ko cần thêm biểu cảm. Mẫu nè {sample} )."   
-
-    try:
-        response = chat_session.send_message(user_input)
-        model_response = response.text
-        
-        chat_session.history.append({"role": "user", "parts": [user_input]})
-        chat_session.history.append({"role": "model", "parts": [model_response]})
-        
-        redis_client.set(cache_key, model_response, ex=3600)  
-        return model_response
-    except Exception as e:
-        pass
 
 def caculate_share_detail(df,company_overview,start_date,end_date):
     market_data= Vnstock().stock(symbol='VNINDEX', source='VCI')
@@ -123,9 +85,6 @@ def caculate_percentage_change(df,date):
     return percent_change
     
 def caculte_analyst_outlook(df):
-
-    # Tính các chỉ báo kỹ thuật
-    #Tính MA
     df['MA10'] = df['close'].rolling(window=10).mean()
     df['MA20'] = df['close'].rolling(window=20).mean()
     df['MA50'] = df['close'].rolling(window=50).mean()
@@ -233,28 +192,3 @@ def caculate_ratio(symbol):
     ratio['current_ratio'] = round(float(company_ratio['current_ratio'].iloc[-1]), 2)
     ratio['dividend'] = round(float(company_ratio['dividend'].iloc[-1]), 2)
     return ratio    
-generation_config = {
-  "temperature": 0,
-  "top_p": 0.95,
-  "top_k": 64,
-  "max_output_tokens": 8192,
-  "response_mime_type": "text/plain",
-}
-safety_settings = [
-  {
-    "category": "HARM_CATEGORY_HARASSMENT",
-    "threshold": "BLOCK_NONE",
-  },
-  {
-    "category": "HARM_CATEGORY_HATE_SPEECH",
-    "threshold": "BLOCK_MEDIUM_AND_ABOVE",
-  },
-  {
-    "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
-    "threshold": "BLOCK_MEDIUM_AND_ABOVE",
-  },
-  {
-    "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
-    "threshold": "BLOCK_MEDIUM_AND_ABOVE",
-  },
-]
