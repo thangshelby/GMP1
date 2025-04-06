@@ -14,7 +14,7 @@ export default function StockChartLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex min-h-screen  flex-col bg-[#171921]">
+    <div className="flex min-h-screen relative  flex-col bg-[#171921]">
       
       <StockChartOverview />
 

@@ -14,10 +14,9 @@ import { jsPDF } from "jspdf";
 import * as htmlToImage from "html-to-image";
 import { formatNumber } from "@/constants";
 
-
 export default function PdfTemplate() {
   const symbol = useSearchParams().get("symbol") || "VCB";
-  const {businessData, closePrice} = usePdfStore();
+  const { businessData, closePrice } = usePdfStore();
   const currentDate = format(subMonths(new Date(), 1), "yyyy-MM-dd");
 
   const generatePDF = async () => {
@@ -27,10 +26,10 @@ export default function PdfTemplate() {
       format: [794, 1123], // A4 Size in px
     });
 
-    for(let i=0; i<pdfPages.length; i++){
+    for (let i = 0; i < pdfPages.length; i++) {
       const node = document.getElementById(pdfPages[i].id) as HTMLElement;
-      const newPageData = await htmlToImage.toPng(node,{
-        quality:1,
+      const newPageData = await htmlToImage.toPng(node, {
+        quality: 1,
         pixelRatio: 2,
       });
       pdf.addImage(newPageData, "PNG", 0, 0, 794, 1123);
@@ -39,20 +38,16 @@ export default function PdfTemplate() {
 
     pdf.save(`Financial Report for ${symbol}.pdf`);
   };
- 
-
-
 
   return (
-    <div className="relative flex w-full flex-col items-center justify-center space-y-4">
-      <button
-        onClick={generatePDF}
-        className="z-50 rounded bg-blue-500 p-2 text-white hover:bg-blue-700"
-      >
-        Generate PDF
-      </button>
-
-      {/* A4 Container */}
+    <div
+      style={{
+        position: "absolute",
+        left: "-10000px",
+        top: "-10000px",
+      }}
+      className="flex w-full flex-col items-center justify-center space-y-4"
+    >
       {pdfPages.map((page) => (
         <div
           key={page.id}
@@ -61,7 +56,11 @@ export default function PdfTemplate() {
         >
           <div className="flex h-full w-full flex-col justify-between">
             <HeaderSection
-              companyName={businessData?.company_detail?.company_short_name? businessData?.company_detail?.company_short_name:'Vietcombank'}
+              companyName={
+                businessData?.company_detail?.company_short_name
+                  ? businessData?.company_detail?.company_short_name
+                  : "Vietcombank"
+              }
               currentDate={currentDate}
               closePrice={closePrice}
             />
