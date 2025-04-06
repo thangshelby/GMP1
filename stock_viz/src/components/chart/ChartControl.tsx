@@ -6,6 +6,10 @@ import { option3, option4, dateFilter, indicatorFilter } from "@/constants";
 import { usePdfStore, useChartControlStore } from "@/store";
 import { FaFilePdf } from "react-icons/fa6";
 import React from "react";
+import { jsPDF } from "jspdf";
+import * as htmlToImage from "html-to-image";
+import { pdfPages } from "@/app/stockchart/@pdftemplate/page";
+import { useSearchParams } from "next/navigation";
 
 const ChartControl = () => {
   const [isOpenSelectChart, setIsOpenSelectChart] = React.useState(false);
@@ -20,7 +24,31 @@ const ChartControl = () => {
     interval,
   } = useChartControlStore();
 
-  const { canCreatePdf, setCanCreatePdf,createPdf } = usePdfStore();
+  const { canCreatePdf } = usePdfStore();
+  const symbol=useSearchParams().get("symbol") || "VCB";
+
+  const generatePDF = async () => {
+      const pdf = new jsPDF({
+        orientation: "portrait",
+        unit: "px",
+        format: [794, 1123], // A4 Size in px
+      });
+  
+      for(let i=0; i<pdfPages.length; i++){
+        const node = document.getElementById(pdfPages[i].id) as HTMLElement;
+        const newPageData = await htmlToImage.toPng(node,{
+          quality:1,
+          pixelRatio: 2,
+        });
+        pdf.addImage(newPageData, "PNG", 0, 0, 794, 1123);
+        if(i < pdfPages.length - 1){
+
+          pdf.addPage(); // Add a new page for the next content
+        } // Avoid adding a new page after the last page
+      }
+  
+      pdf.save(`Financial Report for ${symbol}.pdf`);
+    };
 
   return (
     <div className="relative flex flex-col px-4 py-2">
@@ -132,7 +160,7 @@ const ChartControl = () => {
           <div
             onClick={
               canCreatePdf
-                ? createPdf
+                ? generatePDF
                 : (e) => {
                     e.preventDefault();
                   }

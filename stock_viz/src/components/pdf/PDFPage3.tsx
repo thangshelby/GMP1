@@ -12,7 +12,7 @@ const PDFPage3 = () => {
     financialData.balance_sheet && (
       <div id={'pdf-container'}>
         {/* BODY */}
-        <div className="flex h-full flex-col justify-between">
+        <div className="flex h-full flex-col justify-evenly">
           {/* INCOME STATEMENT */}
           <div className="flex flex-col gap-y-2">
             <div className="border-t-blue flex-1 rounded border-t-[2px] bg-white">

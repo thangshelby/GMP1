@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect } from "react";
-import SummaryChart from "./SummaryChart";
+import SummaryChart from "./charts/SummaryChart";
 import { usePdfStore } from "@/store";
 import { formatNumber } from "@/constants";
 import { fetchAPI } from "@/lib/utils";
@@ -27,7 +27,7 @@ const FinancialSummary = () => {
     financialData.balance_sheet && (
       <div id={"pdf-container"}>
         {/* BODY */}
-        <div className="flex flex-col space-y-12">
+        <div className="flex flex-col justify-evenly">
           {/* FINANCIAL SUMMARY */}
           <div className="flex flex-col gap-y-2">
             <div className="border-t-blue flex-1 rounded border-t-[2px] bg-white">

@@ -111,6 +111,6 @@ export const footerContent =
   " © 2025 University of Economics and Law (UEL). All rights reserved. The content of this report is created for educational and research purposes and is the intellectual property of the author. It may not be copied, distributed, or reused in any form without prior written consent from the author or the university. The information in this report has been collected and compiled from reliable sources; however, UEL and the author bear no responsibility for any errors, omissions, or losses arising from the use of this content. All opinions and views expressed in this report are solely those of the author and do not represent the official stance of the University of Economics and Law. UEL and its logo are registered trademarks.";
 
 export function formatNumber(num: number) {
-  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 

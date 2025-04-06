@@ -35,8 +35,6 @@ interface PdfStore {
   setCanCreatePdf: (newVal: boolean) => void;
   closePrice: number;
   setClosePrice: (newVal: number) => void;
-  createPdf: () => void;
-  // setCreatePdf: (newVal: () => void) => void;
 }
 
 export const usePdfStore = create<PdfStore>((set) => ({
@@ -50,8 +48,7 @@ export const usePdfStore = create<PdfStore>((set) => ({
   closePrice: 0,
   setClosePrice: (newVal: number) => set({ closePrice: newVal }),
 
-  createPdf: () => {},
-  // setCreatePdf: (newVal: () => void) => set({ createPdf: newVal }),
+
 }));
 
 interface ChartControlStore {

@@ -1,6 +1,5 @@
 "use client";
 import React from "react";
-import { jsPDF } from "jspdf";
 import { footerContent } from "@/constants";
 import {
   BusinessSummary,
@@ -11,11 +10,14 @@ import {
 import { useSearchParams } from "next/navigation";
 import { format, subMonths } from "date-fns";
 import { usePdfStore } from "@/store";
+import { jsPDF } from "jspdf";
 import * as htmlToImage from "html-to-image";
+import { formatNumber } from "@/constants";
+
 
 export default function PdfTemplate() {
   const symbol = useSearchParams().get("symbol") || "VCB";
-  const { closePrice } = usePdfStore();
+  const {businessData, closePrice} = usePdfStore();
   const currentDate = format(subMonths(new Date(), 1), "yyyy-MM-dd");
 
   const generatePDF = async () => {
@@ -37,7 +39,7 @@ export default function PdfTemplate() {
 
     pdf.save(`Financial Report for ${symbol}.pdf`);
   };
-  // setCreatePdf(generatePDF);  
+ 
 
 
 
@@ -59,7 +61,7 @@ export default function PdfTemplate() {
         >
           <div className="flex h-full w-full flex-col justify-between">
             <HeaderSection
-              companyName="Vietcombank"
+              companyName={businessData?.company_detail?.company_short_name? businessData?.company_detail?.company_short_name:'Vietcombank'}
               currentDate={currentDate}
               closePrice={closePrice}
             />
@@ -72,7 +74,7 @@ export default function PdfTemplate() {
   );
 }
 
-const pdfPages = [
+export const pdfPages = [
   {
     title: "Business Summary",
     id: "business-summary",
@@ -111,7 +113,7 @@ const HeaderSection = ({
           {companyName.toLocaleUpperCase()}
         </h1>
         <h1 className="text-md font-semibold text-black">
-          Close Price: {closePrice}
+          Close Price: {formatNumber(closePrice)}
         </h1>
         <h1 className="text-sm font-light text-black">
           Document Date: {currentDate}

@@ -1,7 +1,7 @@
 "use client";
 import { useEffect } from "react";
-import LineChart from "./LineChart";
-import { subMonths, format, subYears } from "date-fns";
+import LineChart from "./charts/LineChart";
+import { format, subYears } from "date-fns";
 import { fetchAPI } from "@/lib/utils";
 import { useSearchParams } from "next/navigation";
 import { usePdfStore } from "@/store";
@@ -26,7 +26,7 @@ const BusinessSummary = () => {
     businessData.general_information && (
       <div id={'pdf-container'} >
         {/* BODY */}
-        <div className="flex h-full flex-col justify-between">
+        <div className="flex h-full flex-col justify-evenly">
           {/* COMPANY DETAIL AND COMPANY INFO */}
           <div className="flex flex-row justify-between space-x-6">
             <RenderCategory
@@ -132,7 +132,7 @@ const RenderCategory = ({
               {renderTitle(key)}
             </strong>{" "}
             {typeof category[key] === "number"
-              ? formatNumber(category[key])
+              ? formatNumber( Math.round(category[key]*100)/100)
               : category[key]}
           </li>
         ))}
