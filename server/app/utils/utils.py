@@ -9,7 +9,7 @@ redis_client = redis.Redis(host='localhost', port=6379, db=0)
 load_dotenv()
 
 def get_AI_analyze(symbol,type=None,summary_data=None,table_data=None,final_data=None):
-    cache_key= f"AI_analyze_{symbol}_{type}"
+    cache_key= f"AI_analyze_{symbol}_{type}_{summary_data}_{table_data}_{final_data}"
     cached_data = redis_client.get(cache_key)
     if cached_data:
         return cached_data.decode('utf-8')

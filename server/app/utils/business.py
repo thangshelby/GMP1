@@ -8,11 +8,11 @@ import json
 
 redis_client = redis.Redis(host='localhost', port=6379, db=0)
 
-def get_general_information(company_overview):
+def get_general_information(company_overview,symbol):
     general_info ={}
     
     general_info['issue_share']= company_overview.get('issue_share', 'N/A').values[-1]
-    general_info['ISIN_code']='VN000000PVS0'
+    general_info['ISIN_code']=f'VN000000{symbol}0'
     general_info['exchange_code']=company_overview['exchange'].values[-1]
     general_info['industry']=company_overview.get('industry').values[-1]
 

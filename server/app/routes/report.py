@@ -31,7 +31,7 @@ def create_report():
     # res = calculate_stock_metrics(symbol, pd.to_datetime(date))
         
     res={}
-    res['general_information']= get_general_information(stock.company.overview())
+    res['general_information']= get_general_information(stock.company.overview(),symbol)
     res['company_detail']= get_company_detail(stock.company.overview())
     res['business_summary']= get_AI_analyze(symbol, type='summary', summary_data='business')
     res['financial_summary']= get_AI_analyze(symbol, type='summary', summary_data='financial')
@@ -162,14 +162,94 @@ def overrall_financial():
 
 @report_bp.route('/financial/final_analysis', methods=['POST'])
 def fetch_financial_chart_roe():
+    
     symbol= request.args.get('symbol')
-    data= request.get_json()
+    data= request.get_json()        
     
     financial_data= data['financialData']
     business_data= data['businessData']
+   
     
     res= get_AI_analyze(symbol,type='final',final_data={'financial_data':financial_data,'business_data':business_data})
+
     
-    return res
+    return jsonify(res)
 
+@report_bp.route('/financial_report', methods=['GET'])
+def fetch_financial_report():
+    
+    symbol= request.args.get('symbol')
+    period= request.args.get('period')
+    
+    cache_key = f"financial_report_{symbol}_{period}"
+    cached_data = redis_client.get(cache_key)
+    if cached_data:
+        return jsonify(json.loads(cached_data))
+    
+    stock = Vnstock().stock(symbol=symbol, source='VCI')
+    balance_sheet = stock.finance.balance_sheet(period=period,lang='en')    
+    balance_sheet = balance_sheet[valid_balance_sheet_cols]
+    income_statement = stock.finance.income_statement(period=period,lang='en')
+    income_statement = income_statement[valid_income_statement_cols]
+    cash_flow = stock.finance.cash_flow(period=period,lang='en')
+    cash_flow = cash_flow[valid_cash_flow_cols]
 
+    response={}
+    response['balance_sheet']=balance_sheet.to_dict(orient='list')
+    response['income_statement']=income_statement.to_dict(orient='list')
+    response['cash_flow']=cash_flow.to_dict(orient='list')
+    
+    
+    
+    # redis_client.set(cache_key, jsonify(response), ex=3600)
+    
+    return jsonify(response)
+
+valid_balance_sheet_cols = [
+    'Capital',
+    "Cash and cash equivalents (Bn. VND)",
+    'Fixed assets (Bn. VND)',
+    "Investment Securities",
+    'LIABILITIES (Bn. VND)',
+    "Long-term investments (Bn. VND)",
+    "Intagible fixed assets",
+    'Other Assets',
+    'Other long-term assets (Bn. VND)',
+    "TOTAL ASSETS (Bn. VND)",
+    "LIABILITIES (Bn. VND)",
+    "Other liabilities",
+    "OWNER'S EQUITY(Bn.VND)",
+    "MINORITY INTERESTS",
+    'Paid-in capital (Bn. VND)',
+    'Reserves',
+    'TOTAL RESOURCES (Bn. VND)',
+]
+
+valid_income_statement_cols = [
+    'Revenue (Bn. VND)',
+    'Total operating revenue',
+    'Profit before tax',
+    'Tax For the Year',
+    'Net Profit For the Year',
+    'Attributable to parent company',
+    'EPS_basis',
+    'Operating Profit before Provision',
+    'Other expenses',
+    'Provision for credit losses',
+    'Net Profit For the Year',
+]
+valid_cash_flow_cols = [
+    'Net cash inflows/outflows from operating activities',  # Cash from Operating Activities
+    'Purchase of fixed assets',                             # Capital Expenditures
+    'Net Cash Flows from Investing Activities',             # Cash from Investing Activities
+    'Cash flows from financial activities',                 # Cash from Financing Activities
+    'Net increase/decrease in cash and cash equivalents',   # Net Change in Cash                          # Free Cash Flow
+    'Proceeds from disposal of fixed assets',               # Sale of Fixed Assets and Businesses
+    'Investment in other entities',                         # Purchase or Sale of Investments
+    'Proceeds from divestment in other entities',           # Sale Or Maturity of Investments
+    'Dividends paid',                                       # Cash Dividends Paid
+    'Increase in charter captial',
+    'Dividends paid',
+     'Cash and cash equivalents',    
+    # Change in Capital Stock
+]

@@ -51,7 +51,13 @@ def fetch_stock_prices():
    
 @stock_bp.route('/all_stock_rics', methods=['GET'])
 def fetch_all_stock_rics():
-    response=  model= DbModel()
+    df= pd.read_excel('./app/data/Vietnam/Vietnam.xlsx')  
+    print(df.columns)
+    response = df[['Symbol','Name','Market','Exchange',"Sector"]]  
+    response = response.reset_index(drop=True)
+    response.index += 1  # Tăng từ 1 thay vì 0
+    response = response.to_dict(orient='records')
+    
     res=[]
     for item in response:
         current_item={}
