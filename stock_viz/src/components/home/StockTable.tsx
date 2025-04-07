@@ -4,12 +4,10 @@ import { fetchAPI } from "@/lib/utils";
 import { format, subMonths } from "date-fns";
 export default async function StockTable() {
   const endDate = format(subMonths(new Date(), 1), "yyyy-MM-dd");
-
-  const data:ReviewStockType[] = await fetchAPI(
+  const data: ReviewStockType[] = await fetchAPI(
     `stocks/stocks_review?quantity=${10}&end_date=${endDate}`,
   );
 
-  // const data: ReviewStockType[] = response()
 
   return (
     <table className="custom-table w-full table-auto border-collapse rounded-lg border border-gray-300">
@@ -28,19 +26,33 @@ export default async function StockTable() {
             key={stock.symbol}
             className="group px-4 text-[10px] hover:cursor-pointer hover:bg-[#353945]"
           >
-            <td className="text-primary text-start">
+            <td className="text-primary text-start hover:underline">
               <Link href={`/stockchart?symbol=${stock.symbol}`}>
                 {stock.symbol}
               </Link>
             </td>
-            <td className="text-secondary text-end">{stock.last}</td>
+            <td className="text-secondary text-end">
+              <Link href={`/stockchart?symbol=${stock.symbol}`}>
+                {stock.last}
+              </Link>
+            </td>
             <td
               className={`${stock.change > 0 ? "text-green" : "text-red"} text-end group-hover:text-[#81cf90]`}
             >
-              {stock.change}%
+              <Link href={`/stockchart?symbol=${stock.symbol}`}>
+                {stock.change}%
+              </Link>
             </td>
-            <td className="text-secondary text-end">{stock.volume}</td>
-            <td className="text-primary text-end">{stock.signal}</td>
+            <td className="text-secondary text-end">
+              <Link href={`/stockchart?symbol=${stock.symbol}`}>
+                {stock.volume}
+              </Link>
+            </td>
+            <td className="text-primary text-end hover:underline">
+              <Link href={`/stockchart?symbol=${stock.symbol}`}>
+                {stock.signal}
+              </Link>
+            </td>
           </tr>
         ))}
       </tbody>
