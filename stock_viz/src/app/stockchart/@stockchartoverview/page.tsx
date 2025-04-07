@@ -4,6 +4,8 @@ import { fetchAPI } from "@/lib/utils";
 import { useState, useEffect } from "react";
 import { StockOverviewInformationType } from "@/types";
 
+
+
 export default function StockChartOverview() {
   const symbol = useSearchParams().get("symbol");
   const [allStocks, setAllStocks] = useState<allStocksType[]>([]);
@@ -42,7 +44,6 @@ export default function StockChartOverview() {
     });
     setRicMatch(match);
   }, [input]);
-  console.log(allStocks);
   return (
     <div className="flex flex-row items-center justify-between bg-[#181b22] px-[2rem] py-[1rem]">
       {/* HEADER 1 */}

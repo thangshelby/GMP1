@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { createChart, LineSeries, CandlestickSeries } from "lightweight-charts";
-import { useSearchParams } from "next/navigation";
+
+import FinancialReport from "@/components/stockchart/FinancialReport/FinancialReport";
 
 export default function StockChart() {
   return (
-    <div className="flex w-full items-center justify-center">
+    <div className="flex flex-col w-full items-center justify-center p-4 bg-[#22262f] py-12">
+      <FinancialReport />
     </div>
   );
 }

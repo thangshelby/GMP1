@@ -5,9 +5,9 @@ import Footer from "./ui/Footer";
 import StockTable from "./home/StockTable";
 import Treemap from "./home/TreeMap";
 
-import Chart from "./chart/Chart";
-import ChartControl from "./chart/ChartControl";
-import ChartInformation from "./chart/ChartInformation";
+import Chart from "./stockchart/Chart";
+import ChartControl from "./stockchart/ChartControl";
+import ChartInformation from "./stockchart/ChartInformation";
 
 import BusinessSummary from "./pdf/BusinessSummary";
 import FinancialSummary from "./pdf/FinancialSummary";

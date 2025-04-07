@@ -10,20 +10,17 @@ export const metadata: Metadata = {
 
 export default function StockChartLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
   return (
-    <div className="flex min-h-screen relative  flex-col bg-[#171921]">
-      
-      <StockChartOverview />
+    <div className="relative flex flex-col bg-[#171921]">
+      <div className="pb-20">
+        <StockChartOverview />
+        <StockChartContainer />
+        <PdfTemplate />
+      </div>
 
-   
-      <StockChartContainer />
-
-      <PdfTemplate />
-
-      {/* Nội dung trang con */}
       <main className="flex-1">{children}</main>
     </div>
   );
