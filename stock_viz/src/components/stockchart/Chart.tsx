@@ -113,13 +113,7 @@ const Chart = () => {
         low: d.low,
       })),
     );
-    const lastBar = Date.now() / 1000; // Lấy timestamp hiện tại (đơn vị giây)
-    const rangeDays = 90 * 24 * 60 * 60; // Lấy dữ liệu 90 ngày gần đây
 
-    // chart.timeScale().setVisibleRange({
-    //   from: Math.floor(new Date().getTime() / 1000),
-    //   to: Math.floor(Math.abs(lastBar - rangeDays * 1000) / 1000),
-    // });
     chart.subscribeCrosshairMove((param) => {
       if (!param || !param.seriesData) return;
 
@@ -149,11 +143,8 @@ const Chart = () => {
   //HANDLE CHART TYPE CHANGE
   useEffect(() => {
     if (stockData.length == 0 || !chart || !currentChartRef.current) {
-      console.log("I will run this time");
       return;
     }
-
-    console.log(stockData.length,chart,currentChartRef.current);
     chart.removeSeries(currentChartRef.current);
 
     switch (selectedChart) {

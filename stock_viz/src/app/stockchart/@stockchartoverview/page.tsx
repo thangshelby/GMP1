@@ -3,10 +3,10 @@ import { useSearchParams } from "next/navigation";
 import { fetchAPI } from "@/lib/utils";
 import { useState, useEffect } from "react";
 import { StockOverviewInformationType } from "@/types";
-
-
+import { useRouter } from "next/navigation";
 
 export default function StockChartOverview() {
+  const router = useRouter();
   const symbol = useSearchParams().get("symbol");
   const [allStocks, setAllStocks] = useState<allStocksType[]>([]);
   const [input, setInput] = useState<string>("");
@@ -91,7 +91,9 @@ export default function StockChartOverview() {
                 ricMatch.slice(0, 12).map((stock, index) => (
                   <div
                     onClick={() => {
-                      window.location.href = `/stockchart?symbol=${stock.symbol.split(":")[1].toLocaleLowerCase()}`;
+                      router.push(
+                        `/stockchart?symbol=${stock.symbol.toUpperCase()}`,
+                      );
                     }}
                     key={index}
                     className={`flex flex-row items-center justify-between gap-x-[1rem] rounded-sm p-1 hover:bg-[#363a46]`}
