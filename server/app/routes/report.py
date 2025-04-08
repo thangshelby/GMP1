@@ -188,11 +188,14 @@ def fetch_financial_report():
     
     stock = Vnstock().stock(symbol=symbol, source='VCI')
     balance_sheet = stock.finance.balance_sheet(period=period,lang='en')    
-    balance_sheet = balance_sheet[valid_balance_sheet_cols]
+    # balance_sheet = balance_sheet[valid_balance_sheet_cols]
+    balance_sheet.drop(columns=['ticker','yearReport'], inplace=True)
     income_statement = stock.finance.income_statement(period=period,lang='en')
-    income_statement = income_statement[valid_income_statement_cols]
+    # income_statement = income_statement[valid_income_statement_cols]
+    income_statement.drop(columns=['ticker','yearReport'], inplace=True)
     cash_flow = stock.finance.cash_flow(period=period,lang='en')
-    cash_flow = cash_flow[valid_cash_flow_cols]
+    # cash_flow = cash_flow[valid_cash_flow_cols]
+    cash_flow.drop(columns=['ticker','yearReport'], inplace=True)
 
     response={}
     response['balance_sheet']=balance_sheet.to_dict(orient='list')
@@ -226,30 +229,32 @@ valid_balance_sheet_cols = [
 ]
 
 valid_income_statement_cols = [
-    'Revenue (Bn. VND)',
-    'Total operating revenue',
-    'Profit before tax',
-    'Tax For the Year',
-    'Net Profit For the Year',
-    'Attributable to parent company',
+    'Business income tax - current',
+    'Business income tax - deferred',
+    'Dividends received',
     'EPS_basis',
-    'Operating Profit before Provision',
-    'Other expenses',
-    'Provision for credit losses',
+    'Net Interest Income',
+    'Net Other income/(expenses)',
+    'Net Other income/expenses',
     'Net Profit For the Year',
+    'Other expenses',
+    'Profit before tax',
+    'Provision for credit losses',
+    'Revenue (Bn. VND)',
+    'Tax For the Year',
+    'Total operating revenue',   
 ]
 valid_cash_flow_cols = [
-    'Net cash inflows/outflows from operating activities',  # Cash from Operating Activities
-    'Purchase of fixed assets',                             # Capital Expenditures
-    'Net Cash Flows from Investing Activities',             # Cash from Investing Activities
-    'Cash flows from financial activities',                 # Cash from Financing Activities
-    'Net increase/decrease in cash and cash equivalents',   # Net Change in Cash                          # Free Cash Flow
-    'Proceeds from disposal of fixed assets',               # Sale of Fixed Assets and Businesses
-    'Investment in other entities',                         # Purchase or Sale of Investments
-    'Proceeds from divestment in other entities',           # Sale Or Maturity of Investments
-    'Dividends paid',                                       # Cash Dividends Paid
+    'Net cash inflows/outflows from operating activities',  
+    'Purchase of fixed assets',                             
+    'Net Cash Flows from Investing Activities',             
+    'Cash flows from financial activities',                 
+    'Net increase/decrease in cash and cash equivalents',  
+    'Proceeds from disposal of fixed assets',             
+    'Investment in other entities',                       
+    'Proceeds from divestment in other entities',           
+    'Dividends paid',                                  
     'Increase in charter captial',
     'Dividends paid',
      'Cash and cash equivalents',    
-    # Change in Capital Stock
 ]
