@@ -146,3 +146,47 @@ interface ProfitabilityAnalysis {
  
   [key: string]: number[];
 }
+
+export interface CompanyNewsTypeSourceVCI{
+  ceiling: number;               // Giá trần
+  close_price: number;          // Giá đóng cửa
+  created_at: string | null;
+  floor: number;                // Giá sàn
+  friendly_sub_title: string;
+  id: string;
+  lang_code: string;
+  news_full_content: string;
+  news_id: string;
+  news_image_url: string;
+  news_short_content: string;
+  news_source_link: string;
+  news_sub_title: string;
+  news_title: string;
+  price_change_pct: number;     // % thay đổi giá
+  public_date: number;          // timestamp (ms)
+  ref_price: number;            // Giá tham chiếu
+  updated_at: string | null;
+}
+
+export interface CompanyNewsTypeSourceTCBS {
+  id: number;
+  price: number;
+  price_change: number;
+  price_change_ratio: number;
+  price_change_ratio_1m: number;
+  publish_date: string; // hoặc Date nếu bạn xử lý ngày dưới dạng object
+  rs: number;
+  rsi: number;
+  source: string;
+  title: string;
+}
+
+export interface CompanySubsidiaryType {
+  // id:number;
+  // organ_name:string;
+  // type:string;
+  // ownership_percent:number;
+  // sub_organ_code:string;
+  sub_company_name:string,
+  sub_own_percent:number,
+}
