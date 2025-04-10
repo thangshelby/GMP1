@@ -1,0 +1,2 @@
+symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
+CLC	HOSE	Hàng cá nhân & Gia dụng	CT	830	0.021	26.2	26.2	2003	311	3.0	0.066	0.064	0.384	Thuốc lá Cát Lợi	http://www.catloi.com.vn	229	3785

@@ -1,0 +1,2 @@
+symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
+KHG	HOSE	Bất động sản	CT	568	0.005	449.4	449.4	2009	3463	2.7	0.056	0.068	-0.069	Tập đoàn Khải Hoàn Land	https://khaihoanland.vn	336	8633

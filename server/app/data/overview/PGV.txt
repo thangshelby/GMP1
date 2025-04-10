@@ -1,0 +1,2 @@
+symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
+PGV	HOSE	Điện, nước & xăng dầu khí đốt	CT	2063	0.0	1123.5	1123.5	2012	2711	2.2	0.047	0.039	-0.071	Tổng Công ty Phát điện 3	http://www.genco3.com	274	7535

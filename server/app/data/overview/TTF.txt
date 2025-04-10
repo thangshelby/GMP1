@@ -1,0 +1,2 @@
+symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
+TTF	HOSE	Tài nguyên Cơ bản	CT	21204	0.055	393.5	393.5	2003	2190	1.8	-0.078	-0.082	-0.311	Gỗ Trường Thành	https://www.truongthanh.com	155	1733

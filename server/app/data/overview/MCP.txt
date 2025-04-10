@@ -1,0 +1,2 @@
+symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
+MCP	HOSE	Hàng & Dịch vụ Công nghiệp	CT	897	0.002	18.1	18.1	1998	273	2.6	0.111	0.129	0.22	In và Bao bì Mỹ Châu	http://www.mychau.com.vn	184	2723

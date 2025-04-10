@@ -1,0 +1,2 @@
+symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
+NAB	HOSE	Ngân hàng	NH	7377	0.018	1372.6	1322.6	1992	5317	2.9	0.079	0.09	0.355	Ngân hàng Nam Á	http://www.namabank.com.vn	289	8355

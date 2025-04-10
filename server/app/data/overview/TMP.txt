@@ -1,0 +1,2 @@
+symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
+TMP	HOSE	Điện, nước & xăng dầu khí đốt	CT	921	0.008	70.0	70.0	1994	157	2.9	0.121	0.12	0.04	Thủy điện Thác Mơ	https://tmhpp.com.vn	274	7535

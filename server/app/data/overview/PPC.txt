@@ -1,0 +1,2 @@
+symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
+PPC	HOSE	Điện, nước & xăng dầu khí đốt	CT	8281	0.09	320.6	326.2	2006	730	2.7	0.096	0.106	-0.025	Nhiệt điện Phả Lại	http://ppc.evn.vn	274	7535

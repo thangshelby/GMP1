@@ -1,0 +1,2 @@
+symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
+ACC	HOSE	Xây dựng và Vật liệu	CT	1369	0.077	105.0	105.0	2008	153	2.5	0.145	0.171	0.085	Đầu tư và XD Bình Dương ACC	https://www.becamexacc.com.vn	180	2353

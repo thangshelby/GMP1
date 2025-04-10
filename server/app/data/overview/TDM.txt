@@ -1,0 +1,2 @@
+symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
+TDM	HOSE	Điện, nước & xăng dầu khí đốt	CT	789	0.031	110.0	110.0	2013	24	2.9	0.162	0.188	0.382	Nước Thủ Dầu Một	http://www.tdmwater.vn	277	7577

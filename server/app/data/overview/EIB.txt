@@ -1,0 +1,2 @@
+symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
+EIB	HOSE	Ngân hàng	NH	25371	0.037	1862.7	1868.8	1992	6437	2.6	-0.033	-0.105	0.083	Eximbank	https://eximbank.com.vn	289	8355

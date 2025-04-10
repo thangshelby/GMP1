@@ -1,0 +1,2 @@
+symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
+TDG	HOSE	Điện, nước & xăng dầu khí đốt	CT	2314	0.0	24.2	24.2	2005	14		-0.083	-0.048	0.107	Đầu tư TDG Global	http://www.thaiduongpetrol.vn	275	7573

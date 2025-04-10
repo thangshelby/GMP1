@@ -1,0 +1,2 @@
+symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
+AGR	HOSE	Dịch vụ tài chính	CK	3968	0.003	215.4	215.4	2000	159	2.4	-0.068	-0.091	-0.176	Agriseco	https://www.agriseco.com.vn	300	8777

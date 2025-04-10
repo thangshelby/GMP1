@@ -1,0 +1,2 @@
+symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
+DRH	HOSE	Bất động sản	CT	14152	0.009	123.7	124.4	2006	54	2.4	0.169	0.175	-0.476	DRH Holdings	http://www.drh.vn	336	8633

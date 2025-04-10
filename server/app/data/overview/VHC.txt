@@ -1,0 +1,2 @@
+symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
+VHC	HOSE	Thực phẩm và đồ uống	CT	6422	0.243	224.5	224.5	2007	3743	2.6	-0.079	-0.159	-0.217	Thủy sản Vĩnh Hoàn	https://www.vinhhoan.com	217	3573

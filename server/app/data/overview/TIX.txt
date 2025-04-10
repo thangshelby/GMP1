@@ -1,0 +1,2 @@
+symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
+TIX	HOSE	Bất động sản	CT	321	0.005	30.0	30.0	1981	106	3.1	0.169	0.224	0.26	TANIMEX	http://www.tanimex.com.vn	336	8633

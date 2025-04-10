@@ -1,0 +1,2 @@
+symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
+HAG	HOSE	Thực phẩm và đồ uống	CT	37842	0.022	1057.4	1057.5	2006	1748	2.4	-0.033	-0.044	-0.121	Hoàng Anh Gia Lai	http://www.hagl.com.vn	217	3573

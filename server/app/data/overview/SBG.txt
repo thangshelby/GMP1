@@ -1,0 +1,2 @@
+symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
+SBG	HOSE	Hàng & Dịch vụ Công nghiệp	CT	246	0.019	50.0	50.0	2015	251		0.015	0.048	0.142	Tập Đoàn Cơ Khí Công Nghệ Cao Siba	https://siba.com.vn	185	2727

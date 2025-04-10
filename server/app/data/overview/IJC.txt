@@ -1,0 +1,2 @@
+symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
+IJC	HOSE	Bất động sản	CT	16003	0.047	377.7	377.7	2007	743	2.4	-0.069	-0.09	-0.115	Becamex IJC	https://becamex.com.vn	336	8633

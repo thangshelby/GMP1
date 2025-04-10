@@ -1,0 +1,2 @@
+symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
+ILB	HOSE	Hàng & Dịch vụ Công nghiệp	CT	1108	0.13	38.2	25.8	2008	342	2.9	0.018	-0.069	0.204	ICD Tân Cảng Long Bình	http://www.icdlongbinh.com	193	2777

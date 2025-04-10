@@ -1,0 +1,2 @@
+symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
+ST8	HOSE	Công nghệ Thông tin	CT	2209	0.007	25.7	25.7	1994	9	3.0	-0.022	-0.076	-0.237	Tập đoàn ST8	http://www.st8.vn	312	9574

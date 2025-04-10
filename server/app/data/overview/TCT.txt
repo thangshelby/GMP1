@@ -1,0 +1,2 @@
+symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
+TCT	HOSE	Du lịch và Giải trí	CT	952	0.102	12.8	12.8	2001	30	2.4	0.055	0.036	-0.257	Cáp treo Tây Ninh	http://www.catour.com.vn	262	5759

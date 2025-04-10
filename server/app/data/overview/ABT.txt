@@ -1,0 +1,2 @@
+symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
+ABT	HOSE	Thực phẩm và đồ uống	CT	930	0.022	11.8	14.4	2003	607	3.3	0.069	0.052	0.427	Thủy sản Bến Tre	https://aquatexbentre.com	217	3573

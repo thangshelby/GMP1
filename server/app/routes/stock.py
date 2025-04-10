@@ -52,7 +52,6 @@ def fetch_stock_prices():
 @stock_bp.route('/all_stock_rics', methods=['GET'])
 def fetch_all_stock_rics():
     df= pd.read_excel('./app/data/Vietnam/Vietnam.xlsx')  
-    print(df.columns)
     response = df[['Symbol','Name','Market','Exchange',"Sector"]]  
     response = response.reset_index(drop=True)
     response.index += 1  # Tăng từ 1 thay vì 0
@@ -75,8 +74,7 @@ def fetch_stock_info():
     cached_data = redis_client.get(cache_key)
     if cached_data:
         return json.loads(cached_data)
-    
-    
+
     company = Vnstock().stock(symbol=symbol, source='TCBS').company
     
     company_overview=company.overview()
@@ -125,10 +123,8 @@ def fetch_stocks():
                 curStock['market_cap']= round( company_overview['issue_share'].iloc[-1]*df['close'].iloc[-1],2)
                 curStock['volume']=int(df['volume'].iloc[-1])
                 curStock['change']=round((df['close'].iloc[-1]-df['close'].iloc[-2])/df['close'].iloc[-2] *100,2)
-            
         
         except:
-            print(f"Error with {ric[0]}")
             return 'Error'
     
         if(curStock):

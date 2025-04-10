@@ -1,0 +1,2 @@
+symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
+CSV	HOSE	Hóa chất	CT	6604	0.018	110.5	110.5	2003	667	2.6	-0.085	-0.164	0.317	Hóa chất Cơ bản miền Nam	https://www.sochemvn.com	151	1357

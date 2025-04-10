@@ -1,0 +1,2 @@
+symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
+VSC	HOSE	Hàng & Dịch vụ Công nghiệp	CT	0	0.02	299.5	299.5	2007	1193	2.7	-0.045	-0.085	-0.195	VICONSHIP	https://viconship.com	193	2777

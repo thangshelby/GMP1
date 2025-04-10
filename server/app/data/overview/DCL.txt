@@ -1,0 +1,2 @@
+symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
+DCL	HOSE	Y tế	CT	2185	0.011	73.0	73.0	1998	939	2.4	-0.005	0.005	-0.045	Dược phẩm Cửu Long	https://dcl.com.vn	238	4577

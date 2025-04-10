@@ -1,0 +1,2 @@
+symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
+TLG	HOSE	Hàng cá nhân & Gia dụng	CT	2040	0.217	86.5	86.5	2005	2977	2.8	-0.084	-0.145	0.094	Tập đoàn Thiên Long	https://thienlonggroup.com	220	3724

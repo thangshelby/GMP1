@@ -1,0 +1,2 @@
+symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
+TCH	HOSE	Bất động sản	CT	38320	0.088	668.2	668.2	2007	239	3.0	-0.04	-0.017	0.011	ĐT DV Tài chính Hoàng Huy	https://www.hoanghuy.vn	336	8633

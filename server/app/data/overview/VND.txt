@@ -1,0 +1,2 @@
+symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
+VND	HOSE	Dịch vụ tài chính	CK	63488	0.106	1522.3	1522.3	2006	1077	2.7	-0.009	0.098	-0.187	Chứng khoán VNDIRECT	http://www.vndirect.com.vn	300	8777

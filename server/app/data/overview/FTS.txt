@@ -1,0 +1,2 @@
+symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
+FTS	HOSE	Dịch vụ tài chính	CK	12806	0.298	305.9	305.9	2007	458	2.5	-0.073	-0.077	0.069	Chứng khoán FPT	http://www.fpts.com.vn	300	8777

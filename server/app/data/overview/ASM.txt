@@ -1,0 +1,2 @@
+symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
+ASM	HOSE	Thực phẩm và đồ uống	CT	16005	0.124	370.2	370.2	1997	404	1.9	-0.082	-0.104	-0.367	Tập đoàn Sao Mai	http://saomaigroup.com	217	3573

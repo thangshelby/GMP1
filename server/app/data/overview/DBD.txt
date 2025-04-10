@@ -1,0 +1,2 @@
+symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
+DBD	HOSE	Y tế	CT	1885	0.148	93.6	93.6	2010	1335	2.6	0.017	-0.033	0.16	Dược - TB Y tế Bình Định	https://bidiphar.com	238	4577

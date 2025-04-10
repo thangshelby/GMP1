@@ -1,0 +1,2 @@
+symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
+VFG	HOSE	Hóa chất	CT	729	0.016	41.7	41.7	2001	1450	3.1	0.005	0.018	0.124	Khử trùng Việt Nam	https://www.vfc.com.vn	151	1357

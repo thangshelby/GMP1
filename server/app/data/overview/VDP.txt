@@ -1,0 +1,2 @@
+symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
+VDP	HOSE	Y tế	CT	511	0.002	22.1	22.1	2003	607	3.1	0.146	0.16	0.227	Dược phẩm VIDIPHA	http://www.vidipha.com.vn	238	4577

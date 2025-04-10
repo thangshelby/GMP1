@@ -1,0 +1,2 @@
+symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
+EVE	HOSE	Hàng cá nhân & Gia dụng	CT	2465	0.668	42.0	42.0	2007	1175	2.4	-0.052	-0.05	-0.261	Everpia	https://everpia.vn	226	3763

@@ -1,0 +1,2 @@
+symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
+VNE	HOSE	Xây dựng và Vật liệu	CT	0	0.009	82.1	90.4	1988	150	2.2	-0.017	-0.031	-0.438	Xây dựng điện Việt Nam	https://vneco.vn	181	2357
