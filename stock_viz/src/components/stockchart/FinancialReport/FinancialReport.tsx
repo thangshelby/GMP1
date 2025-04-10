@@ -15,6 +15,7 @@ const FinancialReport = () => {
   }>({ data: [], timeFrame: 0 });
   const [data, setData] = React.useState<any>();
 
+
   const symbol = useSearchParams().get("symbol") || "VCB";
 
   React.useEffect(() => {
@@ -112,6 +113,7 @@ const FinancialReport = () => {
     )
   );
 };
+
 
 const balanceSheetSpecial = [
   "LIABILITIES (Bn. VND)",

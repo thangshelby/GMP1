@@ -7,37 +7,13 @@ import {
   PDFPage3,
   PDFPage4,
 } from "@/components";
-import { useSearchParams } from "next/navigation";
 import { format, subMonths } from "date-fns";
 import { usePdfStore } from "@/store";
-import { jsPDF } from "jspdf";
-import * as htmlToImage from "html-to-image";
 import { formatNumber } from "@/constants";
 
 export default function PdfTemplate() {
-  const symbol = useSearchParams().get("symbol") || "VCB";
   const { businessData, closePrice } = usePdfStore();
   const currentDate = format(subMonths(new Date(), 1), "yyyy-MM-dd");
-
-  const generatePDF = async () => {
-    const pdf = new jsPDF({
-      orientation: "portrait",
-      unit: "px",
-      format: [794, 1123], // A4 Size in px
-    });
-
-    for (let i = 0; i < pdfPages.length; i++) {
-      const node = document.getElementById(pdfPages[i].id) as HTMLElement;
-      const newPageData = await htmlToImage.toPng(node, {
-        quality: 1,
-        pixelRatio: 2,
-      });
-      pdf.addImage(newPageData, "PNG", 0, 0, 794, 1123);
-      pdf.addPage(); // Add a new page for the next content
-    }
-
-    pdf.save(`Financial Report for ${symbol}.pdf`);
-  };
 
   return (
     <div

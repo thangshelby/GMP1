@@ -190,3 +190,27 @@ export interface CompanySubsidiaryType {
   sub_company_name:string,
   sub_own_percent:number,
 }
+
+export interface CompanyOverviewType {
+  charter_capital: number; // Vốn điều lệ
+  company_profile: string; // Giới thiệu công ty
+  financial_ratio_issue_share: number; // Tỷ lệ phát hành cổ phiếu
+  history: string; // Lịch sử công ty
+  icb_name2: string; // Ngành cấp 2 (ICB)
+  icb_name3: string; // Ngành cấp 3 (ICB)
+  icb_name4: string; // Ngành cấp 4 (ICB)
+  id: string; // Mã ID công ty
+  issue_share: number; // Số lượng cổ phiếu đang lưu hành
+  symbol: string; // Mã chứng khoán
+}
+
+export interface CompanyOfficerType{
+  id: string; // Mã định danh
+  officer_name: string; // Tên cán bộ
+  officer_own_percent: number; // Tỷ lệ sở hữu (%)
+  officer_position: string; // Chức vụ đầy đủ
+  position_short_name: string; // Chức vụ viết tắt
+  quantity: number; // Số lượng cổ phiếu sở hữu
+  update_date: string; // Ngày cập nhật (YYYY-MM-DD)
+  type:string;
+}
