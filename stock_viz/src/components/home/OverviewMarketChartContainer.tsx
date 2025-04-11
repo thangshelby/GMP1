@@ -16,6 +16,17 @@ const OverviewMarketChartContainer = () => {
     StockPriceDataType[]
   >([]);
 
+  const [marketClosePrice, setMarketClosePrice] = React.useState<{
+    hose: number;
+    hnx: number;
+    upcom: number;
+  }>({
+    hose: 0,
+    hnx: 0,
+    upcom: 0,
+  });
+  
+
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState(false);
 
@@ -23,17 +34,21 @@ const OverviewMarketChartContainer = () => {
     const fetchMarketData = async () => {
       try {
         const response = await fetchAPI(
-          `/market/market_overview?date=2024-04-11`,
+          `/market/market_overview?date=2024-09-04`,
         );
-        const hoseData = response.hnx_market;
-        const hnxData = response.hose_market;
+        const hoseData = response.hose_market;
+        const hnxData = response.hnx_market;
         const upcomData = response.upcom_market;
 
         setHoseMarketData(hoseData);
         setHnxMarketData(hnxData);
         setUpcomMarketData(upcomData);
+        setMarketClosePrice({
+          hose: response.hose_close,
+          hnx: response.hnx_close,
+          upcom: response.upcom_close,
+        });
       } catch (error) {
-        console.error("Error fetching market data:", error);
         setError(true);
       } finally {
         setLoading(false);
@@ -53,14 +68,17 @@ const OverviewMarketChartContainer = () => {
       <OverviewMarketChart
         data={hoseMarketData}
         chartName="HOSE"
+        closePrice={marketClosePrice.hose}
       />
       <OverviewMarketChart
         data={hnxMarketData}
         chartName="HNX"
+        closePrice={marketClosePrice.hnx}
       />
       <OverviewMarketChart
         data={upcomMarketData}
         chartName="UPCOM"
+        closePrice={marketClosePrice.upcom}
       />
     </div>
   );

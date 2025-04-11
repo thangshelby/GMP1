@@ -1,9 +1,9 @@
 import { ReviewStockType } from "@/types";
 import Link from "next/link";
 import { fetchAPI } from "@/lib/utils";
-import { format, subMonths } from "date-fns";
+import { format, subMonths,subYears } from "date-fns";
 export default async function StockTable() {
-  const endDate = format(subMonths(new Date(), 1), "yyyy-MM-dd");
+  const endDate = format(subYears(new Date(), 1), "yyyy-MM-dd");
   const data: ReviewStockType[] = await fetchAPI(
     `stocks/stocks_review?quantity=${10}&end_date=${endDate}`,
   );
@@ -12,7 +12,7 @@ export default async function StockTable() {
   return (
     <table className="custom-table w-full table-auto border-collapse rounded-lg border border-gray-300">
       <thead className="">
-        <tr className="text-secondary text-[10px] font-extralight">
+        <tr className="text-secondary text-xs font-extralight">
           <th className="w-[30px] text-start">Symbol</th>
           <th className="w-[30px] text-end">Last</th>
           <th className="w-[30px] text-end">Change</th>
@@ -21,17 +21,17 @@ export default async function StockTable() {
         </tr>
       </thead>
       <tbody>
-        {data.slice(0, 20).map((stock) => (
+        {data.slice(0, 15).map((stock) => (
           <tr
             key={stock.symbol}
-            className="group px-4 text-[10px] hover:cursor-pointer hover:bg-[#353945]"
+            className="group px-4 text-xs hover:cursor-pointer hover:bg-[#353945]"
           >
-            <td className="text-primary text-start hover:underline">
+            <td className="font-medium text-primary text-start hover:underline">
               <Link href={`/stockchart?symbol=${stock.symbol}`}>
                 {stock.symbol}
               </Link>
             </td>
-            <td className="text-secondary text-end">
+            <td className="font-semibold text-secondary text-end">
               <Link href={`/stockchart?symbol=${stock.symbol}`}>
                 {stock.last}
               </Link>
@@ -43,12 +43,12 @@ export default async function StockTable() {
                 {stock.change}%
               </Link>
             </td>
-            <td className="text-secondary text-end">
+            <td className="font-semibold text-secondary text-end">
               <Link href={`/stockchart?symbol=${stock.symbol}`}>
                 {stock.volume}
               </Link>
             </td>
-            <td className="text-primary text-end hover:underline">
+            <td className="font-medium text-primary text-end hover:underline">
               <Link href={`/stockchart?symbol=${stock.symbol}`}>
                 {stock.signal}
               </Link>
