@@ -19,9 +19,10 @@ const OverviewMarketChart = ({
     const totalVolume =
       data.slice(0, data.length - 1).reduce((acc, item) => {
         return acc + item.volume!;
-      }, 0) /(data.length - 1)
+      }, 0) /
+      (data.length - 1);
     setRealTimeVolumeHeight(
-      Math.floor((data[data.length - 1].volume! / (totalVolume*2)) * 100) ,
+      Math.floor((data[data.length - 1].volume! / (totalVolume * 2)) * 100),
     );
   }, [data]);
 
@@ -39,7 +40,7 @@ const OverviewMarketChart = ({
   const afternoonHours = generateTimeLabels(13, 16);
 
   const customDomain = [...morningHours, ...afternoonHours];
-  const margin = { top: 20, right:50, bottom: 10, left: 0 };
+  const margin = { top: 20, right: 50, bottom: 10, left: 0 };
   useEffect(() => {
     if (!chartRef.current) return;
 
@@ -199,7 +200,7 @@ const OverviewMarketChart = ({
 
   return (
     <div className="border-secondary-3 flex w-full flex-col rounded-lg border-[1px] p-2">
-      <div className={`flex items-center gap-6 px-14  `}>
+      <div className={`flex items-center gap-6 px-14`}>
         <h2 className="text-md font-bold text-[#929cb3]">{chartName}</h2>
         <span className="text-secondary text-xs font-medium">Apr4</span>
         <span
@@ -222,9 +223,10 @@ const OverviewMarketChart = ({
             </div>
             <div className="h-[170px] w-2 border-1 border-[#929cb3]">
               <div
-                className={`bg-transparent h-[${100 -30}%]`}
+                style={{ height: `${70}%` }}
+                className={`bg-transparent`}
               ></div>
-              <div className={`bg-blue h-[${30}%]`}></div>
+              <div style={{ height: `${30}%` }} className={`bg-blue`}></div>
             </div>
           </div>
           <span className="text-2xs text-secondary-3 inline-block font-extralight">

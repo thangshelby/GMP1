@@ -20,7 +20,7 @@ const Navbar = () => {
               key={category.title}
               className={`${pathName == category.link && "bg-[#62697d]"} py-1 hover:cursor-pointer hover:bg-[#62697d]`}
             >
-              <p className="px-2 text-[10px] font-semibold text-white">
+              <p className="px-2 text-sm font-semibold text-white">
                 {category.title}
               </p>
             </Link>

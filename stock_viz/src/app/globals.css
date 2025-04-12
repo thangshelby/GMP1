@@ -14,6 +14,7 @@
   --color-secondary-3:#929cb3;
   --color-tertiary: #a3a8b9;
   --color-green: #00a449;
+  --color-green-2:#00aa76;
   --color-red: #fb5057;
   --color-white:#eeeef0;
 
@@ -90,12 +91,6 @@ body {
   display: inline-block;
 }
 
-.custom-table th,
-.custom-table td {
-  /* border: 1px solid #ccc; */
-  padding: 3px;
-  text-align: left;
-}
 
 /* ************************** */
 #a4-container {

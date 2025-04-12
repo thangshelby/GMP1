@@ -1,20 +1,22 @@
 import { Suspense } from "react";
 import { StockTable, Treemap } from "@/components";
 import OverviewMarketChartContainer from "@/components/home/OverviewMarketChartContainer";
+import OverviewIndicatorMarket from "@/components/home/OverviewIndicatorMarket";
 
 export default async function Home() {
   return (
-    <div className="flex flex-col px-4">
+    <div className="flex flex-col ">
       <OverviewMarketChartContainer />
+      <OverviewIndicatorMarket />
 
-      <div className="flex flex-row gap-x-4 py-6">
-        <div className="table-container w-[32%]">
+      <div className="flex flex-row justify-between py-6">
+        <div className="w-[32%]">
           <Suspense fallback={<LoadingTable />}>
             <StockTable />
           </Suspense>
         </div>
 
-        <div className="table-container w-[32%]">
+        <div className="w-[32%]">
           <Suspense fallback={<LoadingTable />}>
             <StockTable />
           </Suspense>

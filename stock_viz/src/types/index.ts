@@ -214,3 +214,12 @@ export interface CompanyOfficerType{
   update_date: string; // Ngày cập nhật (YYYY-MM-DD)
   type:string;
 }
+
+export interface NewsItemProp {
+  description: string;
+  guild: string;
+  img_src: string;
+  link: string;
+  pubblic_date: string;
+  title: string;
+}

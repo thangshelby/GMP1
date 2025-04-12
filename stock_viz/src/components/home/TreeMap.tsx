@@ -5,7 +5,7 @@ import { ReviewStockType } from "@/types";
 import { fetchAPI } from "@/lib/utils";
 import { format, subYears } from "date-fns";
 const Treemap = () => {
-  const endDate = format(subYears(new Date(), 1), "yyyy-MM-dd");
+  const endDate = format(subYears(new Date(), 1), "yyyy-MM-dd") ;
   const [data, setData] = React.useState<ReviewStockType[]>([]);
   React.useEffect(() => {
     const fetchData = async () => {
@@ -36,6 +36,7 @@ const Treemap = () => {
         })),
       })),
     };
+
     const width = ref.current?.clientWidth!;
     const height = ref.current?.clientWidth!;
     const paddingInner = 0;
