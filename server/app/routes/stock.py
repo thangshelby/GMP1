@@ -7,6 +7,8 @@ import redis
 import json
 from math import floor
 from app.database.model import DbModel
+from app.constant.constant import hose
+from app.utils.utils import find_near_valid_date
 
 redis_client = redis.Redis(host='localhost', port=6379, db=0)
 model= DbModel()
@@ -88,6 +90,7 @@ def fetch_stock_info():
 @stock_bp.route('/stocks_review', methods=['GET'])
 def fetch_stocks():
     end_date= request.args.get('end_date') 
+    end_date= find_near_valid_date(end_date)
     quantity= request.args.get('quantity')  
     
     cache_key= f"stocks_review_{end_date}_{quantity}"
@@ -96,21 +99,17 @@ def fetch_stocks():
     if cached_data:
         return json.loads(cached_data)  # Trả về dữ liệu cache
     
-    df= pd.read_excel('./app/data/Vietnam/Vietnam.xlsx')    
-    rics= df[['RIC']].values.tolist()
-    res=[]
-    for ric in rics:
-        if len(res)==int(quantity):    
-            break
-        stock= Vnstock().stock(symbol=ric[0].split('.')[0], source="VCI")
-        company = Vnstock().stock(symbol=ric[0].split('.')[0], source='VCI').company
-        company_overview=company.overview()
-
-        curStock={}
-        curStock['industry']= company_overview['icb_name2'].iloc[-1]
+    stock= Vnstock().stock(symbol='ACB', source='VCI')
+    vn30= stock.listing.symbols_by_group('VN30').to_list()
     
+    
+    res=[]
+    for symbol in hose:
+        curStock={}
         try:
-            df = stock.quote.history(start='2024-07-01', end=end_date, interval='1D')
+            company_overview= pd.read_csv(f'./app/data/overview/{symbol}.txt', sep='\t')
+            df = pd.read_csv(f'./app/data/hose/{symbol}.txt', sep='\t')
+            curStock['industry']= company_overview['industry'].iloc[-1]
             if len(df) > 1:
                 signal=None
                 try:
@@ -118,13 +117,14 @@ def fetch_stocks():
                 except:
                     signal= 'Không có tín hiệu'
                 curStock['signal']= signal 
-                curStock['symbol']=ric[0].split('.')[0]
+                curStock['symbol']=symbol
                 curStock['last']=round(df['close'].iloc[-1],2)
                 curStock['market_cap']= round( company_overview['issue_share'].iloc[-1]*df['close'].iloc[-1],2)
                 curStock['volume']=int(df['volume'].iloc[-1])
                 curStock['change']=round((df['close'].iloc[-1]-df['close'].iloc[-2])/df['close'].iloc[-2] *100,2)
         
         except:
+            continue
             return 'Error'
     
         if(curStock):

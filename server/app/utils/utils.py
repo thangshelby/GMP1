@@ -4,6 +4,8 @@ import os
 import redis    
 import json
 import google.generativeai as genai
+import pandas as pd
+from datetime import datetime, timedelta
 
 redis_client = redis.Redis(host='localhost', port=6379, db=0)
 load_dotenv()
@@ -51,3 +53,11 @@ def get_AI_analyze(symbol,type=None,summary_data=None,table_data=None,final_data
         return model_response
     except Exception as e:
         pass
+
+
+def find_near_valid_date(date):
+    df= pd.read_csv('./app/data/hose/AAA.txt', sep='\t')
+    while date not in df['time'].values :
+        date= datetime.strptime(date, '%Y-%m-%d')+timedelta(days=1)
+        date= date.strftime('%Y-%m-%d')
+    return date

@@ -1,57 +1,51 @@
-# import pandas as pd
-# from vnstock import Vnstock
+import requests
+import xml.etree.ElementTree as ET
 
-# # Khởi tạo đối tượng Vnstock và lấy danh sách công ty từ nhóm HOSE
-# vnstock = Vnstock()
-# companies = vnstock.stock(symbol='ACB', source='TCBS').listing.symbols_by_group('HOSE').to_list()
+# Bước 1: Lấy dữ liệu từ URL
+url = "https://vietstock.vn/1328/dong-duong/thi-truong-chung-khoan.rss"
 
-# overview_list = []
+headers = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+}
+response = requests.get(url,headers=headers)
+response.encoding = 'utf-8' 
+root = ET.fromstring(response.text)
 
-# # Giới hạn chỉ lấy 10 công ty để tránh quá tải trong lần chạy đầu tiên (có thể mở rộng sau)
-# for symbol in companies[400:413]:
-#     try:
-#         stock = vnstock.stock(symbol=symbol, source='TCBS')
-#         company = stock.company
-#         overview_data = company.overview()
-#         # print(overview_data)
-#         overview_data.to_csv(f"./app/data/overview/{symbol}.txt",sep='\t' ,index=False)
-#     except Exception as e:
-#         print(f"Không lấy được dữ liệu công ty {symbol}: {e}")
-
-import pandas as pd
-# import polars as pl
-# from datetime import datetime, timedelta
-# from app.constant.constant import hose
-
-# date='2024-04-10'
-# df= pd.read_csv('./app/data/hose/AAA.txt', sep='\t')
-# if date not in df['time'].values:
-#     date= datetime.strptime(date, '%Y-%m-%d')+timedelta(days=1)
-#     date= date.strftime('%Y-%m-%d')
-    
-# response ={}
-# symbols={}
-# for symbol in hose[0:]:
-#         df= pd.read_csv(f'./app/data/hose/{symbol}.txt', sep='\t')
-#         df= df[df['time']==date ][['time','close']]
+for node in root[0]:
+    # title= node[0].text
+    # link= node[1].text
+    # description= node[2].text
+    # lastBuildDate=node[3].text
+    # general= node[4].text
+    if node.tag=='item':
         
-#         symbols[symbol]= df['close'].values[0]
-# print(symbols)
+            guild= node[0].text
+            link= node[1].text
+            title= node[2].text
+            description=node[3].text
+            pubDate= node[4].text
+            print(guild,link,title,description,pubDate)
 
-from vnstock import Vnstock
-date='2024-01-02'
-stock = Vnstock().stock(symbol='ACB', source='VCI')
+# from bs4 import BeautifulSoup
+# import requests
+# url = "https://vietstock.vn/rss"
 
-hose_market= stock.quote.history(symbol='VNINDEX', start='2024-09-03', end='2024-09-04', interval='15m')
+# headers = {
+#     "User-Agent": "Mozilla/5.0"
+# }
+# response = requests.get(url,headers=headers)
 
-full_range = pd.date_range(start="2024-09-04 09:00:00", end="2024-09-04 16:00:00", freq="15min")
+# if response.status_code == 200:
+#     soup = BeautifulSoup(response.text, "html.parser")  # or "lxml"
+#     links = soup.find_all("li")
+#     for link in links:
+#         atag= link.find("a")
+#         if atag and atag.get("href"):
+#             href = atag['href']
+#             a_title= atag.text.strip()
+            
+            
+#             print(f'{a_title}: {href}')
+# else:
+#     print("❌ Failed to fetch page:", response.status_code)
 
-hose_market.index= pd.to_datetime(hose_market.time)
-df_full = hose_market.reindex(full_range)
-df_full_filled = df_full.interpolate(method="linear")
-print(df_full_filled)
-
-# hnx_market= stock.quote.history(symbol='HNXINDEX', start='2024-09-03', end='2024-09-04', interval='1H')
-# upcom_market= stock.quote.history(symbol='UPCOMINDEX', start='2024-09-03', end='2024-09-04', interval='1H')
-
-# print(hose_market,hnx_market,upcom_market)
