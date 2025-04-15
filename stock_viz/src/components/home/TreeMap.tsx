@@ -4,24 +4,25 @@ import React, { useEffect, useRef, Suspense } from "react";
 import { ReviewStockType } from "@/types";
 import { fetchAPI } from "@/lib/utils";
 import { format, subYears } from "date-fns";
+import { useQuery } from "@tanstack/react-query";
+import { getSymbolReview } from "@/apis/market.api";
+
 const Treemap = () => {
-  const endDate = format(subYears(new Date(), 1), "yyyy-MM-dd") ;
-  const [data, setData] = React.useState<ReviewStockType[]>([]);
-  React.useEffect(() => {
-    const fetchData = async () => {
-      const response = await fetchAPI(
-        `stocks/stocks_review?quantity=${10}&end_date=${endDate}`,
-      );
-      setData(response);
-    };
-    fetchData();
-  }, []);
+  const endDate = format(subYears(new Date(), 1), "yyyy-MM-dd");
+
+  const result = useQuery({
+    queryKey: ["symbols/symbols_review"],
+    queryFn: () => getSymbolReview(endDate),
+
+    refetchOnWindowFocus: false,
+  });
 
   const ref = useRef<SVGSVGElement | null>(null);
   useEffect(() => {
-    if (!ref.current && !data.length) return;
+    if (!ref.current || result.isLoading == true || result.isError == true)
+      return;
     d3.select(ref.current).selectAll("*").remove();
-    const nestedData = d3.group(data, (d: any) => d.industry);
+    const nestedData = d3.group(result.data, (d: any) => d.industry);
 
     const hierarchyData = {
       name: "Tổng thị trường",
@@ -154,7 +155,7 @@ const Treemap = () => {
             .text(line + "%");
         });
       });
-  }, [data]);
+  }, [result.data]);
 
   return (
     <Suspense fallback={<LoadingTable />}>

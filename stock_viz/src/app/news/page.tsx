@@ -1,24 +1,21 @@
 "use client";
 import React from "react";
-import { fetchAPI } from "@/lib/utils";
 import { NewsItemProp } from "@/types";
 import { format } from "date-fns";
+import { useQuery } from "@tanstack/react-query";
+import { getNews } from "@/apis/news.api";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export const News = () => {
   const [selectedCategory, setSelectedCategory] =
     React.useState<keyof typeof newsCateories>("stock");
   const [selectedSubCategory, setSelectedSubCategory] = React.useState("share");
-  const [data, setData] = React.useState<NewsItemProp[]>([]);
 
-  React.useEffect(() => {
-    const fetchNews = async () => {
-      const response = await fetchAPI(
-        `/news?category=${selectedCategory}&subcategory=${selectedSubCategory}`,
-      );
-      setData(response);
-    };
-    fetchNews();
-  }, [selectedCategory, selectedSubCategory]);
+  const result = useQuery({
+    queryKey: ["news", selectedCategory, selectedSubCategory],
+    queryFn: () => getNews(selectedCategory, selectedSubCategory),
+    refetchOnWindowFocus: false,
+  });
 
   return (
     <div className="flex flex-col gap-2">
@@ -62,38 +59,67 @@ export const News = () => {
         </div>
       </div>
 
-      <div className="flex w-[80%] flex-col px-6 ">
-        {data.map((item: any, index: number) => (
-          <div
-            onClick={() => {
-              window.open(item.link, "_blank");
-            }}
-            key={index}
-            className="border-b-secondary flex flex-row border-b-1 
-            p-2 hover:cursor-pointer justify-between "
-          >
-            <div className="flex flex-col w-[70%] gap-1">
-              <p className="text-primary text-md font-semibold">
-                {item.title.length > 80
-                  ? item.title.slice(0, 80) + "..."
-                  : item.title}
-              </p>
-              <span className="text-secondary text-sm font-medium">
-                {item.description}
-              </span>
-              <span className="text-xs font-thin text-secondary-2">
-                {format(new Date(item.public_date), "MMMM dd, yyyy")}
-              </span>
-            </div>
-            <img className="h-24 w-32 rounded-lg" src={item.img_src} />
-          </div>
-        ))}
-      </div>
+      {result.isLoading && (
+        <div className="flex w-[80%] flex-col px-6">
+          {Array.from({ length: 10 }).map((_, index) => (
+            <NewsItemSkeleton key={index} />
+          ))}
+        </div>
+      )}
+
+      {result.isSuccess && (
+        <div className="flex w-[80%] flex-col px-6">
+          {result.data.map((item: any, index: number) => (
+            <NewsItem item={item} id={index} />
+          ))}
+        </div>
+      )}
     </div>
   );
 };
 
 export default News;
+
+const NewsItemSkeleton = () => {
+  return (
+    <div className="border-b-secondary flex flex-row justify-between border-b-1 p-2">
+      <div className="flex w-[70%] flex-col gap-1">
+        <Skeleton className="h-6 w-1/2" />
+        <Skeleton className="h-6 w-full" />
+        <Skeleton className="h-6 w-1/4" />
+
+      </div>
+      <Skeleton className="h-24 w-32 rounded-lg" />
+    </div>
+  );
+};
+
+const NewsItem = ({item,id}:{item:NewsItemProp,id:number}) => {
+  return (
+    <div
+      onClick={() => {
+        window.open(item.link, "_blank");
+      }}
+      key={item.title+ id.toString()}
+      className="border-b-secondary flex flex-row justify-between border-b-1 p-2 hover:cursor-pointer"
+    >
+      <div className="flex w-[70%] flex-col gap-1">
+        <p className="text-primary text-md font-semibold">
+          {item.title.length > 80
+            ? item.title.slice(0, 80) + "..."
+            : item.title}
+        </p>
+        <span className="text-secondary text-sm font-medium">
+          {item.description}
+        </span>
+        <span className="text-secondary-2 text-xs font-thin">
+          {format(new Date(item.public_date), "MMMM dd, yyyy")}
+        </span>
+      </div>
+      <img className="h-24 w-32 rounded-lg" src={item.img_src} />
+    </div>
+  );
+};
 
 const newsCateories = {
   stock: {
