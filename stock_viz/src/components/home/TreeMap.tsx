@@ -6,14 +6,14 @@ import { fetchAPI } from "@/lib/utils";
 import { format, subYears } from "date-fns";
 import { useQuery } from "@tanstack/react-query";
 import { getSymbolReview } from "@/apis/market.api";
+import { Skeleton } from "../ui/skeleton";
 
 const Treemap = () => {
   const endDate = format(subYears(new Date(), 1), "yyyy-MM-dd");
 
   const result = useQuery({
     queryKey: ["symbols/symbols_review"],
-    queryFn: () => getSymbolReview(endDate),
-
+    queryFn: () => getSymbolReview(endDate,500),
     refetchOnWindowFocus: false,
   });
 
@@ -158,11 +158,14 @@ const Treemap = () => {
   }, [result.data]);
 
   return (
-    <Suspense fallback={<LoadingTable />}>
-      <div className="h-full w-full rounded-sm border-[1px] border-gray-300 p-2 hover:cursor-pointer">
-        <svg className="w-full" ref={ref}></svg>
-      </div>
-    </Suspense>
+    <div className="h-full w-full rounded-sm border-[1px] border-gray-300 p-2 hover:cursor-pointer">
+      {result.isLoading && (
+        <div className="flex h-[200px] items-center justify-center">
+          <LoadingTable />
+        </div>
+      )}
+      <svg className="w-full" ref={ref}></svg>
+    </div>
   );
 };
 
@@ -180,7 +183,7 @@ const colors = [
 
 function LoadingTable() {
   return (
-    <div className="flex h-[200px] items-center justify-center">
+    <div className="flex h-[350px] items-center justify-center">
       <div className="h-16 w-16 animate-spin rounded-full border-4 border-gray-300 border-t-transparent"></div>
     </div>
   );

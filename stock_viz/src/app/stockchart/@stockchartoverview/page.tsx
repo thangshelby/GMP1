@@ -1,25 +1,19 @@
 "use client";
 import { useSearchParams } from "next/navigation";
-import { fetchAPI } from "@/lib/utils";
-import { useState, useEffect } from "react";
+
 import { StockOverviewInformationType } from "@/types";
+import { useQuery } from "@tanstack/react-query";
+import {getStockOverviewInformation} from "@/apis/stock.api";
 
 export default function StockChartOverview() {
   const symbol = useSearchParams().get("symbol");
 
-  const [stockOverviewInfor, setStockOverviewInfor] =
-    useState<StockOverviewInformationType>();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const response = await fetchAPI(
-        `stocks/stock_overview_information?symbol=${symbol}`,
-      );
-
-      setStockOverviewInfor(response[0]);
-    };
-    fetchData();
-  }, [symbol]);
+  const result= useQuery({
+    queryKey: ["stocks/stock_overview_information"],
+    queryFn: () => getStockOverviewInformation(symbol!),
+    refetchOnWindowFocus: false,
+  })
 
   return (
     <div className="flex flex-row items-center justify-between bg-[#181b22] px-[2rem] py-[1rem]">
@@ -30,18 +24,18 @@ export default function StockChartOverview() {
             {symbol?.toLocaleUpperCase()}
           </h1>
           <p className="text-primary text-xl font-semibold">
-            {stockOverviewInfor?.short_name}s
+            {result.data?.short_name}s
           </p>
         </div>
         <div className="flex flex-row items-center gap-x-[0.6rem]">
           <p className="text-primary text-xs font-semibold">
-            {stockOverviewInfor?.exchange}
+            {result.data?.exchange}
           </p>
           <p className="text-primary text-xs font-semibold">
-            {stockOverviewInfor?.company_type}
+            {result.data?.company_type}
           </p>
           <p className="text-primary text-xs font-semibold">
-            {stockOverviewInfor?.industry}
+            {result.data?.industry}
           </p>
 
           <p className="text-primary text-xs font-semibold">VND</p>

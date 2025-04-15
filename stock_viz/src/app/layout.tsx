@@ -27,17 +27,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${roboto.variable} ${robotoMono.variable} antialiased`}
-      >
-      <QueryProvider>
-
-        <Header />
-        <Navbar />
-        {children}
-        <Footer />
-      </QueryProvider>
-
+      <body className={`${roboto.variable} ${robotoMono.variable} antialiased`}>
+        <QueryProvider>
+          <Header />
+          <Navbar />
+          {children}
+          <Footer />
+        </QueryProvider>
+        <div id="portal-root"></div>
       </body>
     </html>
   );

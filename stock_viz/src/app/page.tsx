@@ -5,28 +5,16 @@ import OverviewIndicatorMarket from "@/components/home/OverviewIndicatorMarket";
 
 export default async function Home() {
   return (
-    <div className="flex flex-col ">
+    <div className="flex flex-col">
       <OverviewMarketChartContainer />
       <OverviewIndicatorMarket />
 
-      <div className="flex flex-row justify-between py-6">
-        <div className="w-[32%]">
-          <Suspense fallback={<LoadingTable />}>
-            <StockTable />
-          </Suspense>
-        </div>
+      <div className="flex flex-row py-6 gap-2 overflow-visible relative z-10">
+        <StockTable />
 
-        <div className="w-[32%]">
-          <Suspense fallback={<LoadingTable />}>
-            <StockTable />
-          </Suspense>
-        </div>
+        <StockTable />  
 
-        <div className="w-[32%]">
-          <Suspense fallback={<LoadingTable />}>
-            <Treemap />
-          </Suspense>
-        </div>
+        <Treemap />
       </div>
     </div>
   );

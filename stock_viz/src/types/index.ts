@@ -6,6 +6,7 @@ export interface ReviewStockType {
   signal: string;
   industry: string;
   market_cap: number;
+  quote?:StockPriceDataType[];
 }
 
 export interface StockOverviewInformationType {

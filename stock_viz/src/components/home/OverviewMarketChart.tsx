@@ -1,5 +1,5 @@
 "use client";
-import React, { useCallback, useEffect, useRef } from "react";
+import React, {  useEffect, useRef } from "react";
 import * as d3 from "d3";
 import { StockPriceDataType } from "@/types";
 
