@@ -9,6 +9,7 @@ from math import floor
 from app.database.model import DbModel
 from datetime import datetime, timedelta
 from app.constant.constant import hose
+from app.utils.utils import find_near_valid_date
 
 redis_client = redis.Redis(host='localhost', port=6379, db=0)
 market_bp = Blueprint('market_bp', __name__)
@@ -21,10 +22,9 @@ def fetch_market_overview():
     
     cache_key= f"market_overview_{date}"
     cached_data = redis_client.get(cache_key)
-    # if cached_data:
-    #     return json.loads(cached_data)
-    
-    #test date is valid
+    if cached_data:
+        return json.loads(cached_data)
+
     df= pd.read_csv('./app/data/hose/AAA.txt', sep='\t')
     while date not in df['time'].values :
         date= datetime.strptime(date, '%Y-%m-%d')+timedelta(days=1)
@@ -133,3 +133,55 @@ def fetch_market_indicator_overview():
             continue
         
     return response
+
+@market_bp.route('/symbols_review', methods=['GET'])
+def fetch_symbols():
+    end_date= request.args.get('end_date') 
+    end_date= find_near_valid_date(end_date)
+    quantity= int(request.args.get('quantity'))  
+    
+    cache_key= f"symbols_review_{end_date}_{quantity}"
+
+    cached_data = redis_client.get(cache_key)
+    if cached_data:
+        return json.loads(cached_data)  # Trả về dữ liệu cache
+    
+    sources= None
+    stock= Vnstock().stock(symbol='ACB', source='VCI')
+    if quantity<=100: 
+        sources =stock.listing.symbols_by_group('VN30').to_list()
+    else:
+        sources= stock.listing.symbols_by_group('HOSE').to_list()
+    
+    res=[]
+    for symbol in sources:
+        curStock={}
+        try:
+            company_overview= pd.read_csv(f'./app/data/overview/{symbol}.txt', sep='\t')
+            df = pd.read_csv(f'./app/data/hose/{symbol}.txt', sep='\t')
+            if quantity<=100:
+                curStock['quote']= df.iloc[:,0:100].to_dict(orient='records')
+            curStock['industry']= company_overview['industry'].iloc[-1]
+            curStock['name']= company_overview['short_name'].iloc[-1]
+            if len(df) > 1:
+                signal=None
+                try:
+                    signal= analyze_stock_signal(df)
+                except:
+                    signal= 'Không có tín hiệu'
+                curStock['signal']= signal 
+                curStock['symbol']=symbol
+                curStock['last']=round(df['close'].iloc[-1],2)
+                curStock['market_cap']= round( company_overview['issue_share'].iloc[-1]*df['close'].iloc[-1],2)
+                curStock['volume']=int(df['volume'].iloc[-1])
+                curStock['change']=round((df['close'].iloc[-1]-df['close'].iloc[-2])/df['close'].iloc[-2] *100,2)
+        
+        except:
+            continue
+            return 'Error'
+    
+        if(curStock):
+            res.append(curStock)
+    redis_client.setex(cache_key, 24*60*60*7, json.dumps(res))
+    return res
+    

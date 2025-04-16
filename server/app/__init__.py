@@ -4,7 +4,7 @@ def create_app():
     app = Flask(__name__)
     CORS(app)
 
-    from app.routes import stock,report,company,market,news
+    from app.routes import stock,report,company,market,news,screener
 
     # Register routes
     app.register_blueprint(stock.stock_bp, url_prefix='/stocks')
@@ -16,5 +16,7 @@ def create_app():
     app.register_blueprint(market.market_bp, url_prefix='/market')
     
     app.register_blueprint(news.news_bp, url_prefix='/news')
+    
+    app.register_blueprint(screener.screener_bp, url_prefix='/screener')
     
     return app

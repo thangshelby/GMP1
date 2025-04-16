@@ -47,12 +47,12 @@ def fetch_news():
                 
                 cur_news['description']= text_content
                 cur_news['img_src']= img_src
-                
+                    
                 cur_news['public_date']= node[4].text
                 response.append(cur_news)
     return response
-    
-    
+        
+        
 
 
 news_link_to_xml={
