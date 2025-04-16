@@ -2,7 +2,7 @@
 import React from "react";
 import { fetchAPI } from "@/lib/utils";
 import { useState, useEffect } from "react";
-import { format, set, subYears } from "date-fns";
+import { format, subYears } from "date-fns";
 
 const OverviewIndicatorMarket = () => {
   const date = format(subYears(new Date(), 1), "yyyy-MM-dd");
@@ -44,8 +44,6 @@ const renderOverview = (name: string, data: any) => {
   const key2 = Object.keys(data)[1];
   const greenPercent = (data[key1] / (data[key1] + data[key2])) * 100;
   const redPercent = (data[key2] / (data[key1] + data[key2])) * 100;
-
-  const width = 20;
 
   return (
     <div

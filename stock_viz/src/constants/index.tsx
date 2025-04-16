@@ -41,6 +41,10 @@ export const navbarCategory = [
     link: "/news",
   },
   {
+    title:'Screener',
+    link:'/screener'
+  },
+  {
     title: "Stock Chart",
     link: "/stockchart",
   },
