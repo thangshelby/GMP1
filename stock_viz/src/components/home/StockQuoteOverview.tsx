@@ -3,26 +3,39 @@ import { StockPriceDataType } from "@/types";
 import { useEffect } from "react";
 import { createPortal } from "react-dom";
 import * as d3 from "d3";
+import { format, subYears } from "date-fns";
 
 const StockQuoteOverview = ({
   data,
   position,
+  infomation,
 }: {
   data: StockPriceDataType[];
   position: {
     top: number;
     left: number;
   };
+  infomation: {
+    name: string;
+    symbol: string;
+    market_cap: number;
+    industry: string;
+  };
 }) => {
   const portalRoot = document.getElementById("portal-root");
   if (!portalRoot) return null;
 
+  const today = format(subYears(new Date(), 1), "yyyy-MM-dd");
+
   const chartRef = React.useRef<SVGSVGElement | null>(null);
-  const margin = { top: 20, right: 30, bottom: 10, left: 0 };
+  const margin = { top: 10, right: 0, bottom: 10, left: 30 };
 
   const dataGroupByMonth = Array.from(
     d3.group(data, (d) => new Date(d.time!).getMonth()),
   );
+
+  const changePrice = data[data.length - 1].close - data[0].close;
+  const changePercent = (changePrice / data[0].close) * 100;
 
   useEffect(() => {
     if (!chartRef.current) return;
@@ -56,8 +69,8 @@ const StockQuoteOverview = ({
     const yScale = d3
       .scaleLinear()
       .domain([
-        d3.min(data, (d) => Math.min(d.low, d.open, d.close))!*0.6,
-        d3.max(data, (d) => Math.max(d.high, d.open, d.close))!,
+        d3.min(data, (d) => Math.min(d.low, d.open, d.close))! * 0.9,
+        d3.max(data, (d) => Math.max(d.high, d.open, d.close))! * 1.1,
       ])
       .range([innerHeight, margin.top]);
     const yScaleForVolume = d3
@@ -85,7 +98,7 @@ const StockQuoteOverview = ({
       .attr("font-weight", 500);
 
     g.append("g")
-      .call(d3.axisRight(yScale).ticks(8))
+      .call(d3.axisRight(yScale).ticks(6))
       .attr("color", "#929cb3")
       .attr("transform", `translate(${innerWidth}, 0)`)
       .call((g) => {
@@ -97,15 +110,15 @@ const StockQuoteOverview = ({
 
     g.append("rect")
       .attr("x", 0)
-      .attr("transform", `translate(${innerWidth + margin.right - 22}, 0)`)
+      .attr("transform", `translate(${innerWidth + margin.right}, 0)`)
       .attr("y", yScale(data[data.length - 1].close))
-      .attr("width", 35)
+      .attr("width", 24)
       .attr("height", 12)
       .attr("fill", "#f3c736");
 
     g.append("text")
       .attr("x", 0)
-      .attr("transform", `translate(${innerWidth + margin.right - 22}, 0)`)
+      .attr("transform", `translate(${innerWidth + margin.right}, 0)`)
       .attr("y", yScale(data[data.length - 1].close) + 10)
       .text(data[data.length - 1].close)
       .attr("font-size", 12)
@@ -117,7 +130,7 @@ const StockQuoteOverview = ({
 
     gridContainer
       .selectAll(".grid-x")
-      .data(yScale.ticks(10))
+      .data(yScale.ticks(6))
       .enter()
       .append("line")
       .attr("class", "grid-x")
@@ -141,7 +154,7 @@ const StockQuoteOverview = ({
         return xScaleForMonth(d)! + 32;
       })
       .attr("x2", (d) => xScaleForMonth(d)! + 32)
-      .attr("y1", 0)
+      .attr("y1", margin.top)
       .attr("y2", innerHeight)
       .attr("stroke", "#c3c6d0")
       .attr("stroke-width", 0.1)
@@ -196,10 +209,11 @@ const StockQuoteOverview = ({
       .attr("x", (d) => xScale(d.time!)!)
       .attr("y", (d) => yScaleForVolume(d.volume!))
       .attr("width", xScale.bandwidth())
-      .attr("height", (d) =>{
+      .attr("height", (d) => {
         // return 10
-        return Math.abs(innerHeight-yScaleForVolume(d.volume!) )})
-      .attr("fill", (d) => (d.close > d.open ? "#30cc5a" : "#f63538"));
+        return Math.abs(innerHeight - yScaleForVolume(d.volume!));
+      })
+      .attr("fill", (d) => (d.close > d.open ? "#297944" : "#913239"));
     // Volume Axis
   }, [data]);
 
@@ -212,8 +226,52 @@ const StockQuoteOverview = ({
         zIndex: 9999,
       }}
     >
-      <div className="border-secondary h-56 w-72 rounded-lg border-[1px] bg-[#22262f]">
-        <svg className="h-full w-full" ref={chartRef}></svg>
+      <div className="border-secondary flex h-56 w-80 flex-col overflow-hidden rounded-lg border-[1px] bg-[#22262f] shadow-lg transition-all duration-300 ease-in-out">
+        <div className="relative flex-1">
+          <div className="absolute top-2 left-0 w-full">
+            <div className="flex flex-row items-start justify-between px-2 pr-4">
+              <div className="flex flex-row gap-1">
+                <span className="text-md text-start font-semibold text-[#656d7d]">
+                  {infomation.symbol}
+                </span>
+                <span className="text-2xs text-sub_text">
+                  {monthMap[new Date().getMonth() + 1]}{" "}
+                  {new Date().getDate()}{" "}
+                </span>
+              </div>
+              <div className="flex flex-row gap-1">
+                <span
+                  className={`${changePrice > 0 ? "text-green" : "text-red"} text-2xs font-semibold`}
+                >
+                  {changePrice.toFixed(2)} ({changePercent.toFixed(2)}%)
+                </span>
+                <span className="text-2xs text-primary">© StockViz.com</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="absolute top-[30%] rotate-270 text-start">
+            <p className="text-xs font-[900] text-[#656d7d]">DAILY</p>
+          </div>
+          <svg className="h-full w-full" ref={chartRef}></svg>
+        </div>
+
+        <div className="bg-button flex flex-col p-2">
+          <p className="text-2xs font-semibold text-[#efeff1]">
+            {infomation.name}
+          </p>
+          <div className="flex flex-row items-center gap-2">
+            <span className="text-2xs text-sub_text font-medium">
+              {infomation.industry}
+            </span>
+
+            <span className="text-2xs text-sub_text font-medium">VietNam</span>
+
+            <span className="text-2xs text-sub_text font-medium">
+              {infomation.market_cap} VND
+            </span>
+          </div>
+        </div>
       </div>
     </div>,
     portalRoot,

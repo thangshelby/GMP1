@@ -26,7 +26,7 @@ export const News = () => {
           <div
             key={category}
             onClick={() => {
-              setSelectedCategory(category);
+              setSelectedCategory(category as keyof typeof newsCateories);
               setSelectedSubCategory(
                 Object.keys(
                   newsCateories[category as keyof typeof newsCateories],

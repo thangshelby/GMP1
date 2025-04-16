@@ -93,7 +93,7 @@ const StockTableRow = (stock: ReviewStockType) => {
     setPosition({
       top: rect.top - 140 + window.scrollY, // thêm scroll nếu có
       left: rect.left + 200,
-    });
+    }); 
     setShowPopup(true);
   };
 
@@ -115,8 +115,14 @@ const StockTableRow = (stock: ReviewStockType) => {
 
         {showPopup && (
           <StockQuoteOverview
-            data={stock?.quote?.slice(0,60) || []}
+            data={stock?.quote?.slice(stock?.quote.length-60,stock?.quote.length) || []}
             position={position}
+            infomation={{
+              name: stock.name,
+              symbol: stock.symbol,
+              market_cap: stock.market_cap,
+              industry: stock.industry,
+            }}
           />
         )}
       </TableCell>

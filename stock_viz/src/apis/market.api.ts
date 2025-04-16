@@ -9,3 +9,12 @@ export const getSymbolReview  = async (endDate:string,quantity:number) => {
     });
     return response.data;
 }
+
+export const getMarketOverview = async (date:string) => {
+    const response = await http.get(`market/market_overview`,{
+        params:{
+            date:date
+        }
+    });
+    return response.data;
+}

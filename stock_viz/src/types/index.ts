@@ -1,5 +1,6 @@
 export interface ReviewStockType {
   symbol: string;
+  name: string;
   last: number;
   change: number;
   volume: number;
@@ -221,6 +222,6 @@ export interface NewsItemProp {
   guild: string;
   img_src: string;
   link: string;
-  pubblic_date: string;
+  public_date: string;
   title: string;
 }
