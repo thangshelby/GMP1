@@ -1,19 +1,18 @@
 "use client";
 import * as d3 from "d3";
-import React, { useEffect, useRef, Suspense } from "react";
-import { ReviewStockType } from "@/types";
-import { fetchAPI } from "@/lib/utils";
+import React, { useEffect, useRef } from "react";
+import { ReviewStockType } from "@/types"
 import { format, subYears } from "date-fns";
 import { useQuery } from "@tanstack/react-query";
-import { getSymbolReview } from "@/apis/market.api";
-import { Skeleton } from "../ui/skeleton";
+import { getSymbolReview } from "@/apis/market.api"
 
 const Treemap = () => {
   const endDate = format(subYears(new Date(), 1), "yyyy-MM-dd");
 
+  const quantity= 500
   const result = useQuery({
-    queryKey: ["symbols/symbols_review"],
-    queryFn: () => getSymbolReview(endDate,500),
+    queryKey: [`symbols/symbols_review`,quantity],
+    queryFn: () => getSymbolReview(endDate,quantity),
     refetchOnWindowFocus: false,
   });
 
@@ -37,9 +36,8 @@ const Treemap = () => {
         })),
       })),
     };
-
-    const width = ref.current?.clientWidth!;
-    const height = ref.current?.clientWidth!;
+    const width = ref.current?.clientWidth ?? 0;
+    const height = ref.current?.clientWidth ?? 0;
     const paddingInner = 0;
     const paddingOuter = 0;
     const paddingTop = 0;
@@ -155,7 +153,7 @@ const Treemap = () => {
             .text(line + "%");
         });
       });
-  }, [result.data]);
+  }, [result.data, result.isLoading, result.isError]);
 
   return (
     <div className="h-full w-full rounded-sm border-[1px] border-gray-300 p-2 hover:cursor-pointer">

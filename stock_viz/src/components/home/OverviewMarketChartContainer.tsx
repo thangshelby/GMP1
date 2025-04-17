@@ -5,17 +5,15 @@ import OverviewMarketChart from "./OverviewMarketChart";
 import { useQuery } from "@tanstack/react-query";
 import { getMarketOverview } from "@/apis/market.api";
 import { Skeleton } from "@/components/ui/skeleton";
+import { format, subYears } from "date-fns";
 
 const OverviewMarketChartContainer = () => {
+  const today = format(subYears(new Date(), 1), "yyyy-MM-dd");
   const result = useQuery({
     queryKey: ["market_overview"],
-    queryFn: () => getMarketOverview("2024-09-04"),
+    queryFn: () => getMarketOverview(today),
     refetchOnWindowFocus: false,
   });
-
-  if(result.isSuccess){
-    console.log(result.data)
-  }
 
   if (result.isSuccess) {
     return (

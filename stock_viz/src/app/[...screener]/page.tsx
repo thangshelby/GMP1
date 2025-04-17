@@ -22,7 +22,7 @@ const Screener = () => {
     <div className="px-12 flex flex-col gap-6">
       <div className="border-secondary flex flex-col gap-4 rounded-md border-x-[1px] border-b-[1px] p-2">
         <div className="flex flex-row justify-between">
-          {filterHeaders.map((header, index) => (
+          {filterHeaders.map((header) => (
             <div
               key={header.title}
               className="mr-2 flex flex-row items-center gap-2"
@@ -84,7 +84,7 @@ const Screener = () => {
         </div>
 
         <div className="grid grid-cols-4 gap-2">
-          {filterCategories[0].items!.map((item, index) => (
+          {filterCategories[0].items!.map((item) => (
             <div
               key={item.title}
               className="flex flex-row items-center justify-end gap-2"
@@ -288,56 +288,5 @@ const filterCategories = [
   },
   {
     title: "All",
-  },
-];
-const sectors = [
-  {
-    sector: "Vật liệu",
-    industries: ["Hóa chất", "Tài nguyên Cơ bản"],
-  },
-  {
-    sector: "Tiêu dùng thiết yếu",
-    industries: ["Thực phẩm và đồ uống"],
-  },
-  {
-    sector: "Tiêu dùng không thiết yếu",
-    industries: [
-      "Hàng cá nhân & Gia dụng",
-      "Bán lẻ",
-      "Ô tô và phụ tùng",
-      "Du lịch và Giải trí",
-    ],
-  },
-  {
-    sector: "Công nghiệp",
-    industries: ["Hàng & Dịch vụ Công nghiệp", "Xây dựng và Vật liệu"],
-  },
-  {
-    sector: "Tài chính",
-    industries: ["Ngân hàng", "Dịch vụ tài chính", "Bảo hiểm"],
-  },
-  {
-    sector: "Dịch vụ truyền thông",
-    industries: ["Truyền thông"],
-  },
-  {
-    sector: "Bất động sản",
-    industries: ["Bất động sản"],
-  },
-  {
-    sector: "Tiện ích",
-    industries: ["Điện, nước & xăng dầu khí đốt"],
-  },
-  {
-    sector: "Năng lượng",
-    industries: ["Dầu khí", "Điện, nước & xăng dầu khí đốt"], // Có thể overlap
-  },
-  {
-    sector: "Công nghệ",
-    industries: ["Công nghệ Thông tin"],
-  },
-  {
-    sector: "Y tế",
-    industries: ["Y tế"],
   },
 ];

@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Roboto, Roboto_Mono } from "next/font/google";
 import "./globals.css";
 import { Footer, Header, Navbar } from "../components";
-// @ts-expect-error
 import QueryProvider from "./query-provider";
 
 const roboto = Roboto({

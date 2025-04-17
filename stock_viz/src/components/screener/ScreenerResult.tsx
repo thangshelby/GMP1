@@ -20,15 +20,17 @@ import {
   PaginationContent,
   PaginationEllipsis,
   PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
 } from "@/components/ui/pagination";
 import { FaArrowRightLong, FaArrowLeftLong } from "react-icons/fa6";
+import { getSectorFromIndustry } from "@/lib/utils";
+import { useSearchParams, useRouter } from "next/navigation";
 
 const ScreenerResult = () => {
   const today = format(subYears(new Date(), 1), "yyyy-MM-dd");
-  const [page, setPage] = React.useState(1);
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const page = Number(searchParams.get("page")) || 1;
+  
   const { data, isSuccess, isLoading } = useQuery({
     queryKey: ["screener", today, page],
     queryFn: () => getScreener(today, page),
@@ -36,41 +38,37 @@ const ScreenerResult = () => {
     retry: false,
   });
 
+  const tableHeaders = [
+    "STT",
+    "Mã",
+    "Công ty",
+    "Ngành",
+    "Nhóm Ngành", 
+    "Quốc gia",
+    "Vốn hóa thị trường",
+    "Giá",
+    "Biến động",
+    "Khối lượng",
+  ];
+
+  const handlePageChange = (newPage: number) => {
+    router.push(`/screener?page=${newPage}`);
+  };
+
   return (
     <div className="flex flex-col justify-center gap-6 pb-12">
       <div className="border-secondary-3 relative z-20 w-full rounded-sm border-1">
         <Table className="border-none">
           <TableHeader className="border-b-0 border-none">
             <TableRow className="text-secondary h-6 border-b-0 text-xs font-extralight">
-              <TableHead className="text-secondary h-6 text-end">STT</TableHead>
-              <TableHead className="text-secondary h-6 text-start">
-                Mã
-              </TableHead>
-              <TableHead className="text-secondary h-6 text-start">
-                Công ty
-              </TableHead>
-              <TableHead className="text-secondary h-6 text-start">
-                Ngành
-              </TableHead>
-              <TableHead className="text-secondary h-6 text-start">
-                Nhóm Ngành
-              </TableHead>
-              <TableHead className="text-secondary h-6 text-start">
-                Quốc gia
-              </TableHead>
-              <TableHead className="text-secondary h-6 text-start">
-                Vốn hóa thị trường
-              </TableHead>
-
-              <TableHead className="text-secondary h-6 text-start">
-                Giá
-              </TableHead>
-              <TableHead className="text-secondary h-6 text-start">
-                Biến động
-              </TableHead>
-              <TableHead className="text-secondary h-6 text-start">
-                Khối lượng
-              </TableHead>
+              {tableHeaders.map((header, index) => (
+                <TableHead
+                  key={index}
+                  className={`text-secondary h-6 text-start ${index == 0 && "pr-0 text-end"}`}
+                >
+                  {header}
+                </TableHead>
+              ))}
             </TableRow>
           </TableHeader>
 
@@ -79,7 +77,11 @@ const ScreenerResult = () => {
               data.data
                 .slice(0, 22)
                 .map((stock: ReviewStockType, index: number) => (
-                  <StockTableRow stock={stock} id={index + 1+ (page-1)*20} />
+                  <StockTableRow
+                    key={stock.symbol}
+                    stock={stock}
+                    id={index + 1 + (page - 1) * 20}
+                  />
                 ))}
             {isLoading &&
               Array.from({ length: 22 }, (_, index) => (
@@ -92,75 +94,64 @@ const ScreenerResult = () => {
       {isSuccess && (
         <Pagination>
           <PaginationContent>
-            <PaginationItem>
+            <PaginationItem
+              className={`hover:cursor-pointer ${page == 1 && "opacity-50 hover:cursor-not-allowed"}`}
+              onClick={() => {
+                if (page > 1) {
+                  handlePageChange(page - 1);
+                }
+              }}
+            >
               <FaArrowLeftLong color={"#57aefb"} />
             </PaginationItem>
-            {Array.from({ length: 5 }, (_, index) => (
-              <PaginationItem
-                key={index}
-                onClick={() => {
-                  setPage(index + 1);
-                }}
-                className={`${index + 1 == page && "border-primary bg-button border-[1px]"} hover:bg-button rounded-sm p-0 px-2 hover:cursor-pointer`}
-              >
-                <Link
-                  className={`${index + 1 == page ? "text-white" : "text-primary"} text-xs hover:text-white`}
-                  href="#"
+            {Array.from({ length: 5 }, (_, index) => {
+              const pageNum = page <= 3 ? index + 1 : page + index - 2;
+              return (
+                <PaginationItem
+                  key={index}
+                  onClick={() => {
+                    handlePageChange(pageNum);
+                  }}
+                  className={`${pageNum == page && "border-primary bg-button border-[1px]"} hover:bg-button rounded-sm p-0 px-2 hover:cursor-pointer group `}
                 >
-                  {index + 1}
-                </Link>
-              </PaginationItem>
-            ))}
+                  <Link
+                    className={`${pageNum == page ? "text-white" : "text-primary"} text-xs group-hover:text-white `}
+                    href={`/screener?page=${pageNum}`}
+                  >
+                    {pageNum}
+                  </Link>
+                </PaginationItem>
+              );
+            })}
 
             <PaginationItem>
               <PaginationEllipsis className="text-primary p-0" />
             </PaginationItem>
 
             <PaginationItem
-              className={`${Math.floor(data.total_count / 20) + 1 + 1 == page && "border-primary bg-button border-[1px]"} hover:bg-button rounded-sm p-0 px-2 hover:cursor-pointer`}
+              className={`${Math.floor(data.total_count / 20) + 1 == page && "border-primary bg-button border-[1px]"} hover:bg-button rounded-sm p-0 px-2 hover:cursor-pointer`}
             >
-              <Link
-                className={`${Math.floor(data.total_count / 20) + 1 + 1 == page ? "text-white" : "text-primary"} text-xs hover:text-white`}
-                href="#"
+              <Link 
+                className={`${Math.floor(data.total_count / 20) + 1 == page ? "text-white" : "text-primary"} text-xs hover:text-white`}
+                href={`/screener?page=${Math.floor(data.total_count / 20) + 1}`}
               >
                 {Math.floor(data.total_count / 20) + 1}
               </Link>
             </PaginationItem>
-            <PaginationItem>
+            <PaginationItem
+              className={`hover:cursor-pointer ${page == Math.floor(data.total_count / 20) + 1 && "opacity-50 hover:cursor-not-allowed"}`}  
+              onClick={() => {
+                if (page < Math.floor(data.total_count / 20) + 1) {
+                  handlePageChange(page + 1);
+                }
+              }}
+            >
               <FaArrowRightLong color={"#57aefb"} />
             </PaginationItem>
           </PaginationContent>
         </Pagination>
       )}
     </div>
-  );
-};
-
-const StockTableRowSkeleton = () => {
-  return (
-    <TableRow className="group border-b-0 text-xs hover:cursor-pointer hover:bg-[#353945]">
-      <TableCell className="text-primary px-2 py-[1px] text-start font-medium hover:underline">
-        <Skeleton className="h-4 w-16" />
-      </TableCell>
-      <TableCell className="px-2 py-[1px] text-end font-semibold text-white">
-        <Skeleton className="h-4 w-16" />
-      </TableCell>
-      <td className="text-end group-hover:text-[#81cf90]">
-        <Skeleton className="h-4 w-16" />
-      </td>
-      <TableCell className="px-2 py-[1px] text-end font-semibold text-white">
-        <Skeleton className="h-4 w-16" />
-      </TableCell>
-      <TableCell className="text-primary px-2 py-[1px] text-end font-medium hover:underline">
-        <Skeleton className="h-4 w-16" />
-      </TableCell>
-      <TableCell className="text-primary px-2 py-[1px] text-start font-medium hover:underline">
-        <Skeleton className="h-4 w-16" />
-      </TableCell>
-      <TableCell className="text-primary px-2 py-[1px] text-start font-medium hover:underline">
-        <Skeleton className="h-4 w-16" />
-      </TableCell>
-    </TableRow>
   );
 };
 
@@ -225,7 +216,7 @@ const StockTableRow = ({
       </TableCell>
       <TableCell className="h-6 px-2 py-0 text-start font-semibold text-white">
         <Link href={`/stockchart?symbol=${stock.symbol}`}>
-          {stock.industry}
+          {getSectorFromIndustry(stock.industry)}
         </Link>
       </TableCell>
       <TableCell className="h-6 px-2 py-0 text-start font-semibold text-white">
@@ -256,6 +247,21 @@ const StockTableRow = ({
       <TableCell className="h-6 px-2 py-0 text-start font-semibold text-white">
         <Link href={`/stockchart?symbol=${stock.symbol}`}>{stock.volume}</Link>
       </TableCell>
+    </TableRow>
+  );
+};
+
+const StockTableRowSkeleton = () => {
+  return (
+    <TableRow className="group border-b-0 text-xs hover:cursor-pointer hover:bg-[#353945]">
+      {Array.from({ length: 10 }, (_, index) => (
+        <TableCell
+          key={index}
+          className="text-primary px-2 py-[1px] text-start font-medium hover:underline"
+        >
+          <Skeleton className="h-4 w-16" />
+        </TableCell>
+      ))}
     </TableRow>
   );
 };

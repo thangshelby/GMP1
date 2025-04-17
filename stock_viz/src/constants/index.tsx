@@ -42,7 +42,7 @@ export const navbarCategory = [
   },
   {
     title:'Screener',
-    link:'/screener'
+    link:'/screener?page=1'
   },
   {
     title: "Stock Chart",

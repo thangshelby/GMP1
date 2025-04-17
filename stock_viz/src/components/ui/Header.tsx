@@ -1,16 +1,77 @@
 "use client";
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { fetchAPI } from "@/lib/utils";
 import { FaSearch } from "react-icons/fa";
 import { CiBellOn } from "react-icons/ci";
 import { CiMail } from "react-icons/ci";
-import { CiUser } from "react-icons/ci";
+import Image from "next/image";
+import { MdOutlineAccountBalanceWallet } from "react-icons/md";
+import { IoSettingsOutline } from "react-icons/io5";
+import { IoHelpCircleOutline } from "react-icons/io5";
+import { CgProfile } from "react-icons/cg";
+import { IoMdArrowForward } from "react-icons/io";
+
+import { initializeApp } from "firebase/app";
+import {
+  getAuth,
+  signInWithPopup,
+  GoogleAuthProvider,
+  signOut,
+} from "firebase/auth";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAdFqjSx4eB7BvrnpwvP3zYz_0yby6zRqQ",
+  authDomain: "stockviz-b1ec8.firebaseapp.com",
+  projectId: "stockviz-b1ec8",
+  storageBucket: "stockviz-b1ec8.firebasestorage.app",
+  messagingSenderId: "383916841233",
+  appId: "1:383916841233:web:de0ae0041ccfbdcc3a14b0",
+  measurementId: "G-LD08CCNMSL",
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
 
 const Header = () => {
   const [allStocks, setAllStocks] = useState<allStocksType[]>([]);
   const [input, setInput] = useState<string>("");
   const [ricMatch, setRicMatch] = useState<allStocksType[]>([]);
+  const [user, setUser] = useState<any | null>(null);
+
+  useEffect(() => {
+    // Listen for auth state changes
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (user) {
+        setUser(user);
+      } else {
+        setUser(null);
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  const handleSignIn = async () => {
+    try {
+      const result = await signInWithPopup(auth, provider);
+      console.log(result.user);
+      setUser(result.user);
+    } catch (error) {
+      console.error("Error signing in with Google: ", error);
+    }
+  };
+
+  const handleSignOut = async () => {
+    try {
+      await signOut(auth);
+      setUser(null);
+    } catch (error) {
+      console.error("Error signing out: ", error);
+    }
+  };
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -35,88 +96,90 @@ const Header = () => {
       return stock.symbol.includes(input) || stock.name.includes(input);
     });
     setRicMatch(match);
-  }, [input]);
+  }, [input, allStocks]);
   return (
     <div className="flex flex-row items-center justify-between p-2">
-     <div className="flex-1 flex flex-row items-center gap-4">
+      <div className="flex flex-1 flex-row items-center gap-4">
+        <Logo />
 
-      <Logo />
+        <div className="flex w-[30%] flex-col items-end">
+          <div className="relative w-full">
+            <div className="flex w-full flex-row items-center justify-between rounded-3xl bg-[#262626] focus-within:bg-[#141414]">
+              <input
+                type="text"
+                value={input}
+                onChange={(e) => setInput(e.target.value.toUpperCase())}
+                className="flex-1 bg-transparent pl-6 text-xs text-white outline-none placeholder:text-sm"
+                placeholder="Tìm kiếm mã cổ phiếu, tên công ty "
+              />
 
-      <div className="flex w-[30%] flex-col items-end">
-        <div className="relative w-full">
-          <div className="flex w-full flex-row items-center justify-between rounded-3xl bg-[#262626] focus-within:bg-[#141414]">
-            <input
-              type="text"
-              value={input}
-              onChange={(e) => setInput(e.target.value.toUpperCase())}
-              className="flex-1 bg-transparent pl-6 text-xs text-white outline-none placeholder:text-sm"
-              placeholder="Tìm kiếm mã cổ phiếu, tên công ty "
-            />
-
-            <div className="rounded-3xl bg-[#00aa76] px-5 py-2">
-              <FaSearch color="white" size={"14px"} />
+              <div className="rounded-3xl bg-[#00aa76] px-5 py-2">
+                <FaSearch color="white" size={"14px"} />
+              </div>
             </div>
-          </div>
-          {input.length > 0 && (
-            <div className="dow-2xl border-gray-2 absolute left-0 z-50 mt-[0.6rem] w-full gap-y-[0.6rem] overflow-y-hidden rounded-lg border-1 bg-[#22262f] p-2 hover:cursor-pointer">
-              {ricMatch.length ? (
-                ricMatch.slice(0, 12).map((stock, index) => (
-                  <div
-                    onClick={() => {
-                      window.location.href = `/stockchart?symbol=${stock.symbol}`;
-                    }}
-                    key={index}
-                    className={`flex flex-row items-center justify-between gap-x-[1rem] rounded-sm p-1 hover:bg-[#363a46]`}
-                  >
-                    {stock.symbol.includes(input) ? (
-                      <p className={`text-2xs font-semibold text-[#babdc7]`}>
-                        {stock.symbol.slice(0, stock.symbol.indexOf(input[0]))}
-                        <span className="text-2xs font-semibold text-[#d18325]">
+            {input.length > 0 && (
+              <div className="dow-2xl border-gray-2 absolute left-0 z-50 mt-[0.6rem] w-full gap-y-[0.6rem] overflow-y-hidden rounded-lg border-1 bg-[#22262f] p-2 hover:cursor-pointer">
+                {ricMatch.length ? (
+                  ricMatch.slice(0, 12).map((stock, index) => (
+                    <div
+                      onClick={() => {
+                        window.location.href = `/stockchart?symbol=${stock.symbol}`;
+                      }}
+                      key={index}
+                      className={`flex flex-row items-center justify-between gap-x-[1rem] rounded-sm p-1 hover:bg-[#363a46]`}
+                    >
+                      {stock.symbol.includes(input) ? (
+                        <p className={`text-2xs font-semibold text-[#babdc7]`}>
                           {stock.symbol.slice(
+                            0,
                             stock.symbol.indexOf(input[0]),
-                            stock.symbol.indexOf(input[0]) + input.length,
                           )}
-                        </span>
-                        {stock.symbol.slice(
-                          stock.symbol.indexOf(input[input.length - 1]) + 1,
-                        )}
-                      </p>
-                    ) : (
-                      <p className={`text-2xs font-semibold text-[#babdc7]`}>
-                        {stock.symbol}
-                      </p>
-                    )}
+                          <span className="text-2xs font-semibold text-[#d18325]">
+                            {stock.symbol.slice(
+                              stock.symbol.indexOf(input[0]),
+                              stock.symbol.indexOf(input[0]) + input.length,
+                            )}
+                          </span>
+                          {stock.symbol.slice(
+                            stock.symbol.indexOf(input[input.length - 1]) + 1,
+                          )}
+                        </p>
+                      ) : (
+                        <p className={`text-2xs font-semibold text-[#babdc7]`}>
+                          {stock.symbol}
+                        </p>
+                      )}
 
-                    {stock.name.includes(input) ? (
-                      <p className="text-2xs truncate text-center font-semibold text-[#babdc7]">
-                        {stock.name.slice(0, stock.name.indexOf(input[0]))}
-                        <span className="text-2xs font-semibold text-[#d18325]">
-                          {input}
-                        </span>
-                        {stock.name.slice(
-                          stock.name.indexOf(input) + input.length,
-                        )}
-                      </p>
-                    ) : (
-                      <p className="text-2xs truncate text-center font-semibold text-[#babdc7]">
-                        {stock.name}
-                      </p>
-                    )}
+                      {stock.name.includes(input) ? (
+                        <p className="text-2xs truncate text-center font-semibold text-[#babdc7]">
+                          {stock.name.slice(0, stock.name.indexOf(input[0]))}
+                          <span className="text-2xs font-semibold text-[#d18325]">
+                            {input}
+                          </span>
+                          {stock.name.slice(
+                            stock.name.indexOf(input) + input.length,
+                          )}
+                        </p>
+                      ) : (
+                        <p className="text-2xs truncate text-center font-semibold text-[#babdc7]">
+                          {stock.name}
+                        </p>
+                      )}
 
-                    <p className="text-2xs text-right font-semibold text-[#868ea5]">
-                      {stock.exchange}
-                    </p>
+                      <p className="text-2xs text-right font-semibold text-[#868ea5]">
+                        {stock.exchange}
+                      </p>
+                    </div>
+                  ))
+                ) : (
+                  <div className="flex h-full flex-row items-center justify-center py-20 text-center text-3xl font-semibold text-white">
+                    Không tìm thấy mã cổ phiếu
                   </div>
-                ))
-              ) : (
-                <div className="flex h-full flex-row items-center justify-center py-20 text-center text-3xl font-semibold text-white">
-                  Không tìm thấy mã cổ phiếu
-                </div>
-              )}
-            </div>
-          )}
+                )}
+              </div>
+            )}
+          </div>
         </div>
-      </div>
       </div>
 
       <div className="flex flex-row items-center gap-2">
@@ -129,10 +192,88 @@ const Header = () => {
           <span className="text-sm font-semibold text-[#9fd7ff]">Mail</span>
         </div>
 
-        <div className="flex flex-row items-center gap-1 rounded-2xl border-1 border-[#00aa76] px-4 py-[7px] hover:cursor-pointer hover:opacity-80">
-        <CiMail color="#00aa76" size={"16px"} />
-          <span className="text-sm font-semibold text-[#00aa76]">Sign In</span>
-        </div>
+        {user ? (
+          <div className="relative">
+            <Image
+              width={28}
+              height={28}
+              src={user.photoURL}
+              alt="profile" 
+              className="peer img_avatar h-7 w-7 rounded-full hover:cursor-pointer hover:opacity-80"
+            />
+
+            <div className="absolute top-full right-0 z-50 mt-2 scale-0 w-[280px] rounded-lg bg-[#1c1f26] py-2 shadow-lg transition-all duration-300 peer-hover:scale-100 before:absolute before:top-[-10px] before:right-0 before:left-0 before:h-[20px] before:content-[''] hover:scale-100">
+              {/* User Info */}
+              <div className="border-b border-gray-700 px-4 pb-4 hover:cursor-pointer">
+                <div className="flex items-center gap-3">
+                  <Image
+                    width={40}
+                    height={40}
+                    src={user.photoURL}
+                    alt="profile"
+                    className="h-10 w-10 rounded-full"
+                  />
+                  <div className="flex-1">
+                    <h3 className="text-sm font-medium text-white">
+                      {user.displayName}
+                    </h3>
+                    <p className="text-xs text-gray-400">{user.email}</p>
+                  </div>
+                </div>
+                <button className="mt-3 w-full rounded-md bg-[#2c2f36] px-4 py-2 text-sm text-white hover:cursor-pointer hover:bg-[#363a46]">
+                  Manage your account
+                </button>
+              </div>
+
+              {/* Finance Section */}
+              <div className="border-b border-gray-700 px-2 py-2 hover:cursor-pointer">
+                <div className="flex items-center gap-2 rounded px-2 py-2 text-white hover:bg-[#363a46]">
+                  <MdOutlineAccountBalanceWallet size={20} />
+                  <span className="text-sm">Finance</span>
+                </div>
+                <div className="flex items-center gap-2 rounded px-2 py-2 text-white hover:bg-[#363a46]">
+                  <IoSettingsOutline size={20} />
+                  <span className="text-sm">Appearance</span>
+                </div>
+              </div>
+
+              {/* Account Section */}
+              <div className="border-b border-gray-700 px-2 py-2 hover:cursor-pointer">
+                <div className="flex items-center gap-2 rounded px-2 py-2 text-white hover:bg-[#363a46]">
+                  <IoHelpCircleOutline size={20} />
+                  <span className="text-sm">Help</span>
+                </div>
+                <div className="flex items-center justify-between rounded px-2 py-2 text-white hover:bg-[#363a46]">
+                  <div className="flex items-center gap-2">
+                    <CgProfile size={20} />
+                    <span className="text-sm">Add or switch accounts</span>
+                  </div>
+                  <IoMdArrowForward size={16} />
+                </div>
+              </div>
+
+              {/* Sign Out */}
+              <div className="px-2 pt-2">
+                <button
+                  onClick={handleSignOut}
+                  className="w-full rounded px-2 py-2 text-left text-sm text-white hover:cursor-pointer hover:bg-[#363a46]"
+                >
+                  Sign out
+                </button>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div
+            onClick={handleSignIn}
+            className="flex flex-row items-center gap-1 rounded-2xl border-1 border-[#00aa76] px-4 py-[7px] hover:cursor-pointer hover:opacity-80"
+          >
+            <CiMail color="#00aa76" size={"16px"} />
+            <span className="text-sm font-semibold text-[#00aa76]">
+              Sign In
+            </span>
+          </div>
+        )}
       </div>
     </div>
   );
