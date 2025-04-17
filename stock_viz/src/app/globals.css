@@ -90,10 +90,7 @@ body {
   border: 1px solid #ccc;
   display: inline-block;
 }
-.img_avatar::after {
-  content: "asdjasdl";
 
-}
 
 /* ************************** */
 #a4-container {

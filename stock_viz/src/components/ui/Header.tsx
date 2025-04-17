@@ -11,7 +11,7 @@ import { IoSettingsOutline } from "react-icons/io5";
 import { IoHelpCircleOutline } from "react-icons/io5";
 import { CgProfile } from "react-icons/cg";
 import { IoMdArrowForward } from "react-icons/io";
-
+import 'dotenv/config'
 import { initializeApp } from "firebase/app";
 import {
   getAuth,
@@ -20,15 +20,16 @@ import {
   signOut,
 } from "firebase/auth";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyAdFqjSx4eB7BvrnpwvP3zYz_0yby6zRqQ",
-  authDomain: "stockviz-b1ec8.firebaseapp.com",
-  projectId: "stockviz-b1ec8",
-  storageBucket: "stockviz-b1ec8.firebasestorage.app",
-  messagingSenderId: "383916841233",
-  appId: "1:383916841233:web:de0ae0041ccfbdcc3a14b0",
-  measurementId: "G-LD08CCNMSL",
-};
+
+const firebaseConfig ={
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
+}
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
