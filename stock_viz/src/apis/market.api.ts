@@ -1,10 +1,10 @@
 import http from "./http"
 
-export const getSymbolReview  = async (endDate:string,quantity:number) => {
+export const getSymbolReview  = async (date:string,prepare_for:string) => {
     const response = await http.get(`market/symbols_review`,{
         params:{
-            quantity:quantity,
-            end_date:endDate
+            prepare_for,
+            date
         }
     });
     return response.data;

@@ -9,11 +9,11 @@ export default async function Home() {
       <OverviewIndicatorMarket />
 
       <div className="flex flex-row py-6 gap-2 overflow-visible relative z-10">
-        <StockTable />
+        <StockTable exchange='hose' />
 
-        <StockTable />  
+        <StockTable exchange='hnx' />  
 
-        <Treemap />
+        <Treemap  />
       </div>
     </div>
   );

@@ -16,12 +16,12 @@ import { getSymbolReview } from "@/apis/market.api";
 import { Skeleton } from "../ui/skeleton";
 import StockQuoteOverview from "./StockQuoteOverview";
 
-const StockTable = () => {
-  const endDate = format(subYears(new Date(), 1), "yyyy-MM-dd");
+const StockTable = ({exchange}:{exchange:string}) => {
+  const date = format(subYears(new Date(), 1), "yyyy-MM-dd");
 
   const result = useQuery({
-    queryKey: ["symbols/symbols_review"],
-    queryFn: () => getSymbolReview(endDate, 30),
+    queryKey: ["symbols/symbols_review",exchange],
+    queryFn: () => getSymbolReview(date, exchange),
     refetchOnWindowFocus: false,
   });
   return (
