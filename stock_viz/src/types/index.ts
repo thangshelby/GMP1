@@ -5,6 +5,7 @@ export interface ReviewStockType {
   change: number;
   volume: number;
   signal: string;
+  sector: string;
   industry: string;
   market_cap: number;
   quote?:StockPriceDataType[];

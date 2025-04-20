@@ -14,17 +14,28 @@ import {
 import ScreenerResult from "@/components/screener/ScreenerResult";
 
 const Screener = () => {
+  const [sortedCategory, setSortedCategory] = useState<{
+    orderBy: { title: string; value: string };
+    sortBy: { title: string; value: string };
+    signal: { title: string; value: string };
+    // searchSymbol:string,
+  }>({
+    orderBy: filterHeaders[0].items[0],
+    sortBy: filterHeaders[1].items[0],
+    signal: filterHeaders[2].items[0],
+    // searchSymbol: "",
+  });
   const [selectedCategory, setSelectedCategory] = useState(
     filterCategories[0].title,
   );
 
   return (
-    <div className="px-12 flex flex-col gap-6">
+    <div className="flex flex-col gap-6 px-12">
       <div className="border-secondary flex flex-col gap-4 rounded-md border-x-[1px] border-b-[1px] p-2">
         <div className="flex flex-row justify-between">
           {filterHeaders.map((header) => (
             <div
-              key={header.title}
+              key={header.key}
               className="mr-2 flex flex-row items-center gap-2"
             >
               <p className="text-secondary text-xs font-medium">
@@ -33,13 +44,30 @@ const Screener = () => {
               <DropdownMenu>
                 <DropdownMenuTrigger className="border-secondary rounded-sm border-1 p-1 hover:cursor-pointer">
                   <div className="flex w-32 flex-row justify-between">
-                    <span className="text-xs text-white">{header.title}</span>
+                    <span className="text-xs text-white">
+                      {
+                        sortedCategory[
+                          header.key as keyof typeof sortedCategory
+                        ].title
+                      }
+                    </span>
                     <MdOutlineArrowDropDown color="#868ea5" />
                   </div>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent>
+                <DropdownMenuContent
+                  className={`border-secondary max-h-60 rounded-none border-1 bg-[#22262f]`}
+                >
                   {header.items.map((item, index) => (
-                    <DropdownMenuItem key={index}>
+                    <DropdownMenuItem
+                      key={index}
+                      onClick={() =>
+                        setSortedCategory({
+                          ...sortedCategory,
+                          [header.key]: item,
+                        })
+                      }
+                      className={`text-xs font-medium text-white hover:cursor-pointer ${sortedCategory[header.key as keyof typeof sortedCategory].title == item.title ? "bg-primary border-[0px]" : ""}`}
+                    >
                       {item.title}
                     </DropdownMenuItem>
                   ))}
@@ -115,9 +143,8 @@ const Screener = () => {
           ))}
         </div>
       </div>
-    
-    <ScreenerResult/>
 
+      <ScreenerResult sortedCategory={sortedCategory} />
     </div>
   );
 };
@@ -127,6 +154,7 @@ export default Screener;
 const filterHeaders = [
   {
     title: "Order by",
+    key: "orderBy",
     items: [
       { title: "Ticker", value: "ticker" },
       { title: "Name", value: "name" },
@@ -137,6 +165,7 @@ const filterHeaders = [
   },
   {
     title: "Sort by",
+    key: "sortBy",
     items: [
       { title: "Ascending", value: "asc" },
       { title: "Descending", value: "desc" },
@@ -144,7 +173,9 @@ const filterHeaders = [
   },
   {
     title: "Signal",
+    key: "signal",
     items: [
+      { title: "All", value: "all" },
       { title: "None", value: "none" },
       { title: "Buy", value: "buy" },
       { title: "Sell", value: "sell" },

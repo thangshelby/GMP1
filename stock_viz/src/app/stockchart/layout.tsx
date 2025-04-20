@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import StockChartOverview from "./@stockchartoverview/page";
 import StockChartContainer from "./@stockchartcontainer/page";
-import PdfTemplate from "./@pdftemplate/page";
+// import PdfTemplate from "./@pdftemplate/page";
 
 export const metadata: Metadata = {
   title: "Stock Visualization Chart Detail",
@@ -18,7 +18,7 @@ export default function StockChartLayout({
       <div className="pb-20">
         <StockChartOverview />
         <StockChartContainer />
-        <PdfTemplate />
+        {/* <PdfTemplate /> */}
       </div>
 
       <main className="flex-1">{children}</main>

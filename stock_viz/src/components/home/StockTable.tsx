@@ -1,7 +1,7 @@
 "use client";
 import { ReviewStockType } from "@/types";
 import Link from "next/link";
-import { format, subYears } from "date-fns";
+import { format, subYears } from "date-fns";  
 import React from "react";
 import {
   Table,
@@ -20,8 +20,8 @@ const StockTable = ({exchange}:{exchange:string}) => {
   const date = format(subYears(new Date(), 1), "yyyy-MM-dd");
 
   const result = useQuery({
-    queryKey: ["symbols/symbols_review",exchange],
-    queryFn: () => getSymbolReview(date, exchange),
+    queryKey: ["symbols/symbols_review",exchange,true],
+    queryFn: () => getSymbolReview(date, exchange,true),
     refetchOnWindowFocus: false,
   });
   return (

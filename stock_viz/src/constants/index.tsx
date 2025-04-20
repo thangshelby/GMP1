@@ -49,6 +49,10 @@ export const navbarCategory = [
     link: "/stockchart",
   },
   {
+    title: "Maps",
+    link: "/maps",
+  },
+  {
     title: "About",
     link: "/about",
   },

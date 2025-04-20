@@ -25,7 +25,16 @@ import { FaArrowRightLong, FaArrowLeftLong } from "react-icons/fa6";
 import { getSectorFromIndustry } from "@/lib/utils";
 import { useSearchParams, useRouter } from "next/navigation";
 
-const ScreenerResult = () => {
+const ScreenerResult = ({
+  sortedCategory
+}: {
+  sortedCategory: {
+    orderBy: {title: string, value: string}
+    sortBy: {title: string, value: string}
+    signal: {title: string, value: string}
+    searchSymbol: string
+  }
+}) => {
   const today = format(subYears(new Date(), 1), "yyyy-MM-dd");
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -75,7 +84,7 @@ const ScreenerResult = () => {
           <TableBody>
             {isSuccess &&
               data.data
-                .slice(0, 22)
+                .slice(0, 20)
                 .map((stock: ReviewStockType, index: number) => (
                   <StockTableRow
                     key={stock.symbol}
@@ -84,7 +93,7 @@ const ScreenerResult = () => {
                   />
                 ))}
             {isLoading &&
-              Array.from({ length: 22 }, (_, index) => (
+              Array.from({ length: 20 }, (_, index) => (
                 <StockTableRowSkeleton key={index} />
               ))}
           </TableBody>
