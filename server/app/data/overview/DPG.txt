@@ -1,2 +1,0 @@
-symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
-DPG	HOSE	Xây dựng và Vật liệu	CT	6371	0.072	63.0	63.0	2002	808	2.6	-0.019	0.04	-0.042	Tập đoàn Đạt Phương	https://www.datphuong.com.vn	181	2357

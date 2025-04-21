@@ -1,2 +1,0 @@
-symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
-QNP	HOSE	Hàng & Dịch vụ Công nghiệp	CT	1007	0.0	40.4	40.4	2009	769	2.9	0.095	0.055	0.14	Cảng Quy Nhơn	https://www.quynhonport.vn	193	2777

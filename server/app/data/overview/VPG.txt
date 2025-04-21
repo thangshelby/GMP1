@@ -1,2 +1,0 @@
-symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
-VPG	HOSE	Tài nguyên Cơ bản	CT	7055	0.002	88.4	88.4	2008	144	2.2	-0.057	-0.067	-0.268	Đầu tư TMại XNK Việt Phát	http://vietphatgroup.com.vn	166	1775

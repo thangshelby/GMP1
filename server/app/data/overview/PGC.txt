@@ -1,2 +1,0 @@
-symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
-PGC	HOSE	Điện, nước & xăng dầu khí đốt	CT	0	0.02	60.3	60.3	2004	1082	2.4	0.037	0.043	0.113	Gas Petrolimex	https://pgas.petrolimex.com.vn	275	7573

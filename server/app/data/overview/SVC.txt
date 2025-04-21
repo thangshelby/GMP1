@@ -1,2 +1,0 @@
-symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
-SVC	HOSE	Ô tô và phụ tùng	CT	924	0.016	66.6	66.6	2004	4768	2.3	0.137	0.115	-0.146	SAVICO	http://www.savico.com.vn	211	3353

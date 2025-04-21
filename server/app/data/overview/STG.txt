@@ -1,2 +1,0 @@
-symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
-STG	HOSE	Hàng & Dịch vụ Công nghiệp	CT	522	0.301	98.3	98.3	2006	1179	2.8	0.09	0.103	-0.167	Kho Vận Miền Nam	http://www.sotrans.com.vn	193	2777

@@ -1,2 +1,0 @@
-symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
-VIP	HOSE	Hàng & Dịch vụ Công nghiệp	CT	5303	0.133	68.5	68.5	2005	453	2.8	0.021	-0.029	0.261	Vận tải Xăng dầu VIPCO	http://www.vipco.com.vn	191	2773

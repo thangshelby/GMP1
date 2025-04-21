@@ -1,2 +1,0 @@
-symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
-SBT	HOSE	Thực phẩm và đồ uống	CT	22506	0.215	814.5	814.5	2007	2499	2.7	0.14	0.178	0.43	Mía đường Thành Thành Công - Biên Hòa	https://ttcagris.com.vn	218	3577

@@ -1,2 +1,0 @@
-symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
-FCN	HOSE	Xây dựng và Vật liệu	CT	17004	0.311	157.4	157.4	2004	1115	2.0	-0.034	-0.056	-0.163	FECON CORP	http://www.fecon.com.vn	181	2357

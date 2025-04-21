@@ -1,11 +1,22 @@
-from dotenv import load_dotenv
-from app.config.config import generation_config,safety_settings,system_instruction,summary_sample,final_sample
-import os
-import redis    
 import json
-import google.generativeai as genai
-import pandas as pd
+import os
 from datetime import datetime, timedelta
+
+import google.generativeai as genai
+import polars as pl
+import redis
+from dotenv import load_dotenv
+from vnstock import Vnstock
+
+from app.config.config import (
+    final_sample,
+    generation_config,
+    safety_settings,
+    summary_sample,
+    system_instruction,
+)
+from app.constant.constant import hnx, hose
+from app.utils.stock import analyze_stock_signal
 
 redis_client = redis.Redis(host='localhost', port=6379, db=0)
 load_dotenv()
@@ -56,8 +67,65 @@ def get_AI_analyze(symbol,type=None,summary_data=None,table_data=None,final_data
 
 
 def find_near_valid_date(date):
-    df= pd.read_csv('./app/data/hose/AAA.txt', sep='\t')
-    while date not in df['time'].values :
-        date= datetime.strptime(date, '%Y-%m-%d')+timedelta(days=1)
-        date= date.strftime('%Y-%m-%d')
+    df = pl.read_csv('./app/data/hose/AAA.txt', separator='\t')
+    while date not in df["time"].to_list():
+        date = datetime.strptime(date, '%Y-%m-%d')+timedelta(days=1)
+        date = date.strftime('%Y-%m-%d')
     return date
+
+def prepare_data_for_market_review():
+    date = datetime.now().replace(year=2024).strftime('%Y-%m-%d')
+    date = find_near_valid_date(date)
+    
+    sources = hose+hnx
+    for symbol in sources:
+        curStock = {}
+        df = None
+        company_overview = None
+        try:
+            df = pl.read_csv(f'./app/data/hose/{symbol}.txt', separator='\t')
+            company_overview = pl.read_csv(f'./app/data/hose_final_overview/{symbol}.txt', separator='\t')
+        except:
+            try:
+                source_path = 'hnx'
+                df = pl.read_csv(f'./app/data/hnx/{symbol}.txt', separator='\t')
+                company_overview = pl.read_csv(f'./app/data/hnx_final_overview/{symbol}.txt', separator='\t')
+            except:
+                continue
+        df = df.filter(pl.col('time') <= date)
+        if df.height > 1:
+                signal = None
+                try:
+                    signal = analyze_stock_signal(df)
+                except:
+                    signal = 'Không có tín hiệu'
+                
+                # Get the last row values
+                last_row = company_overview.tail(1)
+                short_name = last_row.get_column('short_name')[0].split('(')[0]
+                
+                curStock['name'] = short_name
+                curStock['sector'] = last_row.get_column('icb_name2')[0]
+                
+                # Using coalesce logic for industry
+                industry_options = [
+                    last_row.get_column('icb_name4')[0],
+                    last_row.get_column('icb_name3')[0],
+                    last_row.get_column('icb_name2')[0]
+                ]
+                industry = next((i for i in industry_options if i is not None), None)
+                
+                curStock['industry'] = industry
+                curStock['signal'] = signal
+                curStock['symbol'] = symbol
+                
+                # Get closing prices
+                last_close = df.tail(1).get_column('close')[0]
+                second_last_close = df.tail(2).head(1).get_column('close')[0]
+                
+                curStock['last'] = round(last_close, 2)
+                curStock['market_cap'] = round(last_row.get_column('issue_share')[0] * last_close, 2)
+                curStock['volume'] = int(df.tail(1).get_column('volume')[0])
+                curStock['change'] = round((last_close - second_last_close) / second_last_close * 100, 2)
+                redis_client.set(f'stock_review_{symbol}_{date}', json.dumps(curStock), ex=3600*24*24)
+    print('Prepare data for market review done')

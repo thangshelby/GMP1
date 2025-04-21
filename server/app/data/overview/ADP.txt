@@ -1,2 +1,0 @@
-symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
-ADP	HOSE	Xây dựng và Vật liệu	CT	306	0.009	23.0	23.0	2000	150	3.5	0.099	0.189	0.525	Sơn Á Đông	http://adongpaint.com.vn	180	2353

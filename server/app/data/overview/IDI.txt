@@ -1,2 +1,0 @@
-symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
-IDI	HOSE	Thực phẩm và đồ uống	CT	578	0.008	273.2	273.2	2003	3250	1.9	-0.082	-0.103	-0.333	Đầu tư và PT Đa Quốc Gia	https://idiseafood.com	217	3573

@@ -1,2 +1,0 @@
-symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
-TIP	HOSE	Bất động sản	CT	2116	0.171	65.0	65.0	2002	45	2.7	-0.048	-0.072	-0.129	PT KCN Tín Nghĩa	https://tinnghiaip.com.vn	336	8633

@@ -1,2 +1,0 @@
-symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
-NHT	HOSE	Hàng cá nhân & Gia dụng	CT	499	0.03	24.0	24.0	2004	658	2.6	0.069	0.063	0.023	Sản xuất và Thương mại Nam Hoa	http://www.namhoatoys.vn	225	3747

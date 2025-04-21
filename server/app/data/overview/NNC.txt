@@ -1,2 +1,0 @@
-symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
-NNC	HOSE	Xây dựng và Vật liệu	CT	1333	0.049	21.9	21.9	2006	65	3.1	0.107	0.218	0.867	Đá Núi Nhỏ	http://nuinho.vn	180	2353

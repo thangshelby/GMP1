@@ -1,2 +1,0 @@
-symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
-OPC	HOSE	Y tế	CT	1166	0.007	64.1	64.1	2002	930	2.8	0.093	0.093	0.111	Dược phẩm OPC	https://opcpharma.com	238	4577

@@ -1,2 +1,0 @@
-symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
-HRC	HOSE	Hóa chất	CT	572	0.006	30.2	30.2	2004	534	2.0	-0.081	-0.087	-0.246	Cao su Hòa Bình	http://www.horuco.com.vn	150	1353

@@ -1,2 +1,0 @@
-symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
-PAC	HOSE	Hàng & Dịch vụ Công nghiệp	CT	1156	0.12	46.5	46.5	2004	1255	2.4	-0.075	-0.1	-0.043	Pin Ắc quy Miền Nam	https://www.pinaco.com	186	2733

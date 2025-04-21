@@ -1,2 +1,0 @@
-symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
-ASG	HOSE	Hàng & Dịch vụ Công nghiệp	CT	558	0.007	90.8	90.8	2010	1887	2.5	0.175	0.155	-0.048	Tập đoàn ASG	https://asg.net.vn	193	2777

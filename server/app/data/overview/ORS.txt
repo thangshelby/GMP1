@@ -1,2 +1,0 @@
-symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
-ORS	HOSE	Dịch vụ tài chính	CK	12142	0.004	336.0	336.0	2006	329	2.7	-0.09	-0.314	-0.368	Chứng khoán Tiên Phong	https://tpbs.com.vn	300	8777

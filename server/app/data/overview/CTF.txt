@@ -1,2 +1,0 @@
-symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
-CTF	HOSE	Ô tô và phụ tùng	CT	1012	0.012	95.7	95.7	2009	1304	2.0	0.114	0.083	-0.185	City Auto	https://cityautogroup.vn	211	3353

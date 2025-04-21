@@ -1,2 +1,0 @@
-symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
-LBM	HOSE	Xây dựng và Vật liệu	CT	1086	0.151	40.0	40.0	2003	731	2.9	0.007	-0.003	0.415	Khoáng sản Lâm Đồng	http://lbm-vn.vn	180	2353

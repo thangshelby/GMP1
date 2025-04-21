@@ -1,2 +1,0 @@
-symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
-ABS	HOSE	Hóa chất	CT	8822	0.0	80.0	80.0	2004	63	2.6	-0.067	-0.099	-0.283	DV Nông nghiệp Bình Thuận	http://www.bitagco.com	151	1357

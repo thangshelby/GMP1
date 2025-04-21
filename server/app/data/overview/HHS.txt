@@ -1,2 +1,0 @@
-symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
-HHS	HOSE	Ô tô và phụ tùng	CT	14840	0.014	368.0	368.0	2008	62	2.7	0.039	0.263	0.167	Đầu tư DV Hoàng Huy	http://www.hoanghuyhhs.vn	211	3353

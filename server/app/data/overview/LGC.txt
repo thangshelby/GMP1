@@ -1,2 +1,0 @@
-symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
-LGC	HOSE	Xây dựng và Vật liệu	CT	245	0.45	192.9	192.9	2000	283	2.6	0.169	0.244	0.305	Đầu tư Cầu đường CII	http://www.ciibr.com.vn	181	2357

@@ -1,2 +1,0 @@
-symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
-LAF	HOSE	Thực phẩm và đồ uống	CT	1452	0.025	15.2	15.2	1995	182	3.1	-0.023	-0.071	0.304	Chế biến Hàng XK Long An	http://www.lafooco.vn	218	3577

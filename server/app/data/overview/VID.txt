@@ -1,2 +1,0 @@
-symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
-VID	HOSE	Tài nguyên Cơ bản	CT	3501	0.011	40.8	40.8	1974	29	2.4	0.19	0.205	0.121	Viễn Đông	http://www.dautuviendong.vn	156	1737

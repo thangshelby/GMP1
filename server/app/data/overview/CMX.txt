@@ -1,2 +1,0 @@
-symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
-CMX	HOSE	Thực phẩm và đồ uống	CT	9602	0.181	101.9	101.9	2006	1365	2.2	-0.07	-0.097	-0.181	CAMIMEX Group	http://www.camimex.com.vn	217	3573

@@ -1,2 +1,0 @@
-symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
-HHV	HOSE	Xây dựng và Vật liệu	CT	46149	0.066	432.3	432.3	2010	515	2.3	-0.014	-0.038	-0.178	Đầu tư Hạ tầng Giao thông Đèo Cả	https://hhv.com.vn	181	2357

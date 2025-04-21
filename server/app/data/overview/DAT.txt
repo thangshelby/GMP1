@@ -1,2 +1,0 @@
-symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
-DAT	HOSE	Thực phẩm và đồ uống	CT	440	0.0	69.2	69.2	2008	83	2.2	0.04	0.022	-0.12	ĐT Du lịch và PT Thủy sản	https://trisedco.com	217	3573

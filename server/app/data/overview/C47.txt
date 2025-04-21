@@ -1,2 +1,0 @@
-symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
-C47	HOSE	Xây dựng và Vật liệu	CT	3775	0.0	36.3	36.3	2005	690	2.4	-0.007	-0.107	0.05	Xây dựng 47	http://www.xaydung47.vn	181	2357

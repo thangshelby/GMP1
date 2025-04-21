@@ -1,2 +1,0 @@
-symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
-HAS	HOSE	Xây dựng và Vật liệu	CT	1392	0.154	7.8	8.0	2001	139	2.5	0.213	0.28	0.299	Hacisco	https://www.has.vn	181	2357

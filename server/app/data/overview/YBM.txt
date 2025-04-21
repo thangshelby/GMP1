@@ -1,2 +1,0 @@
-symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
-YBM	HOSE	Tài nguyên Cơ bản	CT	813	0.002	14.3	14.3	2015	236		0.231	0.277	0.85	Khoáng sản CN Yên Bái	https://ybm.com.vn	166	1775

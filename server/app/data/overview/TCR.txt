@@ -1,2 +1,0 @@
-symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
-TCR	HOSE	Xây dựng và Vật liệu	CT	3342	0.48	45.4	10.4	1994	556	2.3	0.188	0.236	-0.025	Gốm sứ TAICERA	http://www.taicera.com	180	2353

@@ -1,2 +1,0 @@
-symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
-SFC	HOSE	Điện, nước & xăng dầu khí đốt	CT	0	0.007	11.3	11.3	2000	177	3.0	0.169	0.167	0.365	Nhiên liệu Sài Gòn	http://www.sfc.com.vn	275	7573

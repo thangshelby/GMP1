@@ -1,2 +1,0 @@
-symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
-SMB	HOSE	Thực phẩm và đồ uống	CT	2130	0.138	29.8	29.8	2008	494	3.1	0.098	0.116	0.308	Bia Sài Gòn - Miền Trung	https://biasaigonmt.com	214	3533

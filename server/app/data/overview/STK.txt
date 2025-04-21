@@ -1,2 +1,0 @@
-symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
-STK	HOSE	Hàng cá nhân & Gia dụng	CT	1966	0.166	96.6	96.6	2000	998	1.7	-0.087	-0.121	-0.277	Sợi Thế Kỷ	https://theky.vn	226	3763

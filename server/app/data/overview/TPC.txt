@@ -1,2 +1,0 @@
-symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
-TPC	HOSE	Hóa chất	CT	670	0.017	22.5	24.4	1984	419	2.5	0.151	0.14	1.096	Nhựa Tân Đại Hưng	http://tandaihungplastic.com	150	1353

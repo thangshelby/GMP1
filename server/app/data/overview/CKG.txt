@@ -1,2 +1,0 @@
-symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
-CKG	HOSE	Bất động sản	CT	4334	0.0	95.3	95.3	2013	223	2.2	-0.093	-0.131	-0.24	Xây dựng Kiên Giang	https://cicgroups.com	336	8633

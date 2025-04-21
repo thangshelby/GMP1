@@ -1,2 +1,0 @@
-symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
-GEG	HOSE	Điện, nước & xăng dầu khí đốt	CT	13111	0.457	358.3	358.3	2010	526	2.5	0.009	0.1	0.025	Điện Gia Lai	https://geccom.vn	274	7535

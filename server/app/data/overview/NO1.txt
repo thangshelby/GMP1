@@ -1,2 +1,0 @@
-symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
-NO1	HOSE	Hàng & Dịch vụ Công nghiệp	CT	233	0.056	24.0	24.0	2011	31		0.01	-0.017	0.057	Tâp đoàn 911	https://911group.com.vn	189	2757

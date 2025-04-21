@@ -1,2 +1,0 @@
-symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
-CTD	HOSE	Xây dựng và Vật liệu	CT	7450	0.488	99.9	103.6	2004	2182	2.5	-0.079	-0.141	0.059	Xây dựng Coteccons	http://www.coteccons.vn	181	2357

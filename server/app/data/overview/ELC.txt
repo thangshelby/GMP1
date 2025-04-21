@@ -1,2 +1,0 @@
-symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
-ELC	HOSE	Công nghệ Thông tin	CT	4404	0.028	99.9	87.5	2003	237	2.5	-0.074	-0.155	0.063	ELCOM	https://www.elcom.com.vn	314	9578

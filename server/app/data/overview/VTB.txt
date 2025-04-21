@@ -1,2 +1,0 @@
-symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
-VTB	HOSE	Hàng & Dịch vụ Công nghiệp	CT	945	0.018	10.8	12.0	2004	97		0.12	0.126	0.123	Viettronics Tân Bình	http://www.vtb.com.vn	186	2733

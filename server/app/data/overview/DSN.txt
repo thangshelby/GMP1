@@ -1,2 +1,0 @@
-symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
-DSN	HOSE	Du lịch và Giải trí	CT	2217	0.153	12.1	12.1	2003	170	2.9	0.112	0.099	0.023	Công viên nước Đầm Sen	http://www.damsenwaterpark.com.vn	260	5755

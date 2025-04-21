@@ -1,2 +1,0 @@
-symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
-GMD	HOSE	Hàng & Dịch vụ Công nghiệp	CT	9675	0.408	420.2	420.2	1993	1544	2.6	-0.098	-0.139	-0.219	Gemadept	http://www.gemadept.com.vn	193	2777

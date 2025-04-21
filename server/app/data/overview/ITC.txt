@@ -1,2 +1,0 @@
-symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
-ITC	HOSE	Bất động sản	CT	7019	0.003	95.9	96.4	2000	781	2.4	-0.063	0.04	-0.094	Đầu tư kinh doanh Nhà	http://www.intresco.com.vn	336	8633

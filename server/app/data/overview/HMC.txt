@@ -1,2 +1,0 @@
-symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
-HMC	HOSE	Tài nguyên Cơ bản	CT	1219	0.004	27.3	27.3	2005	160	2.2	0.055	0.047	0.089	Kim khí TP.HCM	https://metalhcm.com.vn	159	1757

@@ -1,2 +1,0 @@
-symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
-DQC	HOSE	Hàng cá nhân & Gia dụng	CT	361	0.006	27.6	34.4	2005	687	2.7	-0.004	-0.013	-0.297	Tập đoàn Điện Quang	https://2024.dqc.vn	221	3726

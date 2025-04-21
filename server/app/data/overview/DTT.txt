@@ -1,2 +1,0 @@
-symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
-DTT	HOSE	Hóa chất	CT	704	0.002	8.2	8.2	1994	182	2.7	0.161	0.135	0.029	Kỹ nghệ Đô Thành	http://dothanhtech.com	150	1353

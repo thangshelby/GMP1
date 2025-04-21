@@ -1,2 +1,0 @@
-symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
-VSI	HOSE	Bất động sản	CT	400	0.014	13.2	13.2	1975	131	2.8	0.103	0.078	0.123	Đầu tư và Xây dựng Cấp thoát nước	http://waseco.com.vn	336	8633

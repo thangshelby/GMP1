@@ -1,2 +1,0 @@
-symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
-PAN	HOSE	Thực phẩm và đồ uống	CT	16225	0.194	208.9	216.3	2005	10462	2.6	-0.062	-0.093	0.005	Tập đoàn PAN	https://thepangroup.vn	218	3577

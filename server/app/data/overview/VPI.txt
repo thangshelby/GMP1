@@ -1,2 +1,0 @@
-symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
-VPI	HOSE	Bất động sản	CT	348	0.122	320.0	320.0	2008	259	2.2	0.111	0.133	0.287	Đầu tư Văn Phú - Invest	https://vanphu.vn	336	8633

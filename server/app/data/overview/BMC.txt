@@ -1,2 +1,0 @@
-symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
-BMC	HOSE	Tài nguyên Cơ bản	CT	0	0.055	12.4	12.4	2001	199	2.8	-0.038	-0.093	0.164	Khoáng sản Bình Định	http://bimico.vn	166	1775

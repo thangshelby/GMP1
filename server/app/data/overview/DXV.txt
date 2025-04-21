@@ -1,2 +1,0 @@
-symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
-DXV	HOSE	Xây dựng và Vật liệu	CT	1095	0.005	9.9	9.9	2007	215	2.6	0.117	0.102	-0.058	Vật liệu Xây dựng Đà Nẵng	https://coxiva.com.vn	180	2353
