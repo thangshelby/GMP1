@@ -122,3 +122,33 @@ export function formatNumber(num: number) {
   return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
+export const colorsAndRanges =[
+  {
+    color: "#f63538",
+    value: "-3",
+  },
+  {
+    color: "#bf4045",
+    value: "-2",
+  },
+  {
+    color: "#8b444e",
+    value: "-1",
+  },
+  {
+    color: "#414554",
+    value: "0",
+  },
+  {
+    color: "#35764e",
+    value: "1",
+  },
+  {
+    color: "#2f9e4f",
+    value: "2",
+  },
+  {
+    color: "#30cc5a",
+    value: "3",
+  },
+];

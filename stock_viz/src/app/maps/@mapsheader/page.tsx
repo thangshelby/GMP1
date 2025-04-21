@@ -38,12 +38,12 @@ const MapsHeader = () => {
             ) : (
               <MdFullscreen color="#57aefb" />
             )}
-            <span className="text-primary text-xs">Fullscreen</span>
+            <span className="text-primary text-sm">Fullscreen</span>
           </button>
           <button className="hover:cur flex items-center gap-1 rounded p-2">
             <CiShare2 color="#57aefb" />
 
-            <span className="text-primary text-xs"> Share map</span>
+            <span className="text-primary text-sm"> Share map</span>
           </button>
           <button className="hover:cur rounded p-2">
             <TiMinus color="#57aefb" />

@@ -22,7 +22,6 @@ import {
   PaginationItem,
 } from "@/components/ui/pagination";
 import { FaArrowRightLong, FaArrowLeftLong } from "react-icons/fa6";
-import { getSectorFromIndustry } from "@/lib/utils";
 import { useSearchParams, useRouter } from "next/navigation";
 
 const ScreenerResult = ({
@@ -35,6 +34,7 @@ const ScreenerResult = ({
     searchSymbol: string
   }
 }) => {
+  console.log(sortedCategory)
   const today = format(subYears(new Date(), 1), "yyyy-MM-dd");
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -225,7 +225,7 @@ const StockTableRow = ({
       </TableCell>
       <TableCell className="h-6 px-2 py-0 text-start font-semibold text-white">
         <Link href={`/stockchart?symbol=${stock.symbol}`}>
-          {getSectorFromIndustry(stock.industry)}
+      {stock.sector}
         </Link>
       </TableCell>
       <TableCell className="h-6 px-2 py-0 text-start font-semibold text-white">

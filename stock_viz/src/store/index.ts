@@ -47,8 +47,6 @@ export const usePdfStore = create<PdfStore>((set) => ({
   setCanCreatePdf: (newVal: boolean) => set({ canCreatePdf: newVal }),
   closePrice: 0,
   setClosePrice: (newVal: number) => set({ closePrice: newVal }),
-
-
 }));
 
 interface ChartControlStore {
@@ -73,4 +71,21 @@ export const useChartControlStore = create<ChartControlStore>((set) => ({
     set({ currentStockPriceData: newVal }),
   interval: "1D",
   setInterval: (newVal: string) => set({ interval: newVal }),
+}));
+
+interface ParentHoverType {
+  sector: string;
+  industry: string;
+  symbol: string;
+  symbols: string[];
+}
+interface ParentHoverStore {
+  parentHover: ParentHoverType | null;
+  setParentHover: (newVal: ParentHoverType | null) => void;
+}
+
+export const useParentHoverStore = create<ParentHoverStore>((set) => ({
+  parentHover: null,
+  setParentHover: (newVal: ParentHoverType | null) =>
+    set({ parentHover: newVal }),
 }));

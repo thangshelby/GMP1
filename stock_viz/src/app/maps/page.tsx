@@ -1,20 +1,22 @@
 "use client";
 import * as d3 from "d3";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useMemo } from "react";
 import { ReviewStockType } from "@/types";
 import { format, subYears } from "date-fns";
 import { useQuery } from "@tanstack/react-query";
 import { getSymbolReview } from "@/apis/market.api";
-import { getStocksQuote } from "@/apis/stock.api";
 import { RiErrorWarningLine } from "react-icons/ri";
-
+import { debounce } from "lodash";
+import { getColor as colorScale } from "@/lib/utils";
+import { colorsAndRanges } from "@/constants";
+import IndustryHoverCard from "@/components/maps/IndustryHoverCard";
+import { useParentHoverStore } from "@/store";
 interface TreemapNode {
   name: string;
   value: number;
   change: number;
   children?: TreemapNode[];
 }
-
 interface Node {
   children: Node[];
   data: TreemapNode;
@@ -29,12 +31,9 @@ interface Node {
 
 const Treemap = () => {
   const date = format(subYears(new Date(), 1), "yyyy-MM-dd");
-  const [parentHover, setParentHover] = useState<{
-    sector: string;
-    industry: string;
-    symbol: string;
-  } | null>(null);
-  const [symbols, setSymbols] = useState<string[]>([]);
+  const { parentHover, setParentHover } = useParentHoverStore();
+
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   const result = useQuery({
     queryKey: [`symbols/symbols_review`, "treemap", false],
@@ -42,14 +41,147 @@ const Treemap = () => {
     refetchOnWindowFocus: false,
   });
 
-  const industryQuery = useQuery({
-    queryKey: [`industry_detail`, parentHover?.industry, date],
-    queryFn: () => getStocksQuote(symbols.join(","), date),
-    enabled: !!parentHover,
-    refetchOnWindowFocus: false,
-  });
+  const treeData = useMemo(() => {
+    if (!result.data) return null;
 
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+    const nestedDataBySector = d3.group(
+      result.data,
+      (d: ReviewStockType) => d.sector,
+    );
+
+    const hierarchyData: TreemapNode = {
+      name: "Tổng thị trường",
+      value: d3.sum(result.data, (d: ReviewStockType) => d.market_cap),
+      change: d3.sum(result.data, (d: ReviewStockType) => d.change),
+      children: Array.from(
+        nestedDataBySector,
+        ([sector_name, nestedDataByIndustry]) => ({
+          name: sector_name,
+          value: d3.sum(nestedDataByIndustry, (d) => d.market_cap),
+          change: d3.sum(nestedDataByIndustry, (d) => d.change),
+          children: Array.from(
+            d3.group(nestedDataByIndustry, (d) => d.industry),
+            ([key, value]) => ({
+              name: key,
+              value: d3.sum(value, (d) => d.market_cap),
+              change: d3.sum(value, (d) => d.change),
+              children: value
+                .map((d: ReviewStockType) => ({
+                  name: d.symbol,
+                  value: d.market_cap,
+                  change: d.change,
+                }))
+                .sort((a, b) => b.value - a.value),
+            }),
+          ).sort((a, b) => b.value - a.value),
+        }),
+      ).sort((a, b) => b.value - a.value),
+    };
+
+    const root = d3
+      .treemap<TreemapNode>()
+      .tile(d3.treemapBinary)
+      .size([
+        canvasRef.current?.clientWidth || 0,
+        (canvasRef.current?.clientWidth || 0) * 0.5,
+      ])
+      .paddingInner(2)
+      .paddingOuter(1)
+      .paddingTop(() => 16)
+      .round(true)(
+      d3
+        .hierarchy(hierarchyData)
+        .sum((d) => d.value)
+        .sort((a, b) => (b.value || 0) - (a.value || 0)),
+    );
+
+    return { root };
+  }, [result.data]);
+
+  const debouncedSetHover = useMemo(
+    () =>
+      debounce((hoverData) => {
+        setParentHover(hoverData);
+      }, 0),
+    [setParentHover],
+  );
+
+  const createQuadtree = useMemo(() => {
+    if (!treeData?.root) return null;
+
+    interface QuadtreePoint {
+      x0: number;
+      y0: number;
+      x1: number;
+      y1: number;
+      data: {
+        sector: string;
+        industry: string;
+        symbol: string;
+        symbols: string[];
+      };
+    }
+
+    const points: QuadtreePoint[] = [];
+
+    treeData.root.children?.forEach((sector) => {
+      sector.children?.forEach((industry) => {
+        industry.children?.forEach((symbol) => {
+          points.push({
+            x0: symbol.x0,
+            y0: symbol.y0,
+            x1: symbol.x1,
+            y1: symbol.y1,
+            data: {
+              sector: sector.data.name,
+              industry: industry.data.name,
+              symbol: symbol.data.name,
+              symbols: industry.children?.map((s) => s.data.name) || [],
+            },
+          });
+        });
+      });
+    });
+
+    const findNode = (x: number, y: number) => {
+      const validPoint = points.find(
+        (point) =>
+          x >= point.x0 && x <= point.x1 && y >= point.y0 && y <= point.y1,
+      );
+
+      return validPoint;
+    };
+
+    return {
+      find: findNode,
+    };
+  }, [treeData]);
+
+  // Use it in your mousemove handler
+  const handleMouseMove = useMemo(() => {
+    if (!canvasRef.current) {
+      setParentHover(null);
+      return;
+    }
+    return (e: MouseEvent) => {
+      const rect = canvasRef.current!.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      const point = createQuadtree?.find(x, y); // Find nearest point within 10px
+      if (
+        point &&
+        x >= point.x0 &&
+        x <= point.x1 &&
+        y >= point.y0 &&
+        y <= point.y1
+      ) {
+        debouncedSetHover(point.data);
+      } else {
+        debouncedSetHover(null);
+      }
+    };
+  }, [createQuadtree, debouncedSetHover, setParentHover]);
 
   useEffect(() => {
     if (
@@ -58,11 +190,11 @@ const Treemap = () => {
       result.isError === true
     )
       return;
-    const colorScale = d3.scaleQuantile(
-      [-1, 1],
-      colors.map((color) => color.color),
-    );
-    const paddingInner = 2;
+
+    if (!treeData || !treeData.root) return;
+
+    const { root } = treeData;
+
     const paddingOuter = 1;
     const paddingTop = 16;
     const fontSize = paddingTop - 4;
@@ -105,7 +237,7 @@ const Treemap = () => {
 
     const handleFontSizeIndustry = (industry: Node) => {
       const boxWidth = industry.x1 - industry.x0;
-      if (handleTextIndustry(industry).length * 12 > boxWidth) {
+      if (handleTextIndustry(industry).length * 12 > boxWidth * 1.5) {
         return "0";
       }
       return "12";
@@ -118,52 +250,6 @@ const Treemap = () => {
 
     canvas.width = width;
     canvas.height = height;
-
-    const nestedDataBySector = d3.group(
-      result.data,
-      (d: ReviewStockType) => d.sector,
-    );
-
-    const hierarchyData: TreemapNode = {
-      name: "Tổng thị trường",
-      value: d3.sum(result.data, (d: ReviewStockType) => d.market_cap),
-      change: d3.sum(result.data, (d: ReviewStockType) => d.change),
-      children: Array.from(
-        nestedDataBySector,
-        ([sector_name, nestedDataByIndustry]) => ({
-          name: sector_name,
-          value: d3.sum(nestedDataByIndustry, (d) => d.market_cap),
-          change: d3.sum(nestedDataByIndustry, (d) => d.change),
-          children: Array.from(
-            d3.group(nestedDataByIndustry, (d) => d.industry),
-            ([key, value]) => ({
-              name: key,
-              value: d3.sum(value, (d) => d.market_cap),
-              change: d3.sum(value, (d) => d.change),
-              children: value.map((d: ReviewStockType) => ({
-                name: d.symbol,
-                value: d.market_cap,
-                change: d.change,
-              })),
-            }),
-          ),
-        }),
-      ),
-    };
-
-    const root = d3
-      .treemap<TreemapNode>()
-      .tile(d3.treemapBinary)
-      .size([width, height])
-      .paddingInner(paddingInner)
-      .paddingOuter(paddingOuter)
-      .paddingTop(() => paddingTop)
-      .round(false)(
-      d3
-        .hierarchy(hierarchyData)
-        .sum((d) => d.value)
-        .sort((a, b) => (b.value || 0) - (a.value || 0)),
-    );
 
     // Draw function
     const draw = () => {
@@ -188,6 +274,16 @@ const Treemap = () => {
       root.children?.forEach((sector) => {
         sector.children?.forEach((industry) => {
           const isHovered = parentHover?.industry === industry.data.name;
+          if (isHovered) {
+            ctx.fillStyle = "yellow";
+
+            ctx.fillRect(
+              industry.x0 - paddingOuter,
+              industry.y0,
+              Math.abs(industry.x1 - industry.x0 + paddingOuter * 2),
+              industry.y1 - industry.y0,
+            );
+          }
 
           // Draw industry background
           ctx.fillStyle = isHovered
@@ -203,9 +299,11 @@ const Treemap = () => {
           // Draw industry text
           ctx.fillStyle = isHovered ? "black" : "#f3f3f5";
           ctx.font = `500 ${handleFontSizeIndustry(industry as Node)}px Arial`;
+          ctx.textAlign = "start";
+
           ctx.fillText(
             handleTextIndustry(industry as Node),
-            industry.x0 + 15,
+            industry.x0 + 5,
             industry.y0 + paddingTop - fontSize / 2 + 2,
           );
 
@@ -246,41 +344,9 @@ const Treemap = () => {
       });
     };
 
-    // Add mouse event listeners
-    // canvas.addEventListener("mousemove", (e) => {
-    //   const rect = canvas.getBoundingClientRect();
-    //   const x = e.clientX - rect.left;
-    //   const y = e.clientY - rect.top;
-
-    //   // Find hovered element
-    //   let found = false;
-    //   root.children?.forEach((sector) => {
-    //     sector.children?.forEach((industry) => {
-    //       industry.children?.forEach((symbol) => {
-    //         if (
-    //           x >= symbol.x0 &&
-    //           x <= symbol.x1 &&
-    //           y >= symbol.y0 &&
-    //           y <= symbol.y1
-    //         ) {
-    //           setParentHover({
-    //             sector: sector.data.name,
-    //             industry: industry.data.name,
-    //             symbol: symbol.data.name,
-    //           });
-    //           setSymbols(industry.children?.map((s) => s.data.name) || []);
-    //           found = true;
-    //         }
-    //       });
-    //     });
-    //   });
-
-    //   if (!found) {
-    //     setParentHover(null);
-    //   }
-
-    //   draw();
-    // });
+    if (handleMouseMove) {
+      canvas.addEventListener("mousemove", handleMouseMove);
+    }
 
     canvas.addEventListener("mouseleave", () => {
       setParentHover(null);
@@ -289,7 +355,15 @@ const Treemap = () => {
 
     // Initial draw
     draw();
-  }, [result.data, result.isLoading, result.isError, parentHover]);
+  }, [
+    result.data,
+    result.isLoading,
+    result.isError,
+    parentHover,
+    treeData,
+    handleMouseMove,
+    setParentHover,
+  ]);
 
   return (
     <div className="flex h-full w-full flex-col items-center gap-6 p-4">
@@ -306,6 +380,7 @@ const Treemap = () => {
       />
 
       {/* TREE MAP NOTE */}
+
       <div className="flex w-full flex-row items-center justify-between">
         <div className="flex flex-row items-center gap-2">
           <RiErrorWarningLine color="#929cb3" />
@@ -319,7 +394,7 @@ const Treemap = () => {
         </div>
 
         <div className="flex flex-row items-center gap-1">
-          {colors.map((color, index) => (
+          {colorsAndRanges.map((color, index) => (
             <p
               key={index}
               style={{ backgroundColor: color.color }}
@@ -331,35 +406,13 @@ const Treemap = () => {
         </div>
       </div>
 
-      {/* Optional: Display industry-specific data when hovering */}
-      {parentHover && (
-        <div className="fixed top-4 right-4 z-50 bg-gray-800 p-2 text-white">
-          <h3 className="mb-2 text-lg font-bold">
-            {parentHover?.sector} - {parentHover?.industry}-{" "}
-            {parentHover?.symbol}
-          </h3>
-          {industryQuery.isLoading ? (
-            <LoadingTable />
-          ) : industryQuery.data ? (
-            <div className="border-[2px] border-[#22262f] bg-white p-2">
-              {industryQuery.data.map(
-                (
-                  item: {
-                    symbol: string;
-                    data: {
-                      close: number;
-                    };
-                  },
-                  index: number,
-                ) => (
-                  <div key={index}>
-                    <p className="font-bol text-sm text-black">{item.symbol}</p>
-                  </div>
-                ),
-              )}
-            </div>
-          ) : null}
-        </div>
+      {treeData?.root && (
+        <IndustryHoverCard
+          parentHover={parentHover}
+          treeData={treeData.root}
+          date={date}
+          canvasRef={canvasRef as React.RefObject<HTMLCanvasElement>}
+        />
       )}
     </div>
   );
@@ -371,37 +424,6 @@ const warning = [
   "Use mouse wheel to zoom in and out. Drag zoomed map to pan it.",
   "Double‑click a ticker to display detailed information in a new window.",
   "Hover mouse cursor over a ticker to see its main competitors in a stacked view with a 3-month history graph.",
-];
-
-const colors = [
-  {
-    color: "#f63538",
-    value: "-3",
-  },
-  {
-    color: "#bf4045",
-    value: "-2",
-  },
-  {
-    color: "#8b444e",
-    value: "-1",
-  },
-  {
-    color: "#414554",
-    value: "0",
-  },
-  {
-    color: "#35764e",
-    value: "1",
-  },
-  {
-    color: "#2f9e4f",
-    value: "2",
-  },
-  {
-    color: "#30cc5a",
-    value: "3",
-  },
 ];
 
 function LoadingTable() {
