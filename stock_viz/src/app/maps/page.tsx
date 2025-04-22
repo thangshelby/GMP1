@@ -6,19 +6,20 @@ import { format, subYears } from "date-fns";
 import { useQuery } from "@tanstack/react-query";
 import { getSymbolReview } from "@/apis/market.api";
 import { RiErrorWarningLine } from "react-icons/ri";
-import { debounce } from "lodash";
 import { getColor as colorScale } from "@/lib/utils";
 import { colorsAndRanges } from "@/constants";
 import IndustryHoverCard from "@/components/maps/IndustryHoverCard";
-import { useParentHoverStore } from "@/store";
+// import { useParentHoverStore } from "@/store";
+
 interface TreemapNode {
   name: string;
   value: number;
   change: number;
   children?: TreemapNode[];
 }
+
 interface Node {
-  children: Node[];
+  children?: Node[];
   data: TreemapNode;
   depth: number;
   height: number;
@@ -31,9 +32,15 @@ interface Node {
 
 const Treemap = () => {
   const date = format(subYears(new Date(), 1), "yyyy-MM-dd");
-  const { parentHover, setParentHover } = useParentHoverStore();
-
+  const [symbol, setSymbol] =
+    React.useState<d3.HierarchyRectangularNode<TreemapNode> | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
+  const lastExecutionRef = useRef<number>(0);
+  const throttleInterval = 16; // ~60fps
+  const lastPointRef = useRef<{ x: number; y: number } | null>(null);
+
+
 
   const result = useQuery({
     queryKey: [`symbols/symbols_review`, "treemap", false],
@@ -98,90 +105,121 @@ const Treemap = () => {
     return { root };
   }, [result.data]);
 
-  const debouncedSetHover = useMemo(
-    () =>
-      debounce((hoverData) => {
-        setParentHover(hoverData);
-      }, 0),
-    [setParentHover],
-  );
-
   const createQuadtree = useMemo(() => {
     if (!treeData?.root) return null;
 
-    interface QuadtreePoint {
-      x0: number;
-      y0: number;
-      x1: number;
-      y1: number;
-      data: {
-        sector: string;
-        industry: string;
-        symbol: string;
-        symbols: string[];
-      };
-    }
-
-    const points: QuadtreePoint[] = [];
-
-    treeData.root.children?.forEach((sector) => {
-      sector.children?.forEach((industry) => {
-        industry.children?.forEach((symbol) => {
-          points.push({
-            x0: symbol.x0,
-            y0: symbol.y0,
-            x1: symbol.x1,
-            y1: symbol.y1,
-            data: {
-              sector: sector.data.name,
-              industry: industry.data.name,
-              symbol: symbol.data.name,
-              symbols: industry.children?.map((s) => s.data.name) || [],
-            },
-          });
-        });
-      });
-    });
-
-    const findNode = (x: number, y: number) => {
-      const validPoint = points.find(
-        (point) =>
-          x >= point.x0 && x <= point.x1 && y >= point.y0 && y <= point.y1,
-      );
-
-      return validPoint;
+    const findSector = (
+      root: d3.HierarchyRectangularNode<TreemapNode>,
+      x: number,
+      y: number,
+    ): d3.HierarchyRectangularNode<TreemapNode> | null => {
+      if (!root.children) return null;
+      for (let i = 0; i < root.children.length; i++) {
+        const sector = root.children[i];
+        if (
+          x >= sector.x0 &&
+          x <= sector.x1 &&
+          y >= sector.y0 &&
+          y <= sector.y1
+        ) {
+          return sector;
+        }
+      }
+      return null;
+    };
+    const findIndustry = (
+      rootSector: d3.HierarchyRectangularNode<TreemapNode>,
+      x: number,
+      y: number,
+    ): d3.HierarchyRectangularNode<TreemapNode> | null => {
+      if (!rootSector.children) return null;
+      for (let i = 0; i < rootSector.children.length; i++) {
+        const sector = rootSector.children[i];
+        if (
+          x >= sector.x0 &&
+          x <= sector.x1 &&
+          y >= sector.y0 &&
+          y <= sector.y1
+        ) {
+          return sector;
+        }
+      }
+      return null;
+    };
+    const findSymbol = (
+      rootIndustry: d3.HierarchyRectangularNode<TreemapNode>,
+      x: number,
+      y: number,
+    ): d3.HierarchyRectangularNode<TreemapNode> | null => {
+      if (!rootIndustry.children) return null;
+      for (let i = 0; i < rootIndustry.children.length; i++) {
+        const symbol = rootIndustry.children[i];
+        if (
+          x >= symbol.x0 &&
+          x <= symbol.x1 &&
+          y >= symbol.y0 &&
+          y <= symbol.y1
+        ) {
+          return symbol;
+        }
+      }
+      return null;
     };
 
     return {
-      find: findNode,
+      findSector,
+      findIndustry,
+      findSymbol,
     };
   }, [treeData]);
 
-  // Use it in your mousemove handler
   const handleMouseMove = useMemo(() => {
-    if (!canvasRef.current) {
-      setParentHover(null);
+    if (!canvasRef.current || !treeData?.root) {
       return;
     }
+
+    // Add throttling to mouse move events
     return (e: MouseEvent) => {
+      const now = performance.now();
+      if (now - lastExecutionRef.current < throttleInterval) {
+        return;
+      }
+      lastExecutionRef.current = now;
+
+      if (
+        lastPointRef.current?.x === e.clientX &&
+        lastPointRef.current?.y === e.clientY
+      ) {
+        return;
+      }
+
+      lastPointRef.current = { x: e.clientX, y: e.clientY };
+
       const rect = canvasRef.current!.getBoundingClientRect();
+
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
 
-      const point = createQuadtree?.find(x, y); // Find nearest point within 10px
-      if (
-        point &&
-        x >= point.x0 &&
-        x <= point.x1 &&
-        y >= point.y0 &&
-        y <= point.y1
-      ) {
-        debouncedSetHover(point.data);
-      } else {
-        debouncedSetHover(null);
+      if (createQuadtree && treeData?.root) {
+        try {
+          const sector = createQuadtree.findSector(treeData.root, x, y);
+          if (!sector) return;
+
+          const industry = createQuadtree.findIndustry(sector, x, y);
+          if (!industry) return;
+
+          const symbol = createQuadtree.findSymbol(industry, x, y);
+
+          if (symbol && sector && industry) {
+            setSymbol(symbol);
+          }
+        } catch (error) {
+          console.log(error);
+        }
       }
     };
-  }, [createQuadtree, debouncedSetHover, setParentHover]);
+  }, [createQuadtree, treeData]);
+
 
   useEffect(() => {
     if (
@@ -190,61 +228,60 @@ const Treemap = () => {
       result.isError === true
     )
       return;
-
+      const paddingOuter = 1;
+      const paddingTop = 16;
+      const fontSize = paddingTop - 4;
+    
+      const handleTextFontSizeSymbol = (symbol: Node) => {
+        const boxWidth = symbol.x1 - symbol.x0;
+        const boxHeight = symbol.y1 - symbol.y0;
+    
+        if (boxHeight < 15 || boxWidth < 20) return "0";
+        if (boxHeight < 20 || boxWidth < 25) return "5";
+        if (boxHeight < 25 || boxWidth < 30) return "6";
+        if (boxHeight < 30 || boxWidth < 35) return "8";
+        if (boxHeight < 35 || boxWidth < 40) return "10";
+        if (boxHeight < 40 || boxWidth < 45) return "12";
+        if (boxHeight < 45 || boxWidth < 50) return "14";
+        if (boxHeight < 50 || boxWidth < 55) return "16";
+        if (boxHeight < 55 || boxWidth < 60) return "18";
+        return "20";
+      };
+    
+      const handleTextIndustry = (parent: Node) => {
+        const boxWidth = parent.x1 - parent.x0;
+        if (boxWidth <= 10) return "";
+    
+        if (parent.data.name.split(" ").length > 2) {
+          return parent.data.name
+            .split(" ")
+            .map((word: string) => word.charAt(0).toUpperCase())
+            .join("");
+        }
+    
+        return parent.data.name
+          .split(" ")
+          .slice(0, 2)
+          .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(" ")
+          .trim()
+          .toLocaleUpperCase();
+      };
+    
+      const handleFontSizeIndustry = (industry: Node) => {
+        const boxWidth = industry.x1 - industry.x0;
+        if (handleTextIndustry(industry).length * 12 > boxWidth * 1.5) {
+          return "0";
+        }
+        return "12";
+      };
     if (!treeData || !treeData.root) return;
 
     const { root } = treeData;
 
-    const paddingOuter = 1;
-    const paddingTop = 16;
-    const fontSize = paddingTop - 4;
-
-    const handleTextFontSizeSymbol = (symbol: Node) => {
-      const boxWidth = symbol.x1 - symbol.x0;
-      const boxHeight = symbol.y1 - symbol.y0;
-
-      if (boxHeight < 15 || boxWidth < 20) return "0";
-      if (boxHeight < 20 || boxWidth < 25) return "5";
-      if (boxHeight < 25 || boxWidth < 30) return "6";
-      if (boxHeight < 30 || boxWidth < 35) return "8";
-      if (boxHeight < 35 || boxWidth < 40) return "10";
-      if (boxHeight < 40 || boxWidth < 45) return "12";
-      if (boxHeight < 45 || boxWidth < 50) return "14";
-      if (boxHeight < 50 || boxWidth < 55) return "16";
-      if (boxHeight < 55 || boxWidth < 60) return "18";
-      return "20";
-    };
-
-    const handleTextIndustry = (parent: Node) => {
-      const boxWidth = parent.x1 - parent.x0;
-      if (boxWidth <= 10) return "";
-
-      if (parent.data.name.split(" ").length > 2) {
-        return parent.data.name
-          .split(" ")
-          .map((word: string) => word.charAt(0).toUpperCase())
-          .join("");
-      }
-
-      return parent.data.name
-        .split(" ")
-        .slice(0, 2)
-        .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(" ")
-        .trim()
-        .toLocaleUpperCase();
-    };
-
-    const handleFontSizeIndustry = (industry: Node) => {
-      const boxWidth = industry.x1 - industry.x0;
-      if (handleTextIndustry(industry).length * 12 > boxWidth * 1.5) {
-        return "0";
-      }
-      return "12";
-    };
-
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d")!;
+    ctxRef.current = ctx;
     const width = canvas.clientWidth;
     const height = width * 0.5;
 
@@ -261,6 +298,13 @@ const Treemap = () => {
       root.children?.forEach((child) => {
         // Draw sector text
         ctx.fillStyle = "#f3f3f5";
+        
+        // Add shadow for sector text
+        ctx.shadowColor = "rgba(0, 0, 0)";
+        ctx.shadowBlur = 5;
+        ctx.shadowOffsetX = 2;
+        ctx.shadowOffsetY = 2;
+        
         ctx.font = `600 ${fontSize}px Arial`;
         ctx.textAlign = "start";
         ctx.fillText(
@@ -268,12 +312,19 @@ const Treemap = () => {
           child.x0 + 5,
           child.y0 + paddingTop - fontSize / 2 + 2,
         );
+        
+        // Reset shadow
+        ctx.shadowColor = "transparent";
+        ctx.shadowBlur = 0;
+        ctx.shadowOffsetX = 0;
+        ctx.shadowOffsetY = 0;
       });
 
       // Draw industries
       root.children?.forEach((sector) => {
         sector.children?.forEach((industry) => {
-          const isHovered = parentHover?.industry === industry.data.name;
+          const isHovered = symbol?.parent?.data.name === industry.data.name;
+         
           if (isHovered) {
             ctx.fillStyle = "yellow";
 
@@ -298,14 +349,26 @@ const Treemap = () => {
 
           // Draw industry text
           ctx.fillStyle = isHovered ? "black" : "#f3f3f5";
+          
+          // Add shadow for industry text
+          ctx.shadowColor = "rgba(0, 0, 0)";
+          ctx.shadowBlur = 2;
+          ctx.shadowOffsetX = 1;
+          ctx.shadowOffsetY = 1;
+          
           ctx.font = `500 ${handleFontSizeIndustry(industry as Node)}px Arial`;
           ctx.textAlign = "start";
-
           ctx.fillText(
             handleTextIndustry(industry as Node),
             industry.x0 + 5,
             industry.y0 + paddingTop - fontSize / 2 + 2,
           );
+          
+          // Reset shadow
+          ctx.shadowColor = "transparent";
+          ctx.shadowBlur = 0;
+          ctx.shadowOffsetX = 0;
+          ctx.shadowOffsetY = 0;
 
           // Draw symbols
           industry.children?.forEach((symbol) => {
@@ -322,6 +385,13 @@ const Treemap = () => {
               const fontSize = handleTextFontSizeSymbol(symbol as Node);
               if (fontSize !== "0") {
                 ctx.fillStyle = "white";
+                
+                // Add text shadow
+                ctx.shadowColor = "rgba(0, 0, 0)";
+                ctx.shadowBlur = 5;
+                ctx.shadowOffsetX = 2;
+                ctx.shadowOffsetY = 2;
+                
                 ctx.font = `bold ${fontSize}px Arial`;
                 ctx.textAlign = "center";
                 ctx.fillText(
@@ -329,7 +399,7 @@ const Treemap = () => {
                   (symbol.x0 + symbol.x1) / 2,
                   (symbol.y0 + symbol.y1) / 2,
                 );
-
+                
                 // Draw change percentage
                 ctx.font = `bold ${parseInt(fontSize) - 4}px Arial`;
                 ctx.fillText(
@@ -337,6 +407,12 @@ const Treemap = () => {
                   (symbol.x0 + symbol.x1) / 2,
                   (symbol.y0 + symbol.y1) / 2 + parseInt(fontSize),
                 );
+                
+                // Reset shadow after drawing text
+                ctx.shadowColor = "transparent";
+                ctx.shadowBlur = 0;
+                ctx.shadowOffsetX = 0;
+                ctx.shadowOffsetY = 0;
               }
             }
           });
@@ -349,7 +425,7 @@ const Treemap = () => {
     }
 
     canvas.addEventListener("mouseleave", () => {
-      setParentHover(null);
+      setSymbol(null);
       draw();
     });
 
@@ -359,14 +435,12 @@ const Treemap = () => {
     result.data,
     result.isLoading,
     result.isError,
-    parentHover,
     treeData,
     handleMouseMove,
-    setParentHover,
+    symbol,
   ]);
-
   return (
-    <div className="flex h-full w-full flex-col items-center gap-6 p-4">
+    <div className="flex w-full flex-col items-center gap-6 p-4">
       {result.isLoading && (
         <div className="flex h-[200px] w-full items-center justify-center">
           <LoadingTable />
@@ -408,10 +482,10 @@ const Treemap = () => {
 
       {treeData?.root && (
         <IndustryHoverCard
-          parentHover={parentHover}
           treeData={treeData.root}
           date={date}
           canvasRef={canvasRef as React.RefObject<HTMLCanvasElement>}
+          symbol={symbol}
         />
       )}
     </div>

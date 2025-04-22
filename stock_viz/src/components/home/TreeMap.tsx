@@ -71,8 +71,6 @@ const Treemap = () => {
       })),
     };
 
-    // hierarchyData.children = hierarchyData.children!.sort((a, b) => b.value - a.value).slice(0, 10)
-    // console.log(hierarchyData)
     const width = ref.current?.clientWidth ?? 0;
     const height = ref.current?.clientWidth ?? 0;
 

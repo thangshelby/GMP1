@@ -28,5 +28,11 @@ export const fetchAPI = async (url: string, option?: any) => {
 export const getColor = (value: number) => {
   return colorScale(value);
 };
-
+export const formatNumber = (value: number) => {
+  return value.toLocaleString("en-US", {
+    style: "currency",
+    currency: "VND",
+    minimumFractionDigits: 0,
+  });
+};
 
