@@ -1,7 +1,7 @@
 "use client";
 import * as d3 from "d3";
 import React, { useEffect, useRef, useMemo } from "react";
-import { ReviewStockType } from "@/types";
+import { ReviewStockType, TreemapNode, Node } from "@/types";
 import { format, subYears } from "date-fns";
 import { useQuery } from "@tanstack/react-query";
 import { getSymbolReview } from "@/apis/market.api";
@@ -9,26 +9,6 @@ import { RiErrorWarningLine } from "react-icons/ri";
 import { getColor as colorScale } from "@/lib/utils";
 import { colorsAndRanges } from "@/constants";
 import IndustryHoverCard from "@/components/maps/IndustryHoverCard";
-// import { useParentHoverStore } from "@/store";
-
-interface TreemapNode {
-  name: string;
-  value: number;
-  change: number;
-  children?: TreemapNode[];
-}
-
-interface Node {
-  children?: Node[];
-  data: TreemapNode;
-  depth: number;
-  height: number;
-  x0: number;
-  x1: number;
-  y0: number;
-  y1: number;
-  parent?: Node;
-}
 
 const Treemap = () => {
   const date = format(subYears(new Date(), 1), "yyyy-MM-dd");
@@ -39,8 +19,6 @@ const Treemap = () => {
   const lastExecutionRef = useRef<number>(0);
   const throttleInterval = 16; // ~60fps
   const lastPointRef = useRef<{ x: number; y: number } | null>(null);
-
-
 
   const result = useQuery({
     queryKey: [`symbols/symbols_review`, "treemap", false],
@@ -58,32 +36,30 @@ const Treemap = () => {
 
     const hierarchyData: TreemapNode = {
       name: "Tổng thị trường",
-      value: d3.sum(result.data, (d: ReviewStockType) => d.market_cap),
-      change: d3.sum(result.data, (d: ReviewStockType) => d.change),
       children: Array.from(
         nestedDataBySector,
         ([sector_name, nestedDataByIndustry]) => ({
           name: sector_name,
-          value: d3.sum(nestedDataByIndustry, (d) => d.market_cap),
-          change: d3.sum(nestedDataByIndustry, (d) => d.change),
           children: Array.from(
             d3.group(nestedDataByIndustry, (d) => d.industry),
             ([key, value]) => ({
               name: key,
-              value: d3.sum(value, (d) => d.market_cap),
               change: d3.sum(value, (d) => d.change),
-              children: value
-                .map((d: ReviewStockType) => ({
-                  name: d.symbol,
-                  value: d.market_cap,
-                  change: d.change,
-                }))
-                .sort((a, b) => b.value - a.value),
+              children: value.map((d: ReviewStockType) => ({
+                name: d.symbol,
+                value: d.market_cap,
+                change: d.change,
+              })),
             }),
-          ).sort((a, b) => b.value - a.value),
+          ),
         }),
-      ).sort((a, b) => b.value - a.value),
+      ),
     };
+
+    const hierachy = d3
+      .hierarchy(hierarchyData)
+      .sum((d) => d.value || 0)
+      .sort((a, b) => (b.value || 0) - (a.value || 0));
 
     const root = d3
       .treemap<TreemapNode>()
@@ -95,81 +71,34 @@ const Treemap = () => {
       .paddingInner(2)
       .paddingOuter(1)
       .paddingTop(() => 16)
-      .round(true)(
-      d3
-        .hierarchy(hierarchyData)
-        .sum((d) => d.value)
-        .sort((a, b) => (b.value || 0) - (a.value || 0)),
-    );
+      .round(true)(hierachy);
 
-    return { root };
+    return { root, hierarchyData, hierachy };
   }, [result.data]);
 
   const createQuadtree = useMemo(() => {
     if (!treeData?.root) return null;
 
-    const findSector = (
+    const findNode = (
       root: d3.HierarchyRectangularNode<TreemapNode>,
       x: number,
       y: number,
+      targetDepth: number,
     ): d3.HierarchyRectangularNode<TreemapNode> | null => {
-      if (!root.children) return null;
+      if (!root.children || targetDepth == root.depth) return root;
       for (let i = 0; i < root.children.length; i++) {
-        const sector = root.children[i];
-        if (
-          x >= sector.x0 &&
-          x <= sector.x1 &&
-          y >= sector.y0 &&
-          y <= sector.y1
-        ) {
-          return sector;
-        }
-      }
-      return null;
-    };
-    const findIndustry = (
-      rootSector: d3.HierarchyRectangularNode<TreemapNode>,
-      x: number,
-      y: number,
-    ): d3.HierarchyRectangularNode<TreemapNode> | null => {
-      if (!rootSector.children) return null;
-      for (let i = 0; i < rootSector.children.length; i++) {
-        const sector = rootSector.children[i];
-        if (
-          x >= sector.x0 &&
-          x <= sector.x1 &&
-          y >= sector.y0 &&
-          y <= sector.y1
-        ) {
-          return sector;
-        }
-      }
-      return null;
-    };
-    const findSymbol = (
-      rootIndustry: d3.HierarchyRectangularNode<TreemapNode>,
-      x: number,
-      y: number,
-    ): d3.HierarchyRectangularNode<TreemapNode> | null => {
-      if (!rootIndustry.children) return null;
-      for (let i = 0; i < rootIndustry.children.length; i++) {
-        const symbol = rootIndustry.children[i];
-        if (
-          x >= symbol.x0 &&
-          x <= symbol.x1 &&
-          y >= symbol.y0 &&
-          y <= symbol.y1
-        ) {
-          return symbol;
+        const node = root.children[i];
+        const isMousePositionInNode =
+          x >= node.x0 && x <= node.x1 && y >= node.y0 && y <= node.y1;
+        if (isMousePositionInNode) {
+          return findNode(node, x, y, targetDepth);
         }
       }
       return null;
     };
 
     return {
-      findSector,
-      findIndustry,
-      findSymbol,
+      findNode,
     };
   }, [treeData]);
 
@@ -201,25 +130,25 @@ const Treemap = () => {
       const y = e.clientY - rect.top;
 
       if (createQuadtree && treeData?.root) {
-        try {
-          const sector = createQuadtree.findSector(treeData.root, x, y);
-          if (!sector) return;
+        const symbol = createQuadtree.findNode(treeData.root, x, y, 3);
+        if (symbol) {
+          setSymbol(symbol);
+          return;
+        } else {
+          const isOutOfIndustryBoundary = createQuadtree.findNode(
+            treeData.root,
+            x,
+            y,
+            1,
+          );
 
-          const industry = createQuadtree.findIndustry(sector, x, y);
-          if (!industry) return;
-
-          const symbol = createQuadtree.findSymbol(industry, x, y);
-
-          if (symbol && sector && industry) {
-            setSymbol(symbol);
+          if (!isOutOfIndustryBoundary) {
+            setSymbol(null);
           }
-        } catch (error) {
-          console.log(error);
         }
       }
     };
   }, [createQuadtree, treeData]);
-
 
   useEffect(() => {
     if (
@@ -228,53 +157,53 @@ const Treemap = () => {
       result.isError === true
     )
       return;
-      const paddingOuter = 1;
-      const paddingTop = 16;
-      const fontSize = paddingTop - 4;
-    
-      const handleTextFontSizeSymbol = (symbol: Node) => {
-        const boxWidth = symbol.x1 - symbol.x0;
-        const boxHeight = symbol.y1 - symbol.y0;
-    
-        if (boxHeight < 15 || boxWidth < 20) return "0";
-        if (boxHeight < 20 || boxWidth < 25) return "5";
-        if (boxHeight < 25 || boxWidth < 30) return "6";
-        if (boxHeight < 30 || boxWidth < 35) return "8";
-        if (boxHeight < 35 || boxWidth < 40) return "10";
-        if (boxHeight < 40 || boxWidth < 45) return "12";
-        if (boxHeight < 45 || boxWidth < 50) return "14";
-        if (boxHeight < 50 || boxWidth < 55) return "16";
-        if (boxHeight < 55 || boxWidth < 60) return "18";
-        return "20";
-      };
-    
-      const handleTextIndustry = (parent: Node) => {
-        const boxWidth = parent.x1 - parent.x0;
-        if (boxWidth <= 10) return "";
-    
-        if (parent.data.name.split(" ").length > 2) {
-          return parent.data.name
-            .split(" ")
-            .map((word: string) => word.charAt(0).toUpperCase())
-            .join("");
-        }
-    
+    const paddingOuter = 1;
+    const paddingTop = 16;
+    const fontSize = paddingTop - 4;
+
+    const handleTextFontSizeSymbol = (symbol: Node) => {
+      const boxWidth = symbol.x1 - symbol.x0;
+      const boxHeight = symbol.y1 - symbol.y0;
+
+      if (boxHeight < 15 || boxWidth < 20) return "0";
+      if (boxHeight < 20 || boxWidth < 25) return "5";
+      if (boxHeight < 25 || boxWidth < 30) return "6";
+      if (boxHeight < 30 || boxWidth < 35) return "8";
+      if (boxHeight < 35 || boxWidth < 40) return "10";
+      if (boxHeight < 40 || boxWidth < 45) return "12";
+      if (boxHeight < 45 || boxWidth < 50) return "14";
+      if (boxHeight < 50 || boxWidth < 55) return "16";
+      if (boxHeight < 55 || boxWidth < 60) return "18";
+      return "20";
+    };
+
+    const handleTextIndustry = (parent: Node) => {
+      const boxWidth = parent.x1 - parent.x0;
+      if (boxWidth <= 10) return "";
+
+      if (parent.data.name.split(" ").length > 2) {
         return parent.data.name
           .split(" ")
-          .slice(0, 2)
-          .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
-          .join(" ")
-          .trim()
-          .toLocaleUpperCase();
-      };
-    
-      const handleFontSizeIndustry = (industry: Node) => {
-        const boxWidth = industry.x1 - industry.x0;
-        if (handleTextIndustry(industry).length * 12 > boxWidth * 1.5) {
-          return "0";
-        }
-        return "12";
-      };
+          .map((word: string) => word.charAt(0).toUpperCase())
+          .join("");
+      }
+
+      return parent.data.name
+        .split(" ")
+        .slice(0, 2)
+        .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(" ")
+        .trim()
+        .toLocaleUpperCase();
+    };
+
+    const handleFontSizeIndustry = (industry: Node) => {
+      const boxWidth = industry.x1 - industry.x0;
+      if (handleTextIndustry(industry).length * 12 > boxWidth * 1.5) {
+        return "0";
+      }
+      return "12";
+    };
     if (!treeData || !treeData.root) return;
 
     const { root } = treeData;
@@ -297,14 +226,8 @@ const Treemap = () => {
       // Draw sectors
       root.children?.forEach((child) => {
         // Draw sector text
-        ctx.fillStyle = "#f3f3f5";
-        
-        // Add shadow for sector text
-        ctx.shadowColor = "rgba(0, 0, 0)";
-        ctx.shadowBlur = 5;
-        ctx.shadowOffsetX = 2;
-        ctx.shadowOffsetY = 2;
-        
+        ctx.fillStyle = "#ffffff  ";
+
         ctx.font = `600 ${fontSize}px Arial`;
         ctx.textAlign = "start";
         ctx.fillText(
@@ -312,19 +235,13 @@ const Treemap = () => {
           child.x0 + 5,
           child.y0 + paddingTop - fontSize / 2 + 2,
         );
-        
-        // Reset shadow
-        ctx.shadowColor = "transparent";
-        ctx.shadowBlur = 0;
-        ctx.shadowOffsetX = 0;
-        ctx.shadowOffsetY = 0;
       });
 
       // Draw industries
       root.children?.forEach((sector) => {
         sector.children?.forEach((industry) => {
           const isHovered = symbol?.parent?.data.name === industry.data.name;
-         
+
           if (isHovered) {
             ctx.fillStyle = "yellow";
 
@@ -335,45 +252,10 @@ const Treemap = () => {
               industry.y1 - industry.y0,
             );
           }
-
-          // Draw industry background
-          ctx.fillStyle = isHovered
-            ? "yellow"
-            : colorScale(industry.data.change);
-          ctx.fillRect(
-            industry.x0 + paddingOuter,
-            industry.y0,
-            Math.abs(industry.x1 - industry.x0 - paddingOuter * 2),
-            paddingTop,
-          );
-
-          // Draw industry text
-          ctx.fillStyle = isHovered ? "black" : "#f3f3f5";
-          
-          // Add shadow for industry text
-          ctx.shadowColor = "rgba(0, 0, 0)";
-          ctx.shadowBlur = 2;
-          ctx.shadowOffsetX = 1;
-          ctx.shadowOffsetY = 1;
-          
-          ctx.font = `500 ${handleFontSizeIndustry(industry as Node)}px Arial`;
-          ctx.textAlign = "start";
-          ctx.fillText(
-            handleTextIndustry(industry as Node),
-            industry.x0 + 5,
-            industry.y0 + paddingTop - fontSize / 2 + 2,
-          );
-          
-          // Reset shadow
-          ctx.shadowColor = "transparent";
-          ctx.shadowBlur = 0;
-          ctx.shadowOffsetX = 0;
-          ctx.shadowOffsetY = 0;
-
           // Draw symbols
           industry.children?.forEach((symbol) => {
             if (symbol.x1 - symbol.x0 > 0) {
-              ctx.fillStyle = colorScale(symbol.data.change);
+              ctx.fillStyle = colorScale(symbol.data.change || 0);
               ctx.fillRect(
                 symbol.x0,
                 symbol.y0,
@@ -385,13 +267,13 @@ const Treemap = () => {
               const fontSize = handleTextFontSizeSymbol(symbol as Node);
               if (fontSize !== "0") {
                 ctx.fillStyle = "white";
-                
+
                 // Add text shadow
                 ctx.shadowColor = "rgba(0, 0, 0)";
                 ctx.shadowBlur = 5;
-                ctx.shadowOffsetX = 2;
-                ctx.shadowOffsetY = 2;
-                
+                ctx.shadowOffsetX = 0;
+                ctx.shadowOffsetY = 4;
+
                 ctx.font = `bold ${fontSize}px Arial`;
                 ctx.textAlign = "center";
                 ctx.fillText(
@@ -399,15 +281,15 @@ const Treemap = () => {
                   (symbol.x0 + symbol.x1) / 2,
                   (symbol.y0 + symbol.y1) / 2,
                 );
-                
+
                 // Draw change percentage
                 ctx.font = `bold ${parseInt(fontSize) - 4}px Arial`;
                 ctx.fillText(
-                  `${symbol.data.change.toFixed(2)}%`,
+                  `${(symbol.data.change || 0).toFixed(2)}%`,
                   (symbol.x0 + symbol.x1) / 2,
                   (symbol.y0 + symbol.y1) / 2 + parseInt(fontSize),
                 );
-                
+
                 // Reset shadow after drawing text
                 ctx.shadowColor = "transparent";
                 ctx.shadowBlur = 0;
@@ -416,6 +298,64 @@ const Treemap = () => {
               }
             }
           });
+
+          // Draw industry background
+          const totalIndustryMarketCap = industry.children?.reduce(
+            (acc, child) => acc + (child.data.value || 0),
+            0,
+          );
+          const industryFillStyle = isHovered
+            ? "yellow"
+            : colorScale(
+                industry.children?.reduce(
+                  (acc, child) =>
+                    acc +
+                    (child.data.change || 0) *
+                      ((child.data.value || 0) / (totalIndustryMarketCap || 0)),
+                  0,
+                ) || 0,
+              );
+          ctx.fillStyle = industryFillStyle;
+          ctx.fillRect(
+            industry.x0 + paddingOuter,
+            industry.y0,
+            Math.abs(industry.x1 - industry.x0 - paddingOuter * 2),
+            paddingTop - 2,
+          );
+
+          ctx.beginPath();
+          ctx.moveTo(
+            industry.x0 + 5 + 10 / 2,
+            industry.y0 + paddingTop - 2 + 6,
+          );
+          ctx.lineTo(industry.x0 + 5, industry.y0 + paddingTop);
+          ctx.closePath();
+          ctx.strokeStyle = isHovered ? "yellow" : "#22262f";
+          ctx.lineWidth = 1;
+          ctx.stroke();
+          ctx.fillStyle = industryFillStyle;
+
+          ctx.fill();
+
+          ctx.beginPath();
+          ctx.moveTo(
+            industry.x0 + 5 + 10 / 2,
+            industry.y0 + paddingTop - 2 + 6,
+          );
+          ctx.lineTo(industry.x0 + 5 + 10, industry.y0 + paddingTop);
+          ctx.closePath();
+          ctx.stroke();
+
+          // Draw industry text
+          ctx.fillStyle = isHovered ? "black" : "#ffffff";
+
+          ctx.font = `300 ${handleFontSizeIndustry(industry as Node)}px Arial`;
+          ctx.textAlign = "start";
+          ctx.fillText(
+            handleTextIndustry(industry as Node),
+            industry.x0 + 5,
+            industry.y0 + paddingTop - fontSize / 2 + 2,
+          );
         });
       });
     };
@@ -472,7 +412,7 @@ const Treemap = () => {
             <p
               key={index}
               style={{ backgroundColor: color.color }}
-              className={`px-3 py-1 text-xs font-normal text-white`}
+              className={`px-4 py-1 text-xs font-normal text-white`}
             >
               {color.value}%
             </p>

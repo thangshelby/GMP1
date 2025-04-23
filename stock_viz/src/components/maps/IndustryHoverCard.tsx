@@ -6,16 +6,18 @@ import React, {
   memo,
   useMemo,
 } from "react";
-import LineChartSimple from "./LineChartSimple";
-import { getColor as colorScale } from "@/lib/utils";
-import { useQuery } from "@tanstack/react-query";
-import { getStocksQuote } from "@/apis/stock.api";
-import { formatNumber } from "@/lib/utils";
 import * as d3 from "d3";
+import { useQuery } from "@tanstack/react-query";
+
+import LineChartSimple from "./LineChartSimple";
+import { getStocksQuote } from "@/apis/stock.api";
+import { getColor as colorScale, formatNumber } from "@/lib/utils";
+
+// Types
 interface TreemapNode {
   name: string;
-  value: number;
-  change: number;
+  value?: number;
+  change?: number;
   children?: TreemapNode[];
 }
 
@@ -39,42 +41,44 @@ interface StockData {
   };
   quote: number[];
 }
+
+interface SymbolHoverState {
+  symbol: string;
+  sector: string;
+  industry: string;
+  symbols: string[];
+}
+
+// Memoized components
 const MemoizedLineChart = memo(LineChartSimple);
 
-// Memoized stock row component
-const StockRow = memo(({ item }: { item: StockData }) => (
-  <div className="flex flex-row items-center justify-between px-2 py-1">
-    <p className="text-lg font-bold">{item.data.symbol.toUpperCase()}</p>
-    <MemoizedLineChart data={item.quote} lineColor="#000" />
-    <p className="text-lg font-bold">{formatNumber(item.data.last * 1000)}</p>
-    <p className="text-lg font-bold">{item.data.change}</p>
-  </div>
-));
-StockRow.displayName = "StockRow";
-
-const IndustryHoverCard = ({ date, canvasRef ,symbol}: IndustryHoverCardProps) => {
+const IndustryHoverCard = ({
+  date,
+  canvasRef,
+  symbol,
+}: IndustryHoverCardProps) => {
+  // State
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [symbolHover, setSymbolHover] = useState<SymbolHoverState | null>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
-  const [symbolHover, setSymbolHover] = useState<{
-    symbol: string;
-    sector: string;
-    industry: string;
-    symbols: string[];
-  } | null>(null);
+  // Update symbol hover state when symbol changes
   useEffect(() => {
-    if (!symbol) return 
+    if (!symbol) {
+      setSymbolHover(null);
+      return;
+    }
+
     setSymbolHover({
       symbol: symbol.data.name,
-      sector: symbol.parent?.data.name || "",
-      industry: symbol.parent?.parent?.data.name || "",
+      sector: symbol.parent?.parent?.data.name || "",
+      industry: symbol.parent?.data.name || "",
       symbols: symbol.parent?.children?.map((child) => child.data.name) || [],
     });
-    console.log(symbol.parent?.children?.map((child) => child.data.name))
   }, [symbol]);
 
-  // Don't fetch data if there's no hover or symbols
-  const shouldFetch = !!symbolHover && symbolHover.symbols.length > 0;
+  // Data fetching logic
+  const shouldFetch = Boolean(symbolHover?.symbols.length);
 
   const industryQuery = useQuery({
     queryKey: [`industry_detail`, symbolHover?.industry, date],
@@ -82,18 +86,19 @@ const IndustryHoverCard = ({ date, canvasRef ,symbol}: IndustryHoverCardProps) =
       symbolHover ? getStocksQuote(symbolHover.symbols.join(","), date) : null,
     enabled: shouldFetch,
     refetchOnWindowFocus: false,
-    staleTime: 40000, // Cache data for 30 seconds
+    staleTime: 40000,
   });
 
   const currentSymbolData = useMemo(() => {
     if (!industryQuery.data || !symbolHover) return null;
+
     return industryQuery.data.find(
       (item: StockData) => item.data.symbol === symbolHover.symbol,
     );
   }, [industryQuery.data, symbolHover]);
 
+  // Mouse position tracking
   useEffect(() => {
-    // Throttled mouse move handler
     let lastTime = 0;
     const throttleTime = 16; // ~60fps
 
@@ -102,91 +107,74 @@ const IndustryHoverCard = ({ date, canvasRef ,symbol}: IndustryHoverCardProps) =
       if (now - lastTime < throttleTime) return;
       lastTime = now;
 
-      const x = e.clientX,
-        y = e.clientY;
-      const validCordinate = { x: x + 80, y: y };
+      if (!canvasRef.current) return;
 
-      if (canvasRef.current) {
-        const rect = canvasRef.current.getBoundingClientRect();
-        if (
-          x >= rect.left &&
-          x <= rect.right &&
-          y >= rect.top &&
-          y <= rect.bottom
-        ) {
-          const contentWidth = contentRef.current?.clientWidth || 0;
-          const contentHeight = contentRef.current?.clientHeight || 0;
-          const windowWidth = window.innerWidth;
-          const windowHeight = window.innerHeight;
+      const x = e.clientX;
+      const y = e.clientY;
+      const rect = canvasRef.current.getBoundingClientRect();
 
-          if (contentHeight > windowHeight - y) {
-            validCordinate.y = windowHeight - contentHeight;
-          }
-          if (x > windowWidth * 0.6) {
-            validCordinate.x = x - 160 - contentWidth;
-          }
+      // Check if mouse is over the canvas
+      const isMouseOverCanvas =
+        x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom;
 
-          setMousePosition(validCordinate);
-        }
+      if (!isMouseOverCanvas) return;
+
+      // Calculate position for the hover card
+      const position = calculateHoverPosition(x, y);
+      setMousePosition(position);
+    };
+
+    const calculateHoverPosition = (x: number, y: number) => {
+      const position = { x: x + 80, y };
+      const contentWidth = contentRef.current?.clientWidth || 0;
+      const contentHeight = contentRef.current?.clientHeight || 0;
+      const windowWidth = window.innerWidth;
+      const windowHeight = window.innerHeight;
+
+      // Adjust vertical position if it would go off-screen
+      if (contentHeight > windowHeight - y) {
+        position.y = windowHeight - contentHeight;
       }
+
+      // Adjust horizontal position if it would go off-screen
+      if (x > windowWidth * 0.6) {
+        position.x = x - 160 - contentWidth;
+      }
+
+      return position;
     };
 
     window.addEventListener("mousemove", handleMouseMove);
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, [canvasRef]);
 
-  // Don't render anything if not hovering or loading
+  // Early returns
   if (!symbolHover) return null;
-
   if (industryQuery.isLoading)
     return <div className="fixed z-50" style={{ opacity: 0 }}></div>;
 
+  // Render component
   return (
     <div
       ref={contentRef}
-      className={`fixed z-50 border-[8px] border-[#22262f] bg-[#fff]`}
+      className="fixed z-50 border-[8px] border-[#22262f] bg-[#fff]"
       style={{
         opacity: symbolHover ? "1" : "0",
         visibility: symbolHover ? "visible" : "hidden",
         position: "fixed",
-        top: mousePosition?.y || 0,
-        left: mousePosition?.x || 0,
+        top: mousePosition.y || 0,
+        left: mousePosition.x || 0,
       }}
     >
       <h3 className="mb-2 text-lg font-bold">
         {symbolHover.sector} - {symbolHover.industry}
       </h3>
+
       {industryQuery.data?.length > 0 && currentSymbolData ? (
         <div>
-          <div
-            style={{
-              backgroundColor: colorScale(currentSymbolData.data.change || 0),
-            }}
-            className={`flex flex-col justify-between gap-1 p-2 text-white`}
-          >
-            <div className="flex flex-row items-center justify-between gap-6">
-              <p className="text-2xl font-extrabold">
-                {symbolHover.symbol.toUpperCase()}
-              </p>
-              <MemoizedLineChart
-                data={currentSymbolData.quote || []}
-                lineWidth={2}
-              />
-              <p className="text-2xl font-extrabold">
-                {formatNumber(currentSymbolData.data.last * 1000) || 0}
-              </p>
-              <p className="text-2xl font-extrabold">
-                {currentSymbolData.data.change || 0}%
-              </p>
-            </div>
-            <p className="text-lg font-bold">
-              {currentSymbolData.data.name || symbolHover.symbol}
-            </p>
-          </div>
-
-          {/* Only render first 5 items for better performance */}
+          <StockRow item={currentSymbolData} isSpecial={true} />
           {industryQuery.data
-            .slice(0, 5)
+            .slice(0, 10)
             .map((item: StockData, index: number) => (
               <StockRow key={index} item={item} />
             ))}
@@ -197,3 +185,38 @@ const IndustryHoverCard = ({ date, canvasRef ,symbol}: IndustryHoverCardProps) =
 };
 
 export default memo(IndustryHoverCard);
+
+const StockRow = memo(
+  ({ item, isSpecial = false }: { item: StockData; isSpecial?: boolean }) => (
+    <div
+      style={{
+        backgroundColor: isSpecial
+          ? colorScale(item.data.change || 0)
+          : "transparent",
+      }}
+      className="flex flex-row items-center justify-between gap-6 p-2"
+    >
+      <p
+        className={`text-${isSpecial ? "2xl" : "lg"} font-${isSpecial ? "extrabold" : "bold"} ${isSpecial ? "text-white" : ""}`}
+      >
+        {item.data.symbol.toUpperCase()}
+      </p>
+      <MemoizedLineChart
+        data={item.quote}
+        lineColor={isSpecial ? "#fff" : "#000"}
+        lineWidth={isSpecial ? 2 : 1}
+      />
+      <p
+        className={`text-${isSpecial ? "2xl" : "lg"} font-${isSpecial ? "extrabold" : "bold"} ${isSpecial ? "text-white" : ""}`}
+      >
+        {formatNumber(item.data.market_cap * 1000)}
+      </p>
+      <p
+        className={`text-${isSpecial ? "2xl" : "lg"} font-${isSpecial ? "extrabold" : "bold"} ${isSpecial ? "text-white" : ""}`}
+      >
+        {item.data.change}%
+      </p>
+    </div>
+  ),
+);
+StockRow.displayName = "StockRow";

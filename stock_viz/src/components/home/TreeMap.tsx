@@ -58,10 +58,10 @@ const Treemap = () => {
     const hierarchyData: TreemapNode = {
       name: "Tổng thị trường",
       value: 0,
-      change: 0,
+      change: d3.sum(result.data, (d: ReviewStockType) => d.change) || 0,
       children: Array.from(nestedData, ([industry, stocks]) => ({
         name: industry,
-        value: d3.sum(stocks, (d: ReviewStockType) => d.market_cap) || 0,
+        value: 0,
         change: d3.sum(stocks, (d: ReviewStockType) => d.change) || 0,
         children: stocks.map((stock: ReviewStockType) => ({
           name: stock.symbol,
@@ -172,7 +172,7 @@ const Treemap = () => {
                         fontWeight="bold"
                         textAnchor="middle"
                         style={{
-                          textShadow: "2px 2px 5px #000",
+                          textShadow: "2px 2px  5px #000",
                           fontFamily:
                             "'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif",
                         }}
@@ -217,7 +217,7 @@ const Treemap = () => {
                   {handleTextParent(child)}
                 </text>
 
-                {handleFontSizeParent(child) > 0 && (
+                {handleFontSizeParent(child) > 0 &&  (
                   <g>
                     <polygon
                       points={`${child.x0 + 4},${child.y0 + paddingTop} ${child.x0 + 4 + 10 / 2},${child.y0 + paddingTop + 6} ${child.x0 + 4 + 10},${child.y0 + paddingTop} `}

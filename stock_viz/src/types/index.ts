@@ -8,7 +8,7 @@ export interface ReviewStockType {
   sector: string;
   industry: string;
   market_cap: number;
-  quote?:StockPriceDataType[];
+  quote?: StockPriceDataType[];
 }
 
 export interface StockOverviewInformationType {
@@ -55,7 +55,6 @@ export interface StockInfomationType {
   Symbol: string;
 }
 
-
 export interface BusinessDataType {
   analyst_outlook: {
     buy: number;
@@ -69,7 +68,8 @@ export interface BusinessDataType {
     company_short_name: string;
     website: string;
   };
-  general_information: { // Đã sửa từ "infomation" thành "information"
+  general_information: {
+    // Đã sửa từ "infomation" thành "information"
     ISSN_code: string;
     issue_share: number;
     exchange_code: string;
@@ -108,13 +108,13 @@ export interface FinancialDataType {
   income_statement: IncomeStatement;
   profitability_analysis: ProfitabilityAnalysis;
 }
-interface AIAnalysis{
-  'balance_sheet':string,
-  'income_statement':string,
-  'profitability_analysis':string
+interface AIAnalysis {
+  balance_sheet: string;
+  income_statement: string;
+  profitability_analysis: string;
 }
 interface BalanceSheet {
-  "Equity": number[];
+  Equity: number[];
   "Total Current Assets": number[];
   "Total liabilities and equity": number[];
   "Property/Plant/Equipment,Total - Net": number[];
@@ -130,7 +130,7 @@ interface IncomeStatement {
   "Net Income Before Extra.\nItems": number[];
   "Net Income Before Taxes": number[];
   "Operating Income": number[];
-  "EPS": number[];
+  EPS: number[];
   "Minority Interest": number[];
   "Profit attributable to parent company shareholders": number[];
   Revenue: number[];
@@ -146,15 +146,15 @@ interface ProfitabilityAnalysis {
   "Revenue/Tot Assets": number[];
   "Total Debt/Equity, %": number[];
   "Total Debt/Equity": number[];
- 
+
   [key: string]: number[];
 }
 
-export interface CompanyNewsTypeSourceVCI{
-  ceiling: number;               // Giá trần
-  close_price: number;          // Giá đóng cửa
+export interface CompanyNewsTypeSourceVCI {
+  ceiling: number; // Giá trần
+  close_price: number; // Giá đóng cửa
   created_at: string | null;
-  floor: number;                // Giá sàn
+  floor: number; // Giá sàn
   friendly_sub_title: string;
   id: string;
   lang_code: string;
@@ -165,9 +165,9 @@ export interface CompanyNewsTypeSourceVCI{
   news_source_link: string;
   news_sub_title: string;
   news_title: string;
-  price_change_pct: number;     // % thay đổi giá
-  public_date: number;          // timestamp (ms)
-  ref_price: number;            // Giá tham chiếu
+  price_change_pct: number; // % thay đổi giá
+  public_date: number; // timestamp (ms)
+  ref_price: number; // Giá tham chiếu
   updated_at: string | null;
 }
 
@@ -190,8 +190,8 @@ export interface CompanySubsidiaryType {
   // type:string;
   // ownership_percent:number;
   // sub_organ_code:string;
-  sub_company_name:string,
-  sub_own_percent:number,
+  sub_company_name: string;
+  sub_own_percent: number;
 }
 
 export interface CompanyOverviewType {
@@ -207,7 +207,7 @@ export interface CompanyOverviewType {
   symbol: string; // Mã chứng khoán
 }
 
-export interface CompanyOfficerType{
+export interface CompanyOfficerType {
   id: string; // Mã định danh
   officer_name: string; // Tên cán bộ
   officer_own_percent: number; // Tỷ lệ sở hữu (%)
@@ -215,7 +215,7 @@ export interface CompanyOfficerType{
   position_short_name: string; // Chức vụ viết tắt
   quantity: number; // Số lượng cổ phiếu sở hữu
   update_date: string; // Ngày cập nhật (YYYY-MM-DD)
-  type:string;
+  type: string;
 }
 
 export interface NewsItemProp {
@@ -225,4 +225,23 @@ export interface NewsItemProp {
   link: string;
   public_date: string;
   title: string;
+}
+
+export interface TreemapNode {
+  name: string;
+  value?: number;
+  change?: number;
+  children?: TreemapNode[];
+}
+
+export interface Node {
+  children?: Node[];
+  data: TreemapNode;
+  depth: number;
+  height: number;
+  x0: number;
+  x1: number;
+  y0: number;
+  y1: number;
+  parent?: Node;
 }

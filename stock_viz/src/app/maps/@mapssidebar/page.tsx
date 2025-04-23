@@ -79,12 +79,12 @@ const MapsSideBar = () => {
             .map((stock, index) => (
               <div
                 key={stock.symbol}
-                className={`flex cursor-pointer items-center space-x-2 rounded p-1 hover:bg-gray-700 ${index != stockExamples.length - 1 && "border-b-[1px] border-black"} `}
+                className={`flex cursor-pointer items-center space-x-2 p-1 hover:bg-gray-700 ${index != stockExamples.length - 1 && "border-b-[1px] border-black"} `}
               >
-                <span className="text-2xs w-[20%] text-center font-semibold text-gray-400">
+                <span className="text-2xs w-[20%] text-center font-bold text-secondary">
                   {stock.symbol}
                 </span>
-                <span className="text-2xs w-[80%] text-left font-medium text-gray-300">
+                <span className="text-2xs w-[80%] text-left font-semibold text-secondary-3">
                   {stock.name}
                 </span>
               </div>
