@@ -34,3 +34,8 @@ export const getStocksQuote = async (symbols: string, date: string) => {
   });
   return response.data;
 };
+
+export const getAllStockSymbols= async ()=>{
+  const response = await http.get(`stocks/all_stock_symbols`)
+  return response.data
+}

@@ -1,8 +1,8 @@
 "use client";
 import { ReviewStockType } from "@/types";
 import Link from "next/link";
-import { format, subYears } from "date-fns";  
-import React from "react";
+import { format, subYears } from "date-fns";
+import { useState, MouseEvent } from "react";
 import {
   Table,
   TableBody,
@@ -16,16 +16,16 @@ import { getSymbolReview } from "@/apis/market.api";
 import { Skeleton } from "../ui/skeleton";
 import StockQuoteOverview from "./StockQuoteOverview";
 
-const StockTable = ({exchange}:{exchange:string}) => {
+const StockTable = ({ exchange }: { exchange: string }) => {
   const date = format(subYears(new Date(), 1), "yyyy-MM-dd");
 
   const result = useQuery({
-    queryKey: ["symbols/symbols_review",exchange,true],
-    queryFn: () => getSymbolReview(date, exchange,true),
+    queryKey: ["symbols/symbols_review", exchange],
+    queryFn: () => getSymbolReview(date, exchange),
     refetchOnWindowFocus: false,
   });
   return (
-    <div className="border-secondary-3 relative z-20 w-full  rounded-sm border-1">
+    <div className="border-secondary-3 relative z-20 w-full rounded-sm border-1">
       <Table className="">
         <TableHeader className="border-b-0">
           <TableRow className="text-secondary border-b-0 text-xs font-extralight">
@@ -85,15 +85,15 @@ const StockTableRowSkeleton = () => {
 };
 
 const StockTableRow = (stock: ReviewStockType) => {
-  const [showPopup, setShowPopup] = React.useState(false);
-  const [position, setPosition] = React.useState({ top: 0, left: 0 });
+  const [showPopup, setShowPopup] = useState(false);
+  const [position, setPosition] = useState({ top: 0, left: 0 });
 
-  const handleMouseEnter = (e: React.MouseEvent<HTMLTableCellElement>) => {
+  const handleMouseEnter = (e: MouseEvent<HTMLTableCellElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
     setPosition({
       top: rect.top - 140 + window.scrollY, // thêm scroll nếu có
       left: rect.left + 200,
-    }); 
+    });
     setShowPopup(true);
   };
 
@@ -104,7 +104,7 @@ const StockTableRow = (stock: ReviewStockType) => {
   return (
     <TableRow
       key={stock.symbol}
-      className="group  border-b-0 text-xs hover:cursor-pointer hover:bg-[#353945]"
+      className="group border-b-0 text-xs hover:cursor-pointer hover:bg-[#353945]"
     >
       <TableCell
         onMouseEnter={handleMouseEnter}
@@ -114,16 +114,7 @@ const StockTableRow = (stock: ReviewStockType) => {
         <Link href={`/stockchart?symbol=${stock.symbol}`}>{stock.symbol}</Link>
 
         {showPopup && (
-          <StockQuoteOverview
-            data={stock?.quote?.slice(stock?.quote.length-60,stock?.quote.length) || []}
-            position={position}
-            infomation={{
-              name: stock.name,
-              symbol: stock.symbol,
-              market_cap: stock.market_cap,
-              industry: stock.industry,
-            }}
-          />
+          <StockQuoteOverview position={position} infomation={stock} />
         )}
       </TableCell>
 

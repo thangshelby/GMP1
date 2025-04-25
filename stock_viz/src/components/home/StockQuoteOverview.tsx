@@ -2,45 +2,65 @@ import React from "react";
 import { StockPriceDataType } from "@/types";
 import { useEffect } from "react";
 import { createPortal } from "react-dom";
-import * as d3 from "d3";
-import { format, subYears } from "date-fns";
+import {
+  scaleBand,
+  scaleLinear,
+  axisBottom,
+  axisRight,
+  min,
+  max,
+  group,
+  select,
+} from "d3";
+import { format, subYears, subMonths } from "date-fns";
+import { getStockQuote } from "@/apis/stock.api";
+import { useQuery } from "@tanstack/react-query";
+import { ReviewStockType } from "@/types";
 
 const StockQuoteOverview = ({
-  data,
   position,
   infomation,
 }: {
-  data: StockPriceDataType[];
   position: {
     top: number;
     left: number;
   };
-  infomation: {
-    name: string;
-    symbol: string;
-    market_cap: number;
-    industry: string;
-  };
+  infomation: ReviewStockType;
 }) => {
-  const portalRoot = document.getElementById("portal-root");
-  if (!portalRoot) return null;
-
-  const today = format(subYears(new Date(), 1), "yyyy-MM-dd");
+  const start_date = format(
+    subMonths(subYears(new Date(), 1), 3),
+    "yyyy-MM-dd",
+  );
+  const end_date = format(subYears(new Date(), 1), "yyyy-MM-dd");
+  const interval = "1D";
 
   const chartRef = React.useRef<SVGSVGElement | null>(null);
-  const margin = { top: 10, right: 0, bottom: 10, left: 30 };
 
-  const dataGroupByMonth = Array.from(
-    d3.group(data, (d) => new Date(d.time!).getMonth()),
-  );
-
-  const changePrice = data[data.length - 1].close - data[0].close;
-  const changePercent = (changePrice / data[0].close) * 100;
+  const result = useQuery({
+    queryKey: [
+      "stocks/stock_quote",
+      infomation.symbol,
+      start_date,
+      end_date,
+      interval,
+      "1D",
+    ],
+    queryFn: () =>
+      getStockQuote(infomation.symbol, start_date, end_date, interval),
+  });
 
   useEffect(() => {
-    if (!chartRef.current) return;
+    if (!chartRef.current || !result.isSuccess) return;
 
-    const svg = d3.select(chartRef.current);
+    const data: StockPriceDataType[] = result.data;
+
+    const margin = { top: 10, right: 0, bottom: 10, left: 30 };
+
+    const dataGroupByMonth = Array.from(
+      group(data, (d) => new Date(d.time!).getMonth()),
+    );
+
+    const svg = select(chartRef.current);
     svg.selectAll("*").remove();
 
     const width = chartRef.current.clientWidth;
@@ -51,33 +71,29 @@ const StockQuoteOverview = ({
 
     const g = svg.attr("width", width).attr("height", height).append("g");
 
-    const xScale = d3
-      .scaleBand()
+    const xScale = scaleBand()
       .domain(data.map((d) => d.time!))
       .range([margin.left, innerWidth])
       .padding(0.2);
 
-    const xScaleForMonth = d3
-      .scaleBand()
+    const xScaleForMonth = scaleBand()
       .domain(
-        dataGroupByMonth.map((item, _) => {
+        dataGroupByMonth.map((item) => {
           return item[0].toString();
         }),
       )
       .range([margin.left, innerWidth]);
 
-    const yScale = d3
-      .scaleLinear()
+    const yScale = scaleLinear()
       .domain([
-        d3.min(data, (d) => Math.min(d.low, d.open, d.close))! * 0.9,
-        d3.max(data, (d) => Math.max(d.high, d.open, d.close))! * 1.1,
+        min(data, (d) => Math.min(d.low, d.open, d.close))! * 0.9,
+        max(data, (d) => Math.max(d.high, d.open, d.close))! * 1.1,
       ])
       .range([innerHeight, margin.top]);
-    const yScaleForVolume = d3
-      .scaleLinear()
+    const yScaleForVolume = scaleLinear()
       .domain([
-        d3.min(data, (d) => Math.min(d.volume!))!,
-        d3.max(data, (d) => Math.max(d.volume!))!,
+        min(data, (d) => Math.min(d.volume!))!,
+        max(data, (d) => Math.max(d.volume!))!,
       ])
       .range([innerHeight, innerHeight - 10]);
 
@@ -85,7 +101,7 @@ const StockQuoteOverview = ({
     g.append("g")
       .attr("transform", `translate(${margin.left}, ${innerHeight})`)
       .call(
-        d3.axisBottom(xScaleForMonth).tickFormat((d) => {
+        axisBottom(xScaleForMonth).tickFormat((d) => {
           return monthMap[parseInt(d as string) + 1];
         }),
       )
@@ -98,7 +114,7 @@ const StockQuoteOverview = ({
       .attr("font-weight", 500);
 
     g.append("g")
-      .call(d3.axisRight(yScale).ticks(6))
+      .call(axisRight(yScale).ticks(6))
       .attr("color", "#929cb3")
       .attr("transform", `translate(${innerWidth}, 0)`)
       .call((g) => {
@@ -134,8 +150,8 @@ const StockQuoteOverview = ({
       .enter()
       .append("line")
       .attr("class", "grid-x")
-      .attr("x1", (d) => margin.left)
-      .attr("x2", (d) => innerWidth)
+      .attr("x1", margin.left)
+      .attr("x2", innerWidth)
       .attr("y1", (d) => {
         return yScale(d);
       })
@@ -215,7 +231,9 @@ const StockQuoteOverview = ({
       })
       .attr("fill", (d) => (d.close > d.open ? "#297944" : "#913239"));
     // Volume Axis
-  }, [data]);
+  }, [result.data, result.isSuccess]);
+  const portalRoot = document.getElementById("portal-root");
+  if (!portalRoot) return null;
 
   return createPortal(
     <div
@@ -241,9 +259,10 @@ const StockQuoteOverview = ({
               </div>
               <div className="flex flex-row gap-1">
                 <span
-                  className={`${changePrice > 0 ? "text-green" : "text-red"} text-2xs font-semibold`}
+                  className={`${infomation.change > 0 ? "text-green" : "text-red"} text-2xs font-semibold`}
                 >
-                  {changePrice.toFixed(2)} ({changePercent.toFixed(2)}%)
+                  {infomation.change.toFixed(2)} (
+                  {(infomation.change / infomation.last).toFixed(2)}%)
                 </span>
                 <span className="text-2xs text-primary">© StockViz.com</span>
               </div>

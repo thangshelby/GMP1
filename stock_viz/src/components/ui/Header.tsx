@@ -1,27 +1,29 @@
 "use client";
 import React from "react";
 import { useState, useEffect } from "react";
-import { fetchAPI } from "@/lib/utils";
 import { FaSearch } from "react-icons/fa";
-import { CiBellOn } from "react-icons/ci";
-import { CiMail } from "react-icons/ci";
+import { CiBellOn, CiMail } from "react-icons/ci";
 import Image from "next/image";
 import { MdOutlineAccountBalanceWallet } from "react-icons/md";
-import { IoSettingsOutline } from "react-icons/io5";
-import { IoHelpCircleOutline } from "react-icons/io5";
+import { IoSettingsOutline, IoHelpCircleOutline } from "react-icons/io5";
 import { CgProfile } from "react-icons/cg";
 import { IoMdArrowForward } from "react-icons/io";
-import 'dotenv/config'
+import "dotenv/config";
 import { initializeApp } from "firebase/app";
+import { useQuery } from "@tanstack/react-query";
+import { getSymbolReview } from "@/apis/market.api";
 import {
   getAuth,
   signInWithPopup,
   GoogleAuthProvider,
   signOut,
+  User,
 } from "firebase/auth";
+import { ReviewStockType} from "@/types";
+import {subYears, format} from 'date-fns'
 
 
-const firebaseConfig ={
+const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
   authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
   projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
@@ -29,7 +31,7 @@ const firebaseConfig ={
   messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
-}
+};
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
@@ -37,10 +39,10 @@ const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
 const Header = () => {
-  const [allStocks, setAllStocks] = useState<allStocksType[]>([]);
   const [input, setInput] = useState<string>("");
-  const [ricMatch, setRicMatch] = useState<allStocksType[]>([]);
-  const [user, setUser] = useState<any | null>(null);
+  const [ricMatch, setRicMatch] = useState<ReviewStockType[]>([]);
+  const [user, setUser] = useState<User | null>(null);
+  const date = format(subYears(new Date(), 1), "yyyy-MM-dd");
 
   useEffect(() => {
     // Listen for auth state changes
@@ -58,7 +60,6 @@ const Header = () => {
   const handleSignIn = async () => {
     try {
       const result = await signInWithPopup(auth, provider);
-      console.log(result.user);
       setUser(result.user);
     } catch (error) {
       console.error("Error signing in with Google: ", error);
@@ -74,30 +75,21 @@ const Header = () => {
     }
   };
 
-  React.useEffect(() => {
-    const fetchData = async () => {
-      const response = await fetchAPI("/stocks/all_stock_rics");
-      setAllStocks(
-        response.map((stock: allStocksType) => {
-          return {
-            symbol: stock.symbol.split(":")[1],
-            name: stock.name,
-            exchange: stock.exchange,
-            market: stock.market,
-            sector: stock.sector,
-          };
-        }),
-      );
-    };
-    fetchData();
-  }, []);
+
+
+  const result = useQuery({
+    queryKey: [`symbols/symbols_review`, "all"],
+    queryFn: () => getSymbolReview(date, "all"),
+    refetchOnWindowFocus:false,
+  });
 
   React.useEffect(() => {
-    const match = allStocks.filter((stock) => {
+    if(!result.isSuccess) return 
+    const match = result.data.filter((stock: ReviewStockType) => {
       return stock.symbol.includes(input) || stock.name.includes(input);
     });
     setRicMatch(match);
-  }, [input, allStocks]);
+  }, [input, result.data,result.isSuccess]);
   return (
     <div className="flex flex-row items-center justify-between p-2">
       <div className="flex flex-1 flex-row items-center gap-4">
@@ -198,19 +190,19 @@ const Header = () => {
             <Image
               width={28}
               height={28}
-              src={user.photoURL}
-              alt="profile" 
+              src={user.photoURL || ""}
+              alt="profile"
               className="peer img_avatar h-7 w-7 rounded-full hover:cursor-pointer hover:opacity-80"
             />
 
-            <div className="absolute top-full right-0 z-50 mt-2 scale-0 w-[280px] rounded-lg bg-[#1c1f26] py-2 shadow-lg transition-all duration-300 peer-hover:scale-100 before:absolute before:top-[-10px] before:right-0 before:left-0 before:h-[20px] before:content-[''] hover:scale-100">
+            <div className="absolute top-full right-0 z-50 mt-2 w-[280px] scale-0 rounded-lg bg-[#1c1f26] py-2 shadow-lg transition-all duration-300 peer-hover:scale-100 before:absolute before:top-[-10px] before:right-0 before:left-0 before:h-[20px] before:content-[''] hover:scale-100">
               {/* User Info */}
               <div className="border-b border-gray-700 px-4 pb-4 hover:cursor-pointer">
                 <div className="flex items-center gap-3">
                   <Image
                     width={40}
                     height={40}
-                    src={user.photoURL}
+                    src={user.photoURL || ""}
                     alt="profile"
                     className="h-10 w-10 rounded-full"
                   />
@@ -281,14 +273,6 @@ const Header = () => {
 };
 
 export default Header;
-
-interface allStocksType {
-  symbol: string;
-  name: string;
-  exchange: string;
-  market: string;
-  sector: string;
-}
 
 const Logo = () => {
   return (

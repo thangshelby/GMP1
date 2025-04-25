@@ -15,12 +15,11 @@ export default function MapsLayout({
   return (
     <div className="flex flex-col gap-1">
       <MapsHeader />
-      <div className="flex flex-row w-full">
-        <div className="w-[20%]">
+      <div className="flex w-full flex-row">
+        <div className="w-[15%]">
           <MapsSideBar />
         </div>
-        <div className="w-[80%]">{children}</div>
-
+        <div className="w-[85%]">{children}</div>
       </div>
     </div>
   );

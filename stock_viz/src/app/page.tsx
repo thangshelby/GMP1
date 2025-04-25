@@ -8,15 +8,13 @@ export default async function Home() {
       <OverviewMarketChartContainer />
       <OverviewIndicatorMarket />
 
-      <div className="flex flex-row py-6 gap-2 overflow-visible relative z-10">
-        {/* <StockTable exchange='hose' />
+      <div className="relative z-10 flex flex-row gap-2 overflow-visible py-6">
+        <StockTable exchange="hose" />
 
-        <StockTable exchange='hnx' />   */}
-<div className="w-[50%]">
+        <StockTable exchange="hnx" />
 
-        <Treemap  />
-</div>
+        <Treemap />
       </div>
-    </div>
+    </div>  
   );
 }

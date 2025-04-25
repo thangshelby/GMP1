@@ -1,5 +1,5 @@
 "use client";
-import * as d3 from "d3";
+
 import React, { useEffect, useRef, useMemo } from "react";
 import { ReviewStockType, TreemapNode, Node } from "@/types";
 import { format, subYears } from "date-fns";
@@ -9,27 +9,42 @@ import { RiErrorWarningLine } from "react-icons/ri";
 import { getColor as colorScale } from "@/lib/utils";
 import { colorsAndRanges } from "@/constants";
 import IndustryHoverCard from "@/components/maps/IndustryHoverCard";
+import {
+  treemapBinary,
+  hierarchy,
+  group,
+  sum,
+  treemap,
+  HierarchyRectangularNode,
+} from "d3";
+import { useSearchParams } from "next/navigation";
 
 const Treemap = () => {
   const date = format(subYears(new Date(), 1), "yyyy-MM-dd");
   const [symbol, setSymbol] =
-    React.useState<d3.HierarchyRectangularNode<TreemapNode> | null>(null);
+    React.useState<HierarchyRectangularNode<TreemapNode> | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
   const lastExecutionRef = useRef<number>(0);
   const throttleInterval = 16; // ~60fps
   const lastPointRef = useRef<{ x: number; y: number } | null>(null);
+  const searchParams = useSearchParams();
+  const exchange = searchParams.get("exchange") || "top_500";
+  const timeframe = searchParams.get("timeframe") || "1Y";
 
   const result = useQuery({
-    queryKey: [`symbols/symbols_review`, "treemap", false],
-    queryFn: () => getSymbolReview(date, "treemap", false),
+    queryKey: [`symbols/symbols_review`, exchange, timeframe],
+    queryFn: () => getSymbolReview(date, exchange, timeframe),
     refetchOnWindowFocus: false,
   });
 
+
+
+  //CREATE DATA FOR TREE MAP
   const treeData = useMemo(() => {
     if (!result.data) return null;
-
-    const nestedDataBySector = d3.group(
+    console.log(result.data);
+    const nestedDataBySector = group(
       result.data,
       (d: ReviewStockType) => d.sector,
     );
@@ -41,10 +56,10 @@ const Treemap = () => {
         ([sector_name, nestedDataByIndustry]) => ({
           name: sector_name,
           children: Array.from(
-            d3.group(nestedDataByIndustry, (d) => d.industry),
+            group(nestedDataByIndustry, (d) => d.industry),
             ([key, value]) => ({
               name: key,
-              change: d3.sum(value, (d) => d.change),
+              change: sum(value, (d) => d.change),
               children: value.map((d: ReviewStockType) => ({
                 name: d.symbol,
                 value: d.market_cap,
@@ -56,14 +71,12 @@ const Treemap = () => {
       ),
     };
 
-    const hierachy = d3
-      .hierarchy(hierarchyData)
+    const hierachy = hierarchy(hierarchyData)
       .sum((d) => d.value || 0)
       .sort((a, b) => (b.value || 0) - (a.value || 0));
 
-    const root = d3
-      .treemap<TreemapNode>()
-      .tile(d3.treemapBinary)
+    const root = treemap<TreemapNode>()
+      .tile(treemapBinary)
       .size([
         canvasRef.current?.clientWidth || 0,
         (canvasRef.current?.clientWidth || 0) * 0.5,
@@ -76,15 +89,16 @@ const Treemap = () => {
     return { root, hierarchyData, hierachy };
   }, [result.data]);
 
+  // CREATE DATA STRUCTURE HELP FIND NODE FASTER
   const createQuadtree = useMemo(() => {
     if (!treeData?.root) return null;
 
     const findNode = (
-      root: d3.HierarchyRectangularNode<TreemapNode>,
+      root: HierarchyRectangularNode<TreemapNode>,
       x: number,
       y: number,
       targetDepth: number,
-    ): d3.HierarchyRectangularNode<TreemapNode> | null => {
+    ): HierarchyRectangularNode<TreemapNode> | null => {
       if (!root.children || targetDepth == root.depth) return root;
       for (let i = 0; i < root.children.length; i++) {
         const node = root.children[i];
@@ -102,6 +116,7 @@ const Treemap = () => {
     };
   }, [treeData]);
 
+  // HANDLE MOUSE MOVE FOR DETECT SYMBOL
   const handleMouseMove = useMemo(() => {
     if (!canvasRef.current || !treeData?.root) {
       return;
@@ -150,6 +165,7 @@ const Treemap = () => {
     };
   }, [createQuadtree, treeData]);
 
+  //DRAW TREE MAP
   useEffect(() => {
     if (
       !canvasRef.current ||
@@ -320,7 +336,7 @@ const Treemap = () => {
             industry.x0 + paddingOuter,
             industry.y0,
             Math.abs(industry.x1 - industry.x0 - paddingOuter * 2),
-            paddingTop - 2,
+            paddingTop - 1,
           );
 
           ctx.beginPath();
@@ -344,6 +360,29 @@ const Treemap = () => {
           );
           ctx.lineTo(industry.x0 + 5 + 10, industry.y0 + paddingTop);
           ctx.closePath();
+          ctx.stroke();
+
+          // Draw the triangle (non-straight shape)
+          ctx.beginPath();
+          ctx.moveTo(
+            industry.x0 + 5 + 10 / 2,
+            industry.y0 + paddingTop - 2 + 6,
+          );
+          ctx.lineTo(industry.x0 + 5, industry.y0 + paddingTop);
+          ctx.lineTo(industry.x0 + 5 + 10, industry.y0 + paddingTop);
+          ctx.closePath();
+          ctx.strokeStyle = isHovered ? "yellow" : "#22262f";
+          ctx.fillStyle = industryFillStyle;
+          ctx.stroke();
+          ctx.fill();
+
+          // Draw bottom line of the tab
+          ctx.beginPath();
+          ctx.moveTo(industry.x0 + 7, industry.y0 + paddingTop);
+          ctx.lineTo(industry.x0 + 3 + 10, industry.y0 + paddingTop);
+          ctx.closePath();
+          ctx.strokeStyle = isHovered ? "yellow" : industryFillStyle;
+          ctx.lineWidth = 1;
           ctx.stroke();
 
           // Draw industry text
@@ -379,8 +418,9 @@ const Treemap = () => {
     handleMouseMove,
     symbol,
   ]);
+
   return (
-    <div className="flex w-full flex-col items-center gap-6 p-4">
+    <div className="flex w-full flex-col items-center gap-6 p-4 overflow-hidden">
       {result.isLoading && (
         <div className="flex h-[200px] w-full items-center justify-center">
           <LoadingTable />
@@ -389,7 +429,7 @@ const Treemap = () => {
 
       <canvas
         ref={canvasRef}
-        className="w-full"
+        className="w-full "
         style={{ aspectRatio: "2/1" }}
       />
 

@@ -8,9 +8,17 @@ export interface ReviewStockType {
   sector: string;
   industry: string;
   market_cap: number;
+  exchange: string;
   quote?: StockPriceDataType[];
 }
 
+export interface symbolsSearchType {
+  symbol: string;
+  name: string;
+  exchange: string;
+  market: string;
+  sector: string;
+}
 export interface StockOverviewInformationType {
   company_type: string;
   delta_in_month: number;

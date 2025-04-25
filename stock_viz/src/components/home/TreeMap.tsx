@@ -30,8 +30,8 @@ const Treemap = () => {
   const date = format(subYears(new Date(), 1), "yyyy-MM-dd");
 
   const result = useQuery({
-    queryKey: [`symbols/symbols_review`, "treemap", false],
-    queryFn: () => getSymbolReview(date, "treemap", false),
+    queryKey: [`symbols/symbols_review`, "top_500"],
+    queryFn: () => getSymbolReview(date, "top_500"),
     refetchOnWindowFocus: false,
   });
 
@@ -42,7 +42,6 @@ const Treemap = () => {
   const paddingTop = 16;
   const fontSize = 10;
 
-  console.log(result.data);
   useEffect(() => {
     if (!ref.current || result.isLoading === true || result.isError === true)
       return;
@@ -53,7 +52,6 @@ const Treemap = () => {
       (d: ReviewStockType) => d.industry,
     );
 
-    // console.log(nestedData)
 
     const hierarchyData: TreemapNode = {
       name: "Tổng thị trường",
