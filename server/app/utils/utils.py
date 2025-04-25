@@ -3,7 +3,7 @@ import os
 from datetime import datetime, timedelta
 
 import google.generativeai as genai
-import polars as pl
+import pandas as pd
 import redis
 from dotenv import load_dotenv
 from vnstock import Vnstock
@@ -67,11 +67,17 @@ def get_AI_analyze(symbol,type=None,summary_data=None,table_data=None,final_data
 
 
 def find_near_valid_date(date):
-    df = pl.read_csv('./app/data/hose/AAA.txt', separator='\t')
-    while date not in df["time"].to_list():
+    df = pd.read_csv('./app/data/hose/AAA.txt', sep='\t')
+    while date not in df["time"].tolist():
         date = datetime.strptime(date, '%Y-%m-%d')+timedelta(days=1)
         date = date.strftime('%Y-%m-%d')
     return date
+
+def convert_timestamp_to_datestring(df):
+    df['time'] = pd.to_datetime(df['time'])
+    df['time'] = df['time'].dt.strftime('%Y-%m-%d %H:%M:%S')
+    
+    return df
 
 def prepare_data_for_market_review():
     date = datetime.now().replace(year=2024).strftime('%Y-%m-%d')
@@ -83,17 +89,17 @@ def prepare_data_for_market_review():
         df = None
         company_overview = None
         try:
-            df = pl.read_csv(f'./app/data/hose/{symbol}.txt', separator='\t')
-            company_overview = pl.read_csv(f'./app/data/hose_final_overview/{symbol}.txt', separator='\t')
+            df = pd.read_csv(f'./app/data/hose/{symbol}.txt', sep='\t')
+            company_overview = pd.read_csv(f'./app/data/hose_final_overview/{symbol}.txt', sep='\t')
         except:
             try:
                 source_path = 'hnx'
-                df = pl.read_csv(f'./app/data/hnx/{symbol}.txt', separator='\t')
-                company_overview = pl.read_csv(f'./app/data/hnx_final_overview/{symbol}.txt', separator='\t')
+                df = pd.read_csv(f'./app/data/hnx/{symbol}.txt', sep='\t')
+                company_overview = pd.read_csv(f'./app/data/hnx_final_overview/{symbol}.txt', sep='\t')
             except:
                 continue
-        df = df.filter(pl.col('time') <= date)
-        if df.height > 1:
+        df = df[df['time'] <= date]
+        if len(df) > 1:
                 signal = None
                 try:
                     signal = analyze_stock_signal(df)
@@ -102,30 +108,62 @@ def prepare_data_for_market_review():
                 
                 # Get the last row values
                 last_row = company_overview.tail(1)
-                short_name = last_row.get_column('short_name')[0].split('(')[0]
+                short_name = last_row['short_name'].iloc[0].split('(')[0]
                 
                 curStock['name'] = short_name
-                curStock['sector'] = last_row.get_column('icb_name2')[0]
+                curStock['sector'] = last_row['icb_name2'].iloc[0]
                 
                 # Using coalesce logic for industry
                 industry_options = [
-                    last_row.get_column('icb_name4')[0],
-                    last_row.get_column('icb_name3')[0],
-                    last_row.get_column('icb_name2')[0]
+                    last_row['icb_name4'].iloc[0],
+                    last_row['icb_name3'].iloc[0],
+                    last_row['icb_name2'].iloc[0]
                 ]
                 industry = next((i for i in industry_options if i is not None), None)
                 
                 curStock['industry'] = industry
                 curStock['signal'] = signal
                 curStock['symbol'] = symbol
+                curStock['exchange  '] = company_overview['exchange'].iloc[0]
                 
-                # Get closing prices
-                last_close = df.tail(1).get_column('close')[0]
-                second_last_close = df.tail(2).head(1).get_column('close')[0]
+                last_close = df.tail(1)['close'].iloc[0]
+                curStock['last'] = round(last_close, 2) 
+                for time_frame in prepare_time_frame_price:
+                    second_last_close = df.tail(1+time_frame['value']).head(1)['close'].iloc[0]
+                    curStock[f'change_{time_frame["key"]}'] = round((last_close - second_last_close) / second_last_close * 100, 2)
                 
-                curStock['last'] = round(last_close, 2)
-                curStock['market_cap'] = round(last_row.get_column('issue_share')[0] * last_close, 2)
-                curStock['volume'] = int(df.tail(1).get_column('volume')[0])
-                curStock['change'] = round((last_close - second_last_close) / second_last_close * 100, 2)
+        
+                
+                curStock['market_cap'] = round(last_row['issue_share'].iloc[0] * last_close, 2)
+                curStock['volume'] = int(df.tail(1)['volume'].iloc[0])
                 redis_client.set(f'stock_review_{symbol}_{date}', json.dumps(curStock), ex=3600*24*24)
+                
+                
     print('Prepare data for market review done')
+prepare_time_frame_price=[
+    {
+        'key': '1D',
+        'value':1
+    },
+    {
+        'key': '1W',
+        'value':5
+    },
+    {
+        'key': '1M',
+        'value':21
+    },
+    {
+        'key': '3M',
+        'value':63
+    },
+    {
+        'key': '6M',
+        'value':126
+    },
+    {
+        'key': '1Y',
+        'value':252
+    }
+    
+]

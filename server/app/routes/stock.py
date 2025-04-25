@@ -1,14 +1,14 @@
 import json
 from math import floor
 
+import pandas as pd
 import pandas_ta as ta
-import polars as pl
 import redis
 from flask import Blueprint, request
 from vnstock import Vnstock
 
 from app.constant.constant import hose
-from app.utils.utils import find_near_valid_date
+from app.utils.utils import convert_timestamp_to_datestring, find_near_valid_date
 
 redis_client = redis.Redis(host='localhost', port=6379, db=0)
 
@@ -24,35 +24,28 @@ def fetch_stock_prices():
     interval = request.args.get('interval') or '1D'
 
     cache_key = f'stock_quote_{symbol}_{start_date}_{end_date}_{interval}'
-# try:
     cached_data = redis_client.get(cache_key)
-    if cached_data:
-        return json.loads(cached_data)
+    # if cached_data:
+    #     return json.loads(cached_data)
 
-    # GET STOCK DATA FROM API
-    stock = Vnstock().stock(symbol=symbol, source="VCI")
-    df = stock.quote.history(start=start_date, end=end_date, interval=interval)
+    try:
+        df = pd.read_csv(f'./app/data/hose/{symbol}.txt', sep='\t')    
+    except:
+        try:
+            df = pd.read_csv(f'./app/data/hnx/{symbol}.txt', sep='\t')
+        except:
+            return 'Error'
+    df = df.dropna()
+    df= convert_timestamp_to_datestring(df)
+    df= df[df['time'] >= start_date][df['time'] <= end_date]    
+    df[['close', 'open', 'high', 'low']] = df[['close', 'open', 'high', 'low']] * 1000
 
-    # Convert pandas to polars
-    df = pl.from_pandas(df)
-
-    df = df.with_columns([
-        pl.col('time').cast(pl.Datetime),
-        pl.col('time').alias('date').cast(str).str.replace(' 00:00:00', ''),
-        pl.col('open') * 1000,
-        pl.col('close') * 1000,
-        pl.col('high') * 1000,
-        pl.col('low') * 1000
-    ])
-
-    df = df.drop_nulls()
-
+    response = df.to_dict(orient='records')
     redis_client.set(cache_key, json.dumps(
-        df.to_dicts()), ex=60*60*24)
+        response), ex=60*60*24)
 
-    return df.to_dicts()
-# except:
-    return 'Error'
+    return response
+
 
 
 @stock_bp.route('/stocks_quote', methods=['GET'])
@@ -71,31 +64,33 @@ def fetch_stock_overview():
     for symbol in symbols:
         df = None
         try:
-            df = pl.read_csv(f'./app/data/hose/{symbol}.txt', separator='\t')
+            df = pd.read_csv(f'./app/data/hose/{symbol}.txt', sep='\t')
         except:
             try:
-                df = pl.read_csv(
-                    f'./app/data/hnx/{symbol}.txt', separator='\t')
+                df = pd.read_csv(
+                    f'./app/data/hnx/{symbol}.txt', sep='\t')
             except:
                 continue
-        df.drop_nulls(subset=['close'])
+        df.dropna(subset=['close'])
+        df= convert_timestamp_to_datestring(df)
 
-        df = df.filter(pl.col('time') <= date).select(['close']).tail(30)
+        df = (df[df['time'] <= date][['close']]*1000).tail(30)
         data = json.loads(redis_client.get(f'stock_review_{symbol}_{date}'))
 
         response.append(
-            {'data': data, 'quote': df['close'].to_list()})
+            {'data': data, 'quote': df['close'].tolist()})
 
     redis_client.set(cache_key, json.dumps(response), ex=60*60*24)
     return response
 
 
-@stock_bp.route('/all_stock_rics', methods=['GET'])
+@stock_bp.route('/all_stock_symbols', methods=['GET'])
 def fetch_all_stock_rics():
-    df = pl.read_excel('./app/data/Vietnam/Vietnam.xlsx')
-    response = df.select(['Symbol', 'Name', 'Market', 'Exchange', 'Sector'])
-    response = response.with_row_count(offset=1)
-    response = response.to_dicts()
+    df = pd.read_excel('./app/data/Vietnam/Vietnam.xlsx')   
+    response = df[['Symbol', 'Name', 'Market', 'Exchange', 'Sector']]
+    response = response.reset_index(drop=True)
+    response.index += 1  # Adjust to start from 1
+    response = response.to_dict(orient='records')
 
     res = []
     for item in response:

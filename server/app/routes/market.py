@@ -2,8 +2,8 @@ import json
 from datetime import datetime, timedelta
 from math import floor
 
+import pandas as pd
 import pandas_ta as ta
-import polars as pl
 import redis
 from flask import Blueprint, request
 from vnstock import Vnstock
@@ -11,7 +11,7 @@ from vnstock import Vnstock
 from app.constant.constant import hnx, hose, upcom
 from app.database.model import DbModel
 from app.utils.stock import analyze_stock_signal
-from app.utils.utils import find_near_valid_date
+from app.utils.utils import convert_timestamp_to_datestring, find_near_valid_date
 
 redis_client = redis.Redis(host='localhost', port=6379, db=0)
 market_bp = Blueprint('market_bp', __name__)
@@ -28,55 +28,40 @@ def fetch_market_overview():
     if cached_data:
         return json.loads(cached_data)
 
-    df = pl.read_csv('./app/data/hose/AAA.txt', separator='\t')
-    while date not in df["time"].to_list():
-        date = datetime.strptime(date, '%Y-%m-%d')+timedelta(days=1)
-        date = date.strftime('%Y-%m-%d')
-    while date_before not in df["time"].to_list():
-        date_before = datetime.strptime(
-            date_before, '%Y-%m-%d')-timedelta(days=1)
-        date_before = date_before.strftime('%Y-%m-%d')
+    df = pd.read_csv('./app/data/hose/AAA.txt', sep='\t')
+    date = find_near_valid_date(date)
+    date_before = find_near_valid_date(date_before)
 
     stock = Vnstock().stock(symbol='AAA', source='VCI')
 
     def fetch_market(symbol, start, end, interval):
-        # Get data from API which returns pandas DataFrame
         df = stock.quote.history(
             symbol=symbol, start=start, end=end, interval=interval)
-        # Convert to polars
-        df = pl.from_pandas(df)
-        df = df.drop_nulls()
-        df = df.with_columns([
-            pl.col('time').cast(pl.Datetime),
-            pl.col('time').cast(pl.Datetime).dt.strftime('%Y-%m-%d %H:%M:%S')
-        ])
+        df = df.dropna()
+        df = convert_timestamp_to_datestring(df)
         return df
-    
+
     hose_market = fetch_market('VNINDEX', date, date, '5m')
     hnx_market = fetch_market('HNXINDEX', date, date, '5m')
     upcom_market = fetch_market('UPCOMINDEX', date, date, '5m')
 
     def fetch_close(symbol, start, end, interval):
-        # Get data from API which returns pandas DataFrame
         df = stock.quote.history(
             symbol=symbol, start=start, end=end, interval=interval)
-        # Convert to polars
-        df = pl.from_pandas(df)
-        df = df.drop_nulls()
-        df = df.with_columns([
-            pl.col('time').cast(pl.Datetime),
-            pl.col('time').cast(pl.Datetime).dt.strftime('%Y-%m-%d %H:%M:%S')
-        ])
+        df = df.dropna()
         return df
 
-    hose_close = fetch_close('VNINDEX', date_before, date_before, '1D').get_column('close')[-1]
-    hnx_close = fetch_close('HNXINDEX', date_before, date_before, '1D').get_column('close')[-1]
-    upcom_close = fetch_close('UPCOMINDEX', date_before, date_before, '1D').get_column('close')[-1]
+    hose_close = fetch_close('VNINDEX', date_before,
+                             date_before, '1D')['close'].iloc[-1]
+    hnx_close = fetch_close('HNXINDEX', date_before,
+                            date_before, '1D')['close'].iloc[-1]
+    upcom_close = fetch_close(
+        'UPCOMINDEX', date_before, date_before, '1D')['close'].iloc[-1]
 
     res = {
-        'hose_market': hose_market.to_dicts(),
-        'hnx_market': hnx_market.to_dicts(),
-        'upcom_market': upcom_market.to_dicts(),
+        'hose_market': hose_market.to_dict(orient='records'),
+        'hnx_market': hnx_market.to_dict(orient='records'),
+        'upcom_market': upcom_market.to_dict(orient='records'),
         'hose_close': hose_close,
         'hnx_close': hnx_close,
         'upcom_close': upcom_close,
@@ -94,61 +79,52 @@ def fetch_market_indicator_overview():
     if cached_data:
         return json.loads(cached_data)
 
-    sample_df = pl.read_csv('./app/data/hose/AAA.txt', separator='\t')
-    while date not in sample_df["time"].to_list():
-        date = datetime.strptime(date, '%Y-%m-%d')+timedelta(days=1)
-        date = date.strftime('%Y-%m-%d')
+    date = find_near_valid_date(date)
 
     response = {
         'close_price': {
             'advancing': 0,
             'declining': 0,
-        }, 
+        },
         'sma_200': {
             'above': 0,
             'below': 0,
-        }, 
+        },
         'sma_50': {
             'above': 0,
             'below': 0,
-        }, 
+        },
         'high_low': {
             'new_high': 0,
             'new_low': 0,
         }
     }
-    
-    for symbol in hose:
+
+    for symbol in hose+hnx:
         try:
-            # Read the file with polars
-            df = pl.read_csv(f'./app/data/hose/{symbol}.txt', separator='\t')
-            
-            # Convert to pandas for technical analysis
-            pdf = df.to_pandas()
-            
+            # Read the file with pandas
+            df = pd.read_csv(f'./app/data/hose/{symbol}.txt', sep='\t')
+
             # Calculate indicators using pandas_ta
-            pdf['sma_200'] = ta.sma(pdf['close'], length=200)
-            pdf['sma_50'] = ta.sma(pdf['close'], length=50)
-            pdf['52w_max'] = pdf['high'].transform(
+            df['sma_200'] = ta.sma(df['close'], length=200)
+            df['sma_50'] = ta.sma(df['close'], length=50)
+            df['52w_max'] = df['high'].transform(
                 lambda x: x.rolling(252, min_periods=1).max())
-            pdf['52w_min'] = pdf['low'].transform(
+            df['52w_min'] = df['low'].transform(
                 lambda x: x.rolling(252, min_periods=1).min())
-                
-            # Convert back to polars
-            df = pl.from_pandas(pdf)
-            
+
             # Get rows around the date
-            target_index = df.filter(pl.col('time') == date).row_nr.item()
+            target_index = df[df['time'] == date].index[0] if not df[df['time'] == date].empty else -1
             if target_index > 0:
-                df_slice = df.slice(target_index-1, 2)
-                
-                last_close = df_slice.tail(1).get_column('close')[0]
-                previous_close = df_slice.head(1).get_column('close')[0]
-                last_52w_max = df_slice.tail(1).get_column('52w_max')[0]
-                last_52w_min = df_slice.tail(1).get_column('52w_min')[0]
-                last_sma_200 = df_slice.tail(1).get_column('sma_200')[0]
-                last_sma_50 = df_slice.tail(1).get_column('sma_50')[0]
-                
+                df_slice = df.iloc[target_index-1:target_index+1]
+
+                last_close = df_slice.iloc[-1]['close']
+                previous_close = df_slice.iloc[0]['close']
+                last_52w_max = df_slice.iloc[-1]['52w_max']
+                last_52w_min = df_slice.iloc[-1]['52w_min']
+                last_sma_200 = df_slice.iloc[-1]['sma_200']
+                last_sma_50 = df_slice.iloc[-1]['sma_50']
+
                 if last_close >= last_52w_max:
                     response['high_low']['new_high'] += 1
                 if last_close <= last_52w_min:
@@ -179,9 +155,9 @@ def fetch_symbols():
     date = request.args.get('date')
     date = find_near_valid_date(date)
     prepare_for = request.args.get('prepare_for')
-    is_quote = request.args.get('is_quote')
+    time_frame = request.args.get('time_frame') or '1D'
 
-    cache_key = f"symbols_review_{date}_{prepare_for}_{is_quote}"
+    cache_key = f"symbols_review_{date}_{prepare_for}_{time_frame}"
     cached_data = redis_client.get(cache_key)
 
     # if cached_data:
@@ -189,38 +165,26 @@ def fetch_symbols():
 
     response = []
     sources = hose+hnx
-    stock = Vnstock().stock(symbol='ACB', source='VCI')
     if prepare_for == 'hose':
-        sources = stock.listing.symbols_by_group('VN30')
+        sources = hose
     elif prepare_for == 'hnx':
-        sources = stock.listing.symbols_by_group('HNX30')
+        sources = hnx
     for symbol in sources:
-        if symbol=='PIA':
-            continue
         try:
             cache_key_for_stock = f'stock_review_{symbol}_{date}'
             cached_data = redis_client.get(cache_key_for_stock)
             curStock = json.loads(cached_data)
-            if is_quote == 'true':
-                try:
-                    df = pl.read_csv(f'./app/data/hnx/{symbol}.txt', separator='\t')
-                    # Get last 60 columns
-                    last_60_rows = df.tail(60)
-                    curStock['quote'] = last_60_rows.to_dicts()
-                except:
-                    try:
-                        df = pl.read_csv(f'./app/data/hose/{symbol}.txt', separator='\t')
-                        # Get last 60 columns
-                        last_60_rows = df.tail(60)
-                        curStock['quote'] = last_60_rows.to_dicts()
-                    except:
-                        continue
+            curStock['change']= curStock[f'change_{time_frame}']
         except:
             continue
 
         if curStock:
             response.append(curStock)
-  
+            
+            
     response = sorted(response, key=lambda x: x['market_cap'], reverse=True)
-    redis_client.setex(cache_key, 24*60*60*7, json.dumps(response))  
-    return response[:500]
+    if prepare_for=='top_500':
+        response= response[:500]
+        
+    redis_client.setex(cache_key, 24*60*60*7, json.dumps(response))
+    return response[:]

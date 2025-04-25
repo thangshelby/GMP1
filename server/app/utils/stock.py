@@ -1,12 +1,12 @@
+import pandas as pd
 import pandas_ta as ta
-import polars as pl
 
 
 def analyze_stock_signal(df):
     # Convert polars DataFrame to pandas DataFrame if it's a polars DataFrame
     # This is because pandas_ta requires a pandas DataFrame
-    if isinstance(df, pl.DataFrame):
-        pandas_df = df.to_pandas()
+    if not isinstance(df, pd.DataFrame):
+        pandas_df = pd.DataFrame(df)
     else:
         pandas_df = df
         
