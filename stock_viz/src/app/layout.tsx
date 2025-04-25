@@ -3,6 +3,7 @@ import { Roboto, Roboto_Mono } from "next/font/google";
 import "./globals.css";
 import { Footer, Header, Navbar } from "../components";
 import QueryProvider from "./query-provider";
+import I18nProvider from "./i18n-provider";
 
 const roboto = Roboto({
   variable: "--font-roboto",
@@ -28,10 +29,12 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${roboto.variable} ${robotoMono.variable} antialiased`}>
         <QueryProvider>
-          <Header />
-          <Navbar />
-          {children}
-          <Footer />
+          <I18nProvider>
+            <Header />
+            <Navbar />
+            {children}
+            <Footer />
+          </I18nProvider>
         </QueryProvider>
         <div id="portal-root"></div>
       </body>

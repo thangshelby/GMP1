@@ -1,0 +1,49 @@
+{
+  "buttons": {
+    "submit": "Gửi",
+    "cancel": "Hủy",
+    "save": "Lưu",
+    "delete": "Xóa",
+    "edit": "Sửa",
+    "close": "Đóng",
+    "apply": "Áp dụng",
+    "reset": "Đặt lại",
+    "search": "Tìm kiếm",
+    "filter": "Lọc",
+    "export": "Xuất",
+    "import": "Nhập",
+    "download": "Tải xuống"
+  },
+  "general": {
+    "loading": "Đang tải...",
+    "error": "Đã xảy ra lỗi",
+    "noData": "Không có dữ liệu",
+    "success": "Thành công",
+    "warning": "Cảnh báo",
+    "info": "Thông tin",
+    "settings": "Cài đặt",
+    "profile": "Hồ sơ",
+    "logout": "Đăng xuất",
+    "login": "Đăng nhập",
+    "register": "Đăng ký",
+    "welcome": "Chào mừng"
+  },
+  "time": {
+    "today": "Hôm nay",
+    "yesterday": "Hôm qua",
+    "tomorrow": "Ngày mai",
+    "thisWeek": "Tuần này",
+    "lastWeek": "Tuần trước",
+    "thisMonth": "Tháng này",
+    "lastMonth": "Tháng trước",
+    "thisYear": "Năm nay",
+    "lastYear": "Năm trước"
+  },
+  "validation": {
+    "required": "Trường này là bắt buộc",
+    "invalidEmail": "Địa chỉ email không hợp lệ",
+    "minLength": "Phải có ít nhất {{length}} ký tự",
+    "maxLength": "Không thể vượt quá {{length}} ký tự",
+    "passwordMismatch": "Mật khẩu không khớp"
+  }
+} 

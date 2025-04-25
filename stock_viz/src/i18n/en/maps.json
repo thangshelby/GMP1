@@ -1,0 +1,30 @@
+{
+  "MapsHeader": {
+    "title": "Market Map",
+    "description": "The market map allows you to view the location of companies around the world. You can search for companies by name, country, or region.",
+    "search": "Search",
+    "zoomIn": "Zoom In",
+    "zoomOut": "Zoom Out",
+    "reset": "Reset",
+    "share": "Share"
+  },
+  "MapsSidebar": {
+    "MapsExchangeFilters": {
+      "title": "Maps Filters",
+      "top_500": "Top 500",
+      "all": "All",
+      "hose": "Hose Exchange",
+      "hnx": "HNX Exchange",
+      "inputSearch": "Search symbol"
+    },
+    "MapsTimeFrameFilters": {
+      "title": "Time Frame Filters",
+      "1D": "1-Day Performance",
+      "1W": "1-Week Performance",
+      "1M": "1-Month Performance",
+      "3M": "3-Month Performance",
+      "6M": "6-Month Performance",
+      "1Y": "1-Year Performance"
+    }
+  }
+}

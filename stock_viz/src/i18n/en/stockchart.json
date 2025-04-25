@@ -1,0 +1,49 @@
+{
+  "chart": {
+    "title": "Stock Chart",
+    "timeframe": "Timeframe",
+    "indicators": "Indicators",
+    "styles": "Chart Styles",
+    "tools": "Drawing Tools",
+    "compare": "Compare",
+    "export": "Export",
+    "settings": "Chart Settings",
+    "timeframes": {
+      "1m": "1 minute",
+      "5m": "5 minutes",
+      "15m": "15 minutes",
+      "30m": "30 minutes",
+      "1h": "1 hour",
+      "4h": "4 hours",
+      "1d": "1 day",
+      "1w": "1 week",
+      "1M": "1 month"
+    }
+  },
+  "company": {
+    "overview": "Company Overview",
+    "financials": "Financial Data",
+    "news": "Latest News",
+    "officers": "Officers",
+    "subsidiaries": "Subsidiaries",
+    "statistics": "Key Statistics",
+    "ratios": "Financial Ratios",
+    "profile": "Company Profile",
+    "earnings": "Earnings",
+    "dividends": "Dividends"
+  },
+  "financialReport": {
+    "title": "Financial Report",
+    "balance": "Balance Sheet",
+    "income": "Income Statement",
+    "cashflow": "Cash Flow",
+    "quarterly": "Quarterly",
+    "annual": "Annual",
+    "assets": "Assets",
+    "liabilities": "Liabilities",
+    "equity": "Equity",
+    "revenue": "Revenue",
+    "expenses": "Expenses",
+    "netIncome": "Net Income"
+  }
+} 

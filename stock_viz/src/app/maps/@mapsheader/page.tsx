@@ -4,8 +4,11 @@ import { MdFullscreen, MdFullscreenExit, MdBubbleChart } from "react-icons/md";
 import { CiShare2 } from "react-icons/ci";
 import { TiPlus, TiMinus } from "react-icons/ti";
 import { TbChartTreemap } from "react-icons/tb";
-const MapsHeader = () => {
+import { useTranslation } from "react-i18next";
 
+const MapsHeader = () => {
+  const { t } = useTranslation("maps");
+  
   const [isFullscreen, setIsFullscreen] = useState(false);
   return (
     <div className="py1 flex w-full flex-row items-center justify-between bg-[#363a46]">
@@ -26,8 +29,7 @@ const MapsHeader = () => {
 
       <div className="flex w-[85%] flex-row items-center justify-between px-4">
         <div className="text-sm text-gray-400">
-          Standard and Poors 500 index stocks categorized by sectors and
-          industries. Size represents market cap.
+          {t("MapsHeader.description")}
         </div>
 
         {/* Right side - Controls */}
@@ -41,17 +43,16 @@ const MapsHeader = () => {
             ) : (
               <MdFullscreen color="#57aefb" />
             )}
-            <span className="text-primary text-sm">Fullscreen</span>
+            <span className="text-primary text-sm">{t("MapsHeader.reset")}</span>
           </button>
           <button className="flex items-center gap-1 rounded p-2 hover:cursor-pointer">
             <CiShare2 color="#57aefb" />
-
-            <span className="text-primary text-sm"> Share map</span>
+            <span className="text-primary text-sm">{t("MapsHeader.share")}</span>
           </button>
-          <button className="rounded p-2 hover:cursor-pointer">
+          <button className="rounded p-2 hover:cursor-pointer" title={t("MapsHeader.zoomOut")}>
             <TiMinus color="#57aefb" />
           </button>
-          <button className="rounded p-2 hover:cursor-pointer">
+          <button className="rounded p-2 hover:cursor-pointer" title={t("MapsHeader.zoomIn")}>
             <TiPlus color="#57aefb" />
           </button>
         </div>

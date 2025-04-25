@@ -1,0 +1,118 @@
+{
+  "screener": {
+    "title": "Stock Screener",
+    "filters": "Filters",
+    "results": "Results",
+    "apply": "Apply Filters",
+    "reset": "Reset Filters",
+    "save": "Save Screener",
+    "load": "Load Screener",
+    "export": "Export Results",
+    "columns": {
+      "stt": "No.",
+      "symbol": "Symbol",
+      "company": "Company",
+      "sector": "Sector",
+      "industry": "Industry",
+      "country": "Country",
+      "marketCap": "Market Cap",
+      "price": "Price",
+      "change": "Change",
+      "volume": "Volume"
+    },
+    "settings": "Screener Settings",
+    "noResults": "No stocks match your criteria",
+    "searchSymbol": "Search Symbol",
+    "filterHeaders": {
+      "orderBy": "Order by",
+      "sortBy": "Sort by",
+      "signal": "Signal"
+    },
+    "orderByOptions": {
+      "ticker": "Ticker",
+      "name": "Name",
+      "exchange": "Exchange",
+      "industry": "Industry",
+      "marketCap": "Market Cap."
+    },
+    "sortByOptions": {
+      "ascending": "Ascending",
+      "descending": "Descending"
+    },
+    "signalOptions": {
+      "all": "All",
+      "none": "None",
+      "buy": "Buy",
+      "sell": "Sell",
+      "hold": "Hold"
+    },
+    "filterCategories": {
+      "descriptive": "Descriptive",
+      "fundamental": "Fundamental",
+      "technical": "Technical",
+      "etf": "ETF",
+      "all": "All"
+    },
+    "descriptiveFilters": {
+      "exchange": "Exchange",
+      "index": "Index",
+      "marketCap": "Market Cap.",
+      "industry": "Industry",
+      "sector": "Sector",
+      "price": "Price",
+      "averageVolume": "Average Volume",
+      "currentVolume": "Current Volume",
+      "shareOutstanding": "Share outstanding",
+      "relativeVolume": "Relative Volume",
+      "analystsRecom": "Analysts Recom.",
+      "dividendYield": "Dividend Yield"
+    },
+    "any": "Any",
+    "exchanges": {
+      "HOSE": "HOSE",
+      "HNX": "HNX",
+      "UPCOM": "UPCOM"
+    },
+    "indices": {
+      "VN30": "VN30",
+      "VN100": "VN100",
+      "VNMidCap": "VNMidCap",
+      "VNSmallCap": "VNSmallCap",
+      "VNAllShare": "VNAllShare",
+      "ETF": "ETF",
+      "HNX30": "HNX30",
+      "HNXCon": "HNXCon",
+      "HNXFin": "HNXFin",
+      "HNXMan": "HNXMan",
+      "HNXLCap": "HNXLCap",
+      "FU_INDEX": "FU_INDEX"
+    },
+    "marketCapRanges": {
+      "below500B": "Below 500B",
+      "500Bto1000B": "500B - 1,000B",
+      "1000Bto5000B": "1,000B - 5,000B",
+      "5000Bto10000B": "5,000B - 10,000B",
+      "above10000B": "Above 10,000B"
+    }
+  },
+  "filters": {
+    "marketCap": "Market Cap",
+    "sector": "Sector",
+    "industry": "Industry",
+    "country": "Country",
+    "exchange": "Exchange",
+    "price": "Price",
+    "volume": "Volume",
+    "pe": "P/E Ratio",
+    "eps": "EPS",
+    "dividend": "Dividend",
+    "dividendYield": "Dividend Yield",
+    "roe": "ROE",
+    "roa": "ROA",
+    "debtToEquity": "Debt to Equity",
+    "priceToBook": "Price to Book",
+    "priceToSales": "Price to Sales",
+    "beta": "Beta",
+    "currentRatio": "Current Ratio"
+  }
+} 

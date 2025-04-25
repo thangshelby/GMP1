@@ -1,0 +1,30 @@
+{
+    "MapsHeader":{
+        "title":"Bản đồ thị trường",
+        "description":"Bản đồ thị trường cho phép bạn xem vị trí của các công ty trên thế giới. Bạn có thể tìm kiếm các công ty theo tên, quốc gia hoặc khu vực.",
+        "search":"Tìm kiếm",
+        "zoomIn":"Phóng to",
+        "zoomOut":"Thu nhỏ",
+        "reset":"Đặt lại",
+        "share":"Chia sẻ"       
+    },
+    "MapsSidebar":{
+        "MapsExchangeFilters":{
+            "title":"Bộ lọc bản đồ",
+            "top_500":"Top 500",
+            "all":"Tất cả",
+            "hose":"Sàn Hose",
+            "hnx":"Sàn HNX",
+            "inputSearch":"Tìm kiếm mã chứng khoán"
+        },
+        "MapsTimeFrameFilters":{
+            "title":"Bộ lọc thời gian",
+            "1D":"1-Ngày",
+            "1W":"1-Tuần",
+            "1M":"1-Tháng",
+            "3M":"3-Tháng",
+            "6M":"6-Tháng",
+            "1Y":"1-Năm"
+        }
+    }
+}

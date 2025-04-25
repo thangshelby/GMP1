@@ -1,0 +1,49 @@
+{
+  "chart": {
+    "title": "Biểu Đồ Cổ Phiếu",
+    "timeframe": "Khung Thời Gian",
+    "indicators": "Chỉ Báo",
+    "styles": "Kiểu Biểu Đồ",
+    "tools": "Công Cụ Vẽ",
+    "compare": "So Sánh",
+    "export": "Xuất",
+    "settings": "Cài Đặt Biểu Đồ",
+    "timeframes": {
+      "1m": "1 phút",
+      "5m": "5 phút",
+      "15m": "15 phút",
+      "30m": "30 phút",
+      "1h": "1 giờ",
+      "4h": "4 giờ",
+      "1d": "1 ngày",
+      "1w": "1 tuần",
+      "1M": "1 tháng"
+    }
+  },
+  "company": {
+    "overview": "Tổng Quan Công Ty",
+    "financials": "Dữ Liệu Tài Chính",
+    "news": "Tin Tức Mới Nhất",
+    "officers": "Quản Lý",
+    "subsidiaries": "Công Ty Con",
+    "statistics": "Thống Kê Chính",
+    "ratios": "Tỷ Số Tài Chính",
+    "profile": "Hồ Sơ Công Ty",
+    "earnings": "Thu Nhập",
+    "dividends": "Cổ Tức"
+  },
+  "financialReport": {
+    "title": "Báo Cáo Tài Chính",
+    "balance": "Bảng Cân Đối Kế Toán",
+    "income": "Báo Cáo Kết Quả Kinh Doanh",
+    "cashflow": "Báo Cáo Lưu Chuyển Tiền Tệ",
+    "quarterly": "Quý",
+    "annual": "Năm",
+    "assets": "Tài Sản",
+    "liabilities": "Nợ Phải Trả",
+    "equity": "Vốn Chủ Sở Hữu",
+    "revenue": "Doanh Thu",
+    "expenses": "Chi Phí",
+    "netIncome": "Lợi Nhuận Ròng"
+  }
+} 

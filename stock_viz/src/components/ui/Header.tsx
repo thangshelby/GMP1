@@ -174,7 +174,8 @@ const Header = () => {
           </div>
         </div>
       </div>
-
+      
+      
       <div className="flex flex-row items-center gap-2">
         <div className="hover:cursor-pointer">
           <CiBellOn color="white" size={"20px"} />

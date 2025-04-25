@@ -1,4 +1,4 @@
-"use client";
+  "use client";
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { subYears, format } from "date-fns";
@@ -14,52 +14,54 @@ import {
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import { useRouter } from "next/navigation";
+import { useTranslation } from "react-i18next";
 
 const MapsSideBar = () => {
   const date = format(subYears(new Date(), 1), "yyyy-MM-dd");
+  const { t } = useTranslation("maps");
 
   const exchangeFilterCategories = [
     {
-      title: "Top 500 VN",
+      title: t("MapsSidebar.MapsExchangeFilters.top_500"),
       value: "top_500",
     },
     {
-      title: "All",
+      title: t("MapsSidebar.MapsExchangeFilters.all"),
       value: "all",
     },
     {
-      title: "HOSE Exchange",
+      title: t("MapsSidebar.MapsExchangeFilters.hose"),
       value: "hose",
     },
     {
-      title: "HNX Exchange",
+      title: t("MapsSidebar.MapsExchangeFilters.hnx"),
       value: "hnx",
     },
   ];
 
   const timeFrameFiltersCategories = [
     {
-      title: "1-Day Performance",
+      title: t("MapsSidebar.MapsTimeFrameFilters.1D"),
       value: "1D",
     },
     {
-      title: "1-Week Performance",
+      title: t("MapsSidebar.MapsTimeFrameFilters.1W"),
       value: "1W",
     },
     {
-      title: "1-Month Performance",
+      title: t("MapsSidebar.MapsTimeFrameFilters.1M"),
       value: "1M",
     },
     {
-      title: "3-Month Performance",
+      title: t("MapsSidebar.MapsTimeFrameFilters.3M"),
       value: "3M",
     },
     {
-      title: "6-Month Performance",
+      title: t("MapsSidebar.MapsTimeFrameFilters.6M"),
       value: "6M",
     },
     {
-      title: "1-Year Performance",
+      title: t("MapsSidebar.MapsTimeFrameFilters.1Y"),
       value: "1Y",
     },
   ];
@@ -122,7 +124,7 @@ const MapsSideBar = () => {
       {/* Map Filter Section */}
       <div className="flex w-full flex-col items-start bg-[#404553] p-4">
         <div className="flex w-full flex-col gap-4">
-          <h2 className="text-secondary text-sm">MAP FILTER</h2>
+          <h2 className="text-secondary text-sm">{t("MapsSidebar.MapsExchangeFilters.title")}</h2>
           <div className="">
             {exchangeFilterCategories.map((filter, index: number) => (
               <div
@@ -177,7 +179,7 @@ const MapsSideBar = () => {
         <div className="relative flex items-center">
           <input
             type="text"
-            placeholder="Quick search ticker"
+            placeholder={t("MapsSidebar.MapsExchangeFilters.inputSearch")}
             value={searchSymbol}
             onChange={(e) => {
               handleSearchSymbol(e.target.value);

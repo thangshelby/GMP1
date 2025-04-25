@@ -12,8 +12,10 @@ import {
   MdOutlineKeyboardArrowUp,
 } from "react-icons/md";
 import ScreenerResult from "@/components/screener/ScreenerResult";
+import { useTranslations } from "@/lib/hooks/useTranslations";
 
 const Screener = () => {
+  const { tScreener } = useTranslations();
   const [sortedCategory, setSortedCategory] = useState<{
     orderBy: { title: string; value: string };
     sortBy: { title: string; value: string };
@@ -39,17 +41,13 @@ const Screener = () => {
               className="mr-2 flex flex-row items-center gap-2"
             >
               <p className="text-secondary text-xs font-medium">
-                {header.title}
+                {tScreener(`screener.filterHeaders.${header.key}`)}
               </p>
               <DropdownMenu>
                 <DropdownMenuTrigger className="border-secondary rounded-sm border-1 p-1 hover:cursor-pointer">
                   <div className="flex w-32 flex-row justify-between">
                     <span className="text-xs text-white">
-                      {
-                        sortedCategory[
-                          header.key as keyof typeof sortedCategory
-                        ].title
-                      }
+                      {tScreener(`screener.${header.key}Options.${sortedCategory[header.key as keyof typeof sortedCategory].value}`)}
                     </span>
                     <MdOutlineArrowDropDown color="#868ea5" />
                   </div>
@@ -68,7 +66,7 @@ const Screener = () => {
                       }
                       className={`text-xs font-medium text-white hover:cursor-pointer ${sortedCategory[header.key as keyof typeof sortedCategory].title == item.title ? "bg-primary border-[0px]" : ""}`}
                     >
-                      {item.title}
+                      {tScreener(`screener.${header.key}Options.${item.value}`)}
                     </DropdownMenuItem>
                   ))}
                 </DropdownMenuContent>
@@ -76,7 +74,7 @@ const Screener = () => {
             </div>
           ))}
           <div className="mr-2 flex flex-row items-center gap-2">
-            <p className="text-secondary text-xs">Search Symbol</p>
+            <p className="text-secondary text-xs">{tScreener('screener.searchSymbol')}</p>
             <input
               className="border-secondary text-secondary rounded-sm border-1 p-1 text-xs outline-none hover:cursor-pointer"
               type="text"
@@ -88,7 +86,7 @@ const Screener = () => {
 
           <div className="flex flex-row items-center gap-1 rounded-sm bg-[#4c5263] px-2 hover:cursor-pointer">
             <span className="text-secondary text-xs font-semibold">
-              Filters
+              {tScreener('screener.filters')}
             </span>
 
             <MdOutlineKeyboardArrowUp color="#868ea5" />
@@ -104,7 +102,7 @@ const Screener = () => {
                 key={category.title}
                 className={`border-secondary border-[0.5px] ${category.title == selectedCategory ? "border-primary border-[1px] bg-[#263766] text-white" : "text-secondary bg-[#14161d]"} px-2 py-[2px] text-xs font-semibold ${index == 0 && "rounded-l-md"} ${index == filterCategories.length - 1 && "rounded-r-md"} hover:cursor-pointer hover:text-white`}
               >
-                {category.title}
+                {tScreener(`screener.filterCategories.${category.title.toLowerCase()}`)}
               </div>
             ))}
           </div>
@@ -118,18 +116,18 @@ const Screener = () => {
               className="flex flex-row items-center justify-end gap-2"
             >
               <span className="text-secondary text-xs font-medium">
-                {item.title}
+                {tScreener(`screener.descriptiveFilters.${item.key}`)}
               </span>
               <DropdownMenu>
                 <DropdownMenuTrigger className="border-secondary rounded-sm border-1 p-1 hover:cursor-pointer hover:border-white">
                   <div className="flex w-32 flex-row justify-between">
-                    <span className="text-xs text-white">Any</span>
+                    <span className="text-xs text-white">{tScreener('screener.any')}</span>
                     <MdOutlineArrowDropDown color="#868ea5" />
                   </div>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="border-secondary max-h-60 rounded-none border-1 bg-[#22262f]">
                   {Array.isArray(item.value) &&
-                    ["Tất cả", ...item.value].map((val, index) => (
+                    [tScreener('screener.any'), ...item.value].map((val, index) => (
                       <DropdownMenuItem
                         key={index}
                         className="text-xs font-medium text-white hover:cursor-pointer"
@@ -160,15 +158,15 @@ const filterHeaders = [
       { title: "Name", value: "name" },
       { title: "Exchange", value: "exchange" },
       { title: "Industry", value: "industry" },
-      { title: "Market Cap.", value: "market_cap" },
+      { title: "Market Cap.", value: "marketCap" },
     ],
   },
   {
     title: "Sort by",
     key: "sortBy",
     items: [
-      { title: "Ascending", value: "asc" },
-      { title: "Descending", value: "desc" },
+      { title: "Ascending", value: "ascending" },
+      { title: "Descending", value: "descending" },
     ],
   },
   {
@@ -191,6 +189,7 @@ const filterCategories = [
       { title: "Exchange", value: ["HOSE", "HNX", "UPCOM"] },
       {
         title: "Index",
+        key: "index",
         value: [
           "VN30",
           "VN100",
@@ -208,6 +207,7 @@ const filterCategories = [
       },
       {
         title: "Market Cap.",
+        key: "marketCap",
         value: [
           "Dưới 500 tỷ",
           "500 - 1,000 tỷ",
@@ -218,6 +218,7 @@ const filterCategories = [
       },
       {
         title: "Industry",
+        key: "industry",
         value: [
           "Hóa chất",
           "Thực phẩm và đồ uống",
@@ -241,6 +242,7 @@ const filterCategories = [
       },
       {
         title: "Sector",
+        key: "sector",
         value: [
           "Công nghiệp",
           "Tài chính",
@@ -257,6 +259,7 @@ const filterCategories = [
       },
       {
         title: "Price",
+        key: "price",
         value: [
           "Dưới 10,000đ",
           "10,000đ - 30,000đ",
@@ -266,19 +269,22 @@ const filterCategories = [
       },
       {
         title: "Average Volume",
+        key: "averageVolume",
         value: ["Dưới 100K", "100K - 500K", "500K - 1M", "Trên 1M"],
       },
       {
         title: "Current Volume",
+        key: "currentVolume",
         value: ["Dưới 100K", "100K - 500K", "500K - 1M", "Trên 1M"],
       },
       {
         title: "Share outstanding",
+        key: "shareOutstanding",
         value: [
           "Dưới 842 M",
           "842 - 1,677 M",
-          "1,677 - 2,512 M",
-          "2,512 - 3,347 M",
+            "1,677 - 2,512 M",
+            "2,512 - 3,347 M",
           "3,347 - 4,182 M",
           "4,182 - 5,017 M",
           "5,017 - 5,852 M",
@@ -289,14 +295,17 @@ const filterCategories = [
       },
       {
         title: "Relative Volume",
+        key: "relativeVolume",
         value: ["< 0.5", "0.5 - 1.0", "1.0 - 2.0", "> 2.0"],
       },
       {
         title: "Analysts Recom.",
+        key: "analystsRecom",
         value: ["Mua mạnh", "Mua", "Giữ", "Bán", "Bán mạnh"],
       },
       {
         title: "Dividend Yield",
+        key: "dividendYield",
         value: ["Không cổ tức", "Dưới 2%", "2% - 5%", "5% - 8%", "Trên 8%"],
       },
     ],

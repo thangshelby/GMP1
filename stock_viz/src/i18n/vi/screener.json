@@ -1,0 +1,118 @@
+{
+  "screener": {
+    "title": "Sàn Lọc Cổ Phiếu",
+    "filters": "Bộ Lọc",
+    "results": "Kết Quả",
+    "apply": "Áp Dụng Bộ Lọc",
+    "reset": "Đặt Lại Bộ Lọc",
+    "save": "Lưu Bộ Lọc",
+    "load": "Tải Bộ Lọc",
+    "export": "Xuất Kết Quả",
+    "columns": {
+      "stt": "STT",
+      "symbol": "Mã CK",
+      "company": "Công ty",
+      "sector": "Ngành",
+      "industry": "Nhóm Ngành",
+      "country": "Quốc gia",
+      "marketCap": "Vốn hóa",
+      "price": "Giá",
+      "change": "Thay đổi",
+      "volume": "Khối lượng"
+    },
+    "settings": "Cài Đặt Sàn Lọc",
+    "noResults": "Không có cổ phiếu nào phù hợp với tiêu chí của bạn",
+    "searchSymbol": "Tìm Mã Cổ Phiếu",
+    "filterHeaders": {
+      "orderBy": "Sắp xếp theo",
+      "sortBy": "Thứ tự",
+      "signal": "Tín hiệu"
+    },
+    "orderByOptions": {
+      "ticker": "Mã CK",
+      "name": "Tên",
+      "exchange": "Sàn",
+      "industry": "Ngành",
+      "marketCap": "Vốn hóa"
+    },
+    "sortByOptions": {
+      "ascending": "Tăng dần",
+      "descending": "Giảm dần"
+    },
+    "signalOptions": {
+      "all": "Tất cả",
+      "none": "Không",
+      "buy": "Mua",
+      "sell": "Bán",
+      "hold": "Giữ"
+    },
+    "filterCategories": {
+      "descriptive": "Mô tả",
+      "fundamental": "Cơ bản",
+      "technical": "Kỹ thuật",
+      "etf": "ETF",
+      "all": "Tất cả"
+    },
+    "descriptiveFilters": {
+      "exchange": "Sàn",
+      "index": "Chỉ số",
+      "marketCap": "Vốn hóa",
+      "industry": "Ngành",
+      "sector": "Lĩnh vực",
+      "price": "Giá",
+      "averageVolume": "Khối lượng TB",
+      "currentVolume": "Khối lượng hiện tại",
+      "shareOutstanding": "Cổ phiếu lưu hành",
+      "relativeVolume": "Khối lượng tương đối",
+      "analystsRecom": "Khuyến nghị",
+      "dividendYield": "Tỷ suất cổ tức"
+    },
+    "any": "Tất cả",
+    "exchanges": {
+      "HOSE": "HOSE",
+      "HNX": "HNX",
+      "UPCOM": "UPCOM"
+    },
+    "indices": {
+      "VN30": "VN30",
+      "VN100": "VN100",
+      "VNMidCap": "VNMidCap",
+      "VNSmallCap": "VNSmallCap",
+      "VNAllShare": "VNAllShare",
+      "ETF": "ETF",
+      "HNX30": "HNX30",
+      "HNXCon": "HNXCon",
+      "HNXFin": "HNXFin",
+      "HNXMan": "HNXMan",
+      "HNXLCap": "HNXLCap",
+      "FU_INDEX": "FU_INDEX"
+    },
+    "marketCapRanges": {
+      "below500B": "Dưới 500 tỷ",
+      "500Bto1000B": "500 - 1.000 tỷ",
+      "1000Bto5000B": "1.000 - 5.000 tỷ",
+      "5000Bto10000B": "5.000 - 10.000 tỷ",
+      "above10000B": "Trên 10.000 tỷ"
+    }
+  },
+  "filters": {
+    "marketCap": "Vốn Hóa",
+    "sector": "Ngành",
+    "industry": "Lĩnh Vực",
+    "country": "Quốc Gia",
+    "exchange": "Sàn Giao Dịch",
+    "price": "Giá",
+    "volume": "Khối Lượng",
+    "pe": "Tỷ Lệ P/E",
+    "eps": "EPS",
+    "dividend": "Cổ Tức",
+    "dividendYield": "Tỷ Suất Cổ Tức",
+    "roe": "ROE",
+    "roa": "ROA",
+    "debtToEquity": "Nợ Trên Vốn",
+    "priceToBook": "Giá Trên Sổ Sách",
+    "priceToSales": "Giá Trên Doanh Thu",
+    "beta": "Hệ Số Beta",
+    "currentRatio": "Tỷ Lệ Thanh Toán Hiện Hành"
+  }
+} 

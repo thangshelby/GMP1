@@ -1,0 +1,43 @@
+{
+  "Navbar": {
+    "NavbarLeft": {
+      "Home": "Trang chủ",
+      "Market": "Thị trường",
+      "News": "Tin tức",
+      "Analysis": "Phân tích",
+      "About": "Về chúng tôi",
+      "Contact": "Liên hệ",
+      "Screener": "Sàn lọc",
+      "Stock Chart": "Biểu đồ cổ phiếu",
+      "Maps": "Bản đồ"
+    },
+    "NavbarRight": {
+      "Help": "Trợ giúp",
+      "Logout": "Đăng xuất",
+      "Select Language": "Ngôn ngữ",
+      "Day":{
+        "1":"Thứ hai",
+        "2":"Thứ ba",
+        "3":"Thứ tư",
+        "4":"Thứ năm",
+        "5":"Thứ sáu",
+        "6":"Thứ bảy",
+        "7":"Chủ nhật"
+      },
+      "Month":{
+        "1":"Tháng một",
+        "2":"Tháng hai",
+        "3":"Tháng ba",
+        "4":"Tháng tư",
+        "5":"Tháng năm",
+        "6":"Tháng sáu",
+        "7":"Tháng bảy",
+        "8":"Tháng tám",
+        "9":"Tháng chín",
+        "10":"Tháng mười",
+        "11":"Tháng mười một",
+        "12":"Tháng mười hai"
+      }
+    }
+  }
+}
