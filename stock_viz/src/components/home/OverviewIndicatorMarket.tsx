@@ -1,26 +1,17 @@
 "use client";
 import React from "react";
-import { fetchAPI } from "@/lib/utils";
-import { useState, useEffect } from "react";
 import { format, subYears } from "date-fns";
-
+import { useQuery } from "@tanstack/react-query";
+import { getMarketIndicatorsOverview } from "@/apis/market.api";
 const OverviewIndicatorMarket = () => {
   const date = format(subYears(new Date(), 1), "yyyy-MM-dd");
-  const [data, setData] = useState<any>();
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const response = await fetchAPI(
-        `/market/market_indicators_overview?date=${date}`,
-      );
-      setLoading(false);
-      setData(response);
-    };
-    fetchData();
-  }, []);
+const result = useQuery({
+  queryKey: ["market/market-indicators-overview", date],
+  queryFn: () => getMarketIndicatorsOverview(date),
+});
 
-  if (loading) {
+  if (result.isLoading) {
     return (
       <div className="flex h-[200px] items-center justify-center">
         <div className="h-16 w-16 animate-spin rounded-full border-4 border-gray-300 border-t-transparent"></div>
@@ -30,20 +21,22 @@ const OverviewIndicatorMarket = () => {
 
   return (
     <div className="flex flex-row items-center justify-between p-4">
-      {Object.keys(data).map((categoryKey) => {
-        return renderOverview(categoryKey, data[categoryKey]);
+      {Object.keys(result.data).map((categoryKey) => {
+        return renderOverview(categoryKey, result.data[categoryKey]);
       })}
     </div>
   );
 };
 
 export default OverviewIndicatorMarket;
-
-const renderOverview = (name: string, data: any) => {
+interface MarketIndicatorsOverviewType {
+  [key: string]: number;
+}
+const renderOverview = (name: string, data: MarketIndicatorsOverviewType) => {
   const key1 = Object.keys(data)[0];
   const key2 = Object.keys(data)[1];
   const greenPercent = (data[key1] / (data[key1] + data[key2])) * 100;
-  const redPercent = (data[key2] / (data[key1] + data[key2])) * 100;
+  const redPercent = (data[key2] / (data[key1] + data[key2])) * 100;  
 
   return (
     <div

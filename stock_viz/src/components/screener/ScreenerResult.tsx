@@ -25,27 +25,6 @@ import { FaArrowRightLong, FaArrowLeftLong } from "react-icons/fa6";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useTranslations } from "@/lib/hooks/useTranslations";
 
-interface StockInfoType {
-  name: string;
-  symbol: string;
-  market_cap: number;
-  industry: string;
-  sector: string;
-  exchange: string;
-  last: number;
-  change: number;
-  volume: number;
-  signal: string;
-  quote: {
-    time: string;
-    open: number;
-    high: number;
-    low: number;
-    close: number;
-    volume: number;
-  }[];
-}
-
 const ScreenerResult = ({
   sortedCategory
 }: {
@@ -53,7 +32,6 @@ const ScreenerResult = ({
     orderBy: {title: string, value: string}
     sortBy: {title: string, value: string}
     signal: {title: string, value: string}
-    searchSymbol: string
   }
 }) => {
   const { tScreener } = useTranslations();
@@ -226,14 +204,8 @@ const StockTableRow = ({
 
         {showPopup && (
           <StockQuoteOverview
-            data={
-              stock?.quote?.slice(
-                stock?.quote.length - 60,
-                stock?.quote.length,
-              ) || []
-            }
             position={position}
-            infomation={stock as StockInfoType}
+            infomation={stock }
           />
         )}
       </TableCell>

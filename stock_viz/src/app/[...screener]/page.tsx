@@ -116,7 +116,7 @@ const Screener = () => {
               className="flex flex-row items-center justify-end gap-2"
             >
               <span className="text-secondary text-xs font-medium">
-                {tScreener(`screener.descriptiveFilters.${item.key}`)}
+                {tScreener(`screener.descriptiveFilters.${'key' in item && item.key}`)}
               </span>
               <DropdownMenu>
                 <DropdownMenuTrigger className="border-secondary rounded-sm border-1 p-1 hover:cursor-pointer hover:border-white">

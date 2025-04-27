@@ -235,16 +235,16 @@ export interface NewsItemProp {
   title: string;
 }
 
-export interface TreemapNode {
+export interface TreemapNodeType {
   name: string;
   value?: number;
   change?: number;
-  children?: TreemapNode[];
+  children?: TreemapNodeType[];
 }
 
-export interface Node {
-  children?: Node[];
-  data: TreemapNode;
+export interface NodeType {
+  children?: NodeType[];
+  data: TreemapNodeType;
   depth: number;
   height: number;
   x0: number;

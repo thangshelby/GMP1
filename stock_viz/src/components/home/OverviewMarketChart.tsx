@@ -1,6 +1,14 @@
 "use client";
-import React, {  useEffect, useRef } from "react";
-import * as d3 from "d3";
+import React, { useEffect, useRef } from "react";
+import {
+  scaleBand,
+  scaleLinear,
+  axisBottom,
+  axisRight,
+  min,
+  max,
+  select,
+} from "d3";
 import { StockPriceDataType } from "@/types";
 
 const OverviewMarketChart = ({
@@ -13,7 +21,6 @@ const OverviewMarketChart = ({
   closePrice: number;
 }) => {
   const chartRef = useRef<SVGSVGElement | null>(null);
-  const today = new Date();
   const [realTimeVolumeHeight, setRealTimeVolumeHeight] = React.useState(0);
   useEffect(() => {
     const totalVolume =
@@ -21,30 +28,32 @@ const OverviewMarketChart = ({
         return acc + item.volume!;
       }, 0) /
       (data.length - 1);
-    setRealTimeVolumeHeight(
-      Math.floor((data[data.length - 1].volume! / (totalVolume * 2)) * 100),
-    );
+    let realTimeVolumeHeight =
+      data[data.length - 1].volume! / (totalVolume * 2);
+    if (realTimeVolumeHeight > 1) {
+      realTimeVolumeHeight = realTimeVolumeHeight - 1;
+    }
+    setRealTimeVolumeHeight(Math.floor(realTimeVolumeHeight * 100));
   }, [data]);
 
-  function generateTimeLabels(startHour: number, endHour: number) {
-    const times: string[] = [];
-    for (let hour = startHour; hour <= endHour; hour++) {
-      const time = new Date(today);
-      time.setHours(hour, 0, 0, 0);
-      times.push(time.toISOString());
-    }
-    return times;
-  }
-
-  const morningHours = generateTimeLabels(9, 12);
-  const afternoonHours = generateTimeLabels(13, 16);
-
-  const customDomain = [...morningHours, ...afternoonHours];
   const margin = { top: 20, right: 50, bottom: 10, left: 0 };
   useEffect(() => {
     if (!chartRef.current) return;
+    const today = new Date();
 
-    const svg = d3.select(chartRef.current);
+    const morningHours = generateTimeLabels(9, 12);
+    const afternoonHours = generateTimeLabels(13, 16);
+    function generateTimeLabels(startHour: number, endHour: number) {
+      const times: string[] = [];
+      for (let hour = startHour; hour <= endHour; hour++) {
+        const time = new Date(today);
+        time.setHours(hour, 0, 0, 0);
+        times.push(time.toISOString());
+      }
+      return times;
+    }
+    const customDomain = [...morningHours, ...afternoonHours];
+    const svg = select(chartRef.current);
     svg.selectAll("*").remove();
 
     const width = chartRef.current.clientWidth;
@@ -55,22 +64,19 @@ const OverviewMarketChart = ({
 
     const g = svg.attr("width", width).attr("height", height).append("g");
 
-    const xScale = d3
-      .scaleBand()
+    const xScale = scaleBand()
       .domain(data.map((d) => d.time!))
       .range([margin.left, innerWidth])
       .padding(0.2);
 
-    const customXScale = d3
-      .scaleBand()
+    const customXScale = scaleBand()
       .domain(customDomain)
       .range([margin.left, innerWidth]);
 
-    const yScale = d3
-      .scaleLinear()
+    const yScale = scaleLinear()
       .domain([
-        d3.min(data, (d) => Math.min(d.low, d.open, d.close, closePrice))!,
-        d3.max(data, (d) => Math.max(d.high, d.open, d.close, closePrice))!,
+        min(data, (d) => Math.min(d.low, d.open, d.close, closePrice))!,
+        max(data, (d) => Math.max(d.high, d.open, d.close, closePrice))!,
       ])
       .range([innerHeight, margin.top]);
 
@@ -78,7 +84,7 @@ const OverviewMarketChart = ({
     g.append("g")
       .attr("transform", `translate(${margin.left}, ${innerHeight})`)
       .call(
-        d3.axisBottom(customXScale).tickFormat((d, i) => {
+        axisBottom(customXScale).tickFormat((d) => {
           const date = new Date(d);
           return `${date.getHours()}h`;
         }),
@@ -92,7 +98,7 @@ const OverviewMarketChart = ({
       .attr("font-weight", 600);
 
     g.append("g")
-      .call(d3.axisRight(yScale).ticks(6))
+      .call(axisRight(yScale).ticks(6))
       .attr("color", "#929cb3")
       .attr("transform", `translate(${innerWidth}, 0)`)
       .call((g) => {
@@ -137,8 +143,8 @@ const OverviewMarketChart = ({
       .enter()
       .append("line")
       .attr("class", "grid-x")
-      .attr("x1", (d) => margin.left)
-      .attr("x2", (d) => innerWidth)
+      .attr("x1", margin.left)
+      .attr("x2", innerWidth)
       .attr("y1", (d) => {
         return yScale(d);
       })
@@ -196,7 +202,15 @@ const OverviewMarketChart = ({
       .attr("y2", (d) => yScale(d.low))
       .attr("stroke", (d) => (d.close > d.open ? "#30cc5a" : "#f63538"))
       .attr("stroke-width", 1);
-  }, [data]);
+  }, [
+    data,
+    closePrice,
+    chartRef,
+    margin.left,
+    margin.right,
+    margin.top,
+    margin.bottom,
+  ]);
 
   return (
     <div className="border-secondary-3 flex w-full flex-col rounded-lg border-[1px] p-2">
@@ -215,7 +229,7 @@ const OverviewMarketChart = ({
         <div className="flex w-[10%] flex-col">
           <div className="flex flex-row gap-1">
             <div className="flex h-[170px] flex-col-reverse justify-between">
-              {ratio.map((item, index) => (
+              {ratio.map((item) => (
                 <span className="text-secondary-3 text-xs" key={item}>
                   {item}
                 </span>

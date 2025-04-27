@@ -5,7 +5,7 @@ import { format } from "date-fns";
 import { useQuery } from "@tanstack/react-query";
 import { getNews } from "@/apis/news.api";
 import { Skeleton } from "@/components/ui/skeleton";
-
+import Image from "next/image";
 export const News = () => {
   const [selectedCategory, setSelectedCategory] =
     React.useState<keyof typeof newsCateories>("stock");
@@ -69,8 +69,8 @@ export const News = () => {
 
       {result.isSuccess && (
         <div className="flex w-[80%] flex-col px-6">
-          {result.data.map((item: any, index: number) => (
-            <NewsItem item={item} id={index} />
+          {result.data.map((item: NewsItemProp, index: number) => (
+            <NewsItem item={item} id={index} key={item.title + index.toString()} />
           ))}
         </div>
       )}
@@ -94,6 +94,7 @@ const NewsItemSkeleton = () => {
   );
 };
 
+
 const NewsItem = ({item,id}:{item:NewsItemProp,id:number}) => {
   return (
     <div
@@ -116,7 +117,10 @@ const NewsItem = ({item,id}:{item:NewsItemProp,id:number}) => {
           {format(new Date(item.public_date), "MMMM dd, yyyy")}
         </span>
       </div>
-      <img className="h-24 w-32 rounded-lg" src={item.img_src} />
+      <Image className="h-24 w-32 rounded-lg" src={item.img_src} alt={item.title} style={{
+        width: "auto",
+        height: "100%",
+      }} />
     </div>
   );
 };

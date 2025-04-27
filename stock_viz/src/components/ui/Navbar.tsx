@@ -57,12 +57,16 @@ const Navbar = () => {
                     className="absolute top-0 left-0 flex h-full w-full items-center justify-start overflow-hidden rounded-full"
                   >
                     <Image
+                    width={100}
+                    height={100}
+                    style={{
+                      width: "auto",
+                      height: "100%",
+                    }}
                       src={
                         language === "en" ? "/images/en.png" : "/images/vn.png"
                       }
                       alt="language"
-                      width={32}
-                      height={32}
                       className={`transform transition-transform duration-300 ease-in-out ${
                         language === "en" ? "-translate-x-2" : "translate-x-8"
                       }`}

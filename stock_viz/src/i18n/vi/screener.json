@@ -87,6 +87,7 @@
       "HNXLCap": "HNXLCap",
       "FU_INDEX": "FU_INDEX"
     },
+    
     "marketCapRanges": {
       "below500B": "Dưới 500 tỷ",
       "500Bto1000B": "500 - 1.000 tỷ",

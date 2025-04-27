@@ -13,7 +13,12 @@ export const getStockOverviewInformation = async (
   return response.data;
 };
 
-export const getStockQuote = async (symbol: string, start_date: string,end_date:string,interval:string) => {
+export const getStockQuote = async (
+  symbol: string,
+  start_date: string,
+  end_date: string,
+  interval: string,
+) => {
   const response = await http.get(`stocks/stock_quote`, {
     params: {
       symbol,
@@ -26,16 +31,22 @@ export const getStockQuote = async (symbol: string, start_date: string,end_date:
 };
 
 export const getStocksQuote = async (symbols: string, date: string) => {
-  const response = await http.get(`stocks/stocks_quote`, {
-    params: {
+  const response = await http.post(
+    `stocks/stocks_quote`,
+    {
       symbols: symbols,
       date: date,
     },
-  });
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    },
+  );
   return response.data;
 };
 
-export const getAllStockSymbols= async ()=>{
-  const response = await http.get(`stocks/all_stock_symbols`)
-  return response.data
-}
+export const getAllStockSymbols = async () => {
+  const response = await http.get(`stocks/all_stock_symbols`);
+  return response.data;
+};

@@ -23,3 +23,13 @@ export const getMarketOverview = async (date: string) => {
   });
   return response.data;
 };
+
+
+export const getMarketIndicatorsOverview = async (date: string) => {
+  const response = await http.get(`market/market_indicators_overview`, {
+    params: {
+      date: date,
+    },
+  });
+  return response.data;
+};

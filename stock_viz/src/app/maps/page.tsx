@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useMemo } from "react";
-import { ReviewStockType, TreemapNode, Node } from "@/types";
+import { ReviewStockType, TreemapNodeType, NodeType } from "@/types";
 import { format, subYears } from "date-fns";
 import { useQuery } from "@tanstack/react-query";
 import { getSymbolReview } from "@/apis/market.api";
@@ -18,11 +18,12 @@ import {
   HierarchyRectangularNode,
 } from "d3";
 import { useSearchParams } from "next/navigation";
-
+import { handleTextIndustry, handleTextFontSizeSymbol, handleFontSizeIndustry, paddingOuter, paddingTop, fontSize } from "@/constants/treeMap";
+import LoadingTable from "@/components/ui/Loading";
 const Treemap = () => {
   const date = format(subYears(new Date(), 1), "yyyy-MM-dd");
   const [symbol, setSymbol] =
-    React.useState<HierarchyRectangularNode<TreemapNode> | null>(null);
+    React.useState<HierarchyRectangularNode<TreemapNodeType> | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
   const lastExecutionRef = useRef<number>(0);
@@ -49,7 +50,7 @@ const Treemap = () => {
       (d: ReviewStockType) => d.sector,
     );
 
-    const hierarchyData: TreemapNode = {
+    const hierarchyData: TreemapNodeType = {
       name: "Tổng thị trường",
       children: Array.from(
         nestedDataBySector,
@@ -75,7 +76,7 @@ const Treemap = () => {
       .sum((d) => d.value || 0)
       .sort((a, b) => (b.value || 0) - (a.value || 0));
 
-    const root = treemap<TreemapNode>()
+    const root = treemap<TreemapNodeType>()
       .tile(treemapBinary)
       .size([
         canvasRef.current?.clientWidth || 0,
@@ -94,11 +95,11 @@ const Treemap = () => {
     if (!treeData?.root) return null;
 
     const findNode = (
-      root: HierarchyRectangularNode<TreemapNode>,
+      root: HierarchyRectangularNode<TreemapNodeType>,
       x: number,
       y: number,
       targetDepth: number,
-    ): HierarchyRectangularNode<TreemapNode> | null => {
+    ): HierarchyRectangularNode<TreemapNodeType> | null => {
       if (!root.children || targetDepth == root.depth) return root;
       for (let i = 0; i < root.children.length; i++) {
         const node = root.children[i];
@@ -173,53 +174,7 @@ const Treemap = () => {
       result.isError === true
     )
       return;
-    const paddingOuter = 1;
-    const paddingTop = 16;
-    const fontSize = paddingTop - 4;
-
-    const handleTextFontSizeSymbol = (symbol: Node) => {
-      const boxWidth = symbol.x1 - symbol.x0;
-      const boxHeight = symbol.y1 - symbol.y0;
-
-      if (boxHeight < 15 || boxWidth < 20) return "0";
-      if (boxHeight < 20 || boxWidth < 25) return "5";
-      if (boxHeight < 25 || boxWidth < 30) return "6";
-      if (boxHeight < 30 || boxWidth < 35) return "8";
-      if (boxHeight < 35 || boxWidth < 40) return "10";
-      if (boxHeight < 40 || boxWidth < 45) return "12";
-      if (boxHeight < 45 || boxWidth < 50) return "14";
-      if (boxHeight < 50 || boxWidth < 55) return "16";
-      if (boxHeight < 55 || boxWidth < 60) return "18";
-      return "20";
-    };
-
-    const handleTextIndustry = (parent: Node) => {
-      const boxWidth = parent.x1 - parent.x0;
-      if (boxWidth <= 10) return "";
-
-      if (parent.data.name.split(" ").length > 2) {
-        return parent.data.name
-          .split(" ")
-          .map((word: string) => word.charAt(0).toUpperCase())
-          .join("");
-      }
-
-      return parent.data.name
-        .split(" ")
-        .slice(0, 2)
-        .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(" ")
-        .trim()
-        .toLocaleUpperCase();
-    };
-
-    const handleFontSizeIndustry = (industry: Node) => {
-      const boxWidth = industry.x1 - industry.x0;
-      if (handleTextIndustry(industry).length * 12 > boxWidth * 1.5) {
-        return "0";
-      }
-      return "12";
-    };
+ 
     if (!treeData || !treeData.root) return;
 
     const { root } = treeData;
@@ -247,7 +202,7 @@ const Treemap = () => {
         ctx.font = `600 ${fontSize}px Arial`;
         ctx.textAlign = "start";
         ctx.fillText(
-          handleTextIndustry(child as Node),
+          handleTextIndustry(child as unknown as NodeType),
           child.x0 + 5,
           child.y0 + paddingTop - fontSize / 2 + 2,
         );
@@ -280,7 +235,8 @@ const Treemap = () => {
               );
 
               // Draw symbol text if large enough
-              const fontSize = handleTextFontSizeSymbol(symbol as Node);
+              const fontSize = handleTextFontSizeSymbol(symbol as unknown as NodeType);
+
               if (fontSize !== "0") {
                 ctx.fillStyle = "white";
 
@@ -388,10 +344,10 @@ const Treemap = () => {
           // Draw industry text
           ctx.fillStyle = isHovered ? "black" : "#ffffff";
 
-          ctx.font = `300 ${handleFontSizeIndustry(industry as Node)}px Arial`;
+          ctx.font = `300 ${handleFontSizeIndustry(industry as unknown as NodeType)}px Arial`;
           ctx.textAlign = "start";
           ctx.fillText(
-            handleTextIndustry(industry as Node),
+            handleTextIndustry(industry as unknown as NodeType),
             industry.x0 + 5,
             industry.y0 + paddingTop - fontSize / 2 + 2,
           );
@@ -480,10 +436,3 @@ const warning = [
   "Hover mouse cursor over a ticker to see its main competitors in a stacked view with a 3-month history graph.",
 ];
 
-function LoadingTable() {
-  return (
-    <div className="flex h-[350px] items-center justify-center">
-      <div className="h-16 w-16 animate-spin rounded-full border-4 border-gray-300 border-t-transparent"></div>
-    </div>
-  );
-}

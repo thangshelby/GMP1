@@ -10,7 +10,7 @@ import {
 import { format, subMonths } from "date-fns";
 import { usePdfStore } from "@/store";
 import { formatNumber } from "@/constants";
-
+import Image from "next/image";
 export default function PdfTemplate() {
   const { businessData, closePrice } = usePdfStore();
   const currentDate = format(subMonths(new Date(), 1), "yyyy-MM-dd");
@@ -102,9 +102,15 @@ const FooterSection = () => (
   <div className="flex w-full flex-row items-center justify-between border-t-2 pt-2 text-[#6a7282]">
     <p className="text-3xs w-[80%]">{footerContent}</p>
     <div className="h-24 w-24">
-      <img
+      <Image
         src="https://upload.wikimedia.org/wikipedia/commons/8/88/Logo_Tr%C6%B0%E1%BB%9Dng_%C4%90%E1%BA%A1i_h%E1%BB%8Dc_kinh_t%E1%BA%BF_-_Lu%E1%BA%ADt_%28UEL%29%2C_%C4%90HQG-HCM%2C_220px.png"
-        className="h-full w-full"
+        alt="Logo"
+        width={100}
+        height={100}
+        style={{
+          width: "auto",
+          height: "100%",
+        }}
       />
     </div>
   </div>
