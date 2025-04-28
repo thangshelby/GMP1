@@ -13,7 +13,6 @@ export default function StockChartOverview() {
     queryFn: () => getStockOverviewInformation(symbol!, today),
     refetchOnWindowFocus: false,
   });
-  console.log(result.data);
 
   if (result.isSuccess) {
     return (

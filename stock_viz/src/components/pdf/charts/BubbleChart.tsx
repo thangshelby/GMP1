@@ -1,6 +1,5 @@
 "use client";
 import React, { useEffect } from "react";
-import { fetchAPI } from "@/lib/utils";
 import { useSearchParams } from "next/navigation";
 import {
   Chart as ChartJS,
@@ -13,7 +12,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { Chart, Bubble } from "react-chartjs-2";
+import { Chart } from "react-chartjs-2";
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -24,14 +23,9 @@ ChartJS.register(
   Tooltip,
   Legend,
 );
-
+import { useQuery } from "@tanstack/react-query";
+import { getBubbleChartData } from "@/apis/report";
 const BubbleChart = () => {
-  const [bubbleData, setBubbleData] = React.useState<BubleDataType>({
-    assets_values: [],
-    labels: [],
-    roe_values: [],
-  });
-
   const [overallFinancialData, setOverallFinancialData] =
     React.useState<OverallFinancialDataType>({
       years: [],
@@ -44,14 +38,13 @@ const BubbleChart = () => {
   const [chartSize, setChartSize] = React.useState({ width: 0, height: 0 });
   const symbol = useSearchParams().get("symbol") || "VCB";
   const chartRef = React.useRef<HTMLDivElement>(null);
+  const result = useQuery({
+    queryKey: ["bubbleChartData", symbol],
+    queryFn: () => getBubbleChartData(symbol),
+  });
   useEffect(() => {
-    const fetchBubbleData = async () => {
-      const response = await fetchAPI(
-        `/reports/financial/chart/bar_and_line?symbol=${symbol}`,
-      );
-      setBubbleData(response.res2);
-      setOverallFinancialData(response.res1);
-    };
+    if (!result.data) return;
+    setOverallFinancialData(result.data.res1);
 
     const updateSize = () => {
       setChartSize({
@@ -62,72 +55,10 @@ const BubbleChart = () => {
     if (chartRef.current) {
       updateSize();
     }
-    if (bubbleData.assets_values.length == 0) {
-      fetchBubbleData();
-    }
-    fetchBubbleData();
-  }, []);
+  }, [result.data, result.isSuccess]);
 
-  const data2 = {
-    labels: bubbleData.labels,
 
-    datasets: [
-      {
-        label: "Financial Overview",
-        data: bubbleData.labels.map((item, index) => {
-          return {
-            x: bubbleData.assets_values[index],
-            y: bubbleData.roe_values[index],
-            r: bubbleData.assets_values[index] / 100000,
-          };
-        }),
-        backgroundColor: bubbleData.labels.map((label) =>
-          label == symbol.toUpperCase()
-            ? "rgba(255, 99, 132, 0.5)"
-            : "rgba(75, 192, 192, 0.2)",
-        ),
-        borderColor: bubbleData.labels.map((label) =>
-          label == symbol.toUpperCase()
-            ? "rgba(255, 99, 132, 1)"
-            : "rgba(75, 192, 192, 1)",
-        ),
-        borderWidth: 1,
-      },
-    ],
-  };
-
-  const options2 = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        display: true,
-      },
-      tooltip: {
-        callbacks: {
-          label: function (context: any) {
-            const index = context.dataIndex;
-            return `${data2.labels[index]} - Tài sản: ${context.raw.x} | ROE: ${context.raw.y}%`;
-          },
-        },
-      },
-      annotation: {
-        annotations: data2.labels.map((label, index) => ({
-          type: "label",
-          xValue: data2.datasets[0].data[index].x,
-          yValue: data2.datasets[0].data[index].y,
-          content: label,
-          color: "black",
-          font: {
-            size: 12,
-            weight: "bold",
-          },
-          textAlign: "center",
-        })),
-      },
-    },
-  };
-
+  
   const chartData = {
     labels: overallFinancialData.years,
     datasets: [
@@ -243,9 +174,4 @@ interface OverallFinancialDataType {
   equity: number[];
   ebitda: number[];
   net_income_after_taxes: number[];
-}
-interface BubleDataType {
-  assets_values: number[];
-  labels: string[];
-  roe_values: number[];
 }

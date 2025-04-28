@@ -2,29 +2,29 @@
 import { useEffect } from "react";
 import LineChart from "./charts/LineChart";
 import { format, subYears } from "date-fns";
-import { fetchAPI } from "@/lib/utils";
 import { useSearchParams } from "next/navigation";
 import { usePdfStore } from "@/store";
 import { formatNumber } from "@/constants";
-
+import { useQuery } from "@tanstack/react-query";
+import { getBusinessReport } from "@/apis/report";
 const BusinessSummary = () => {
-  const { businessData, setBusinessData, setFinancialData } = usePdfStore();
+  const { businessData, setBusinessData } = usePdfStore();
   const symbol = useSearchParams().get("symbol") || "VCB";
   const start_date = format(subYears(new Date(), 2), "yyyy-MM-dd");
   const end_date = format(subYears(new Date(), 1), "yyyy-MM-dd");
-  useEffect(() => {
-    const fetchPdfInfo = async () => {
-      const response = await fetchAPI(
-        `/reports/business?symbol=${symbol}&start_date=${start_date}&end_date=${end_date}`,
-      );  
-      setBusinessData(response);
-    };
+  const result = useQuery({
+    queryKey: ["businessReport", symbol, start_date, end_date],
+    queryFn: () => getBusinessReport(symbol, start_date, end_date),
+  });
 
-    fetchPdfInfo();
-  }, []);
+  useEffect(() => {
+    if (!result.data) return;
+    setBusinessData(result.data);
+  }, [result.data, result.isSuccess, setBusinessData]);
+
   return (
     businessData.general_information && (
-      <div id={'pdf-container'} >
+      <div id={"pdf-container"}>
         {/* BODY */}
         <div className="flex h-full flex-col justify-evenly">
           {/* COMPANY DETAIL AND COMPANY INFO */}
@@ -52,17 +52,17 @@ const BusinessSummary = () => {
 
           {/* Charts Section */}
           <div className="flex flex-row justify-between space-x-6">
-            <div className="border-t-blue w-full rounded border-t-[2px] flex-col">
+            <div className="border-t-blue w-full flex-col rounded border-t-[2px]">
               <h2 className="text-gray mb-2 text-xs font-semibold">6 Months</h2>
 
-              <div className=" w-full">
+              <div className="w-full">
                 <LineChart duration="6 Months" />
               </div>
             </div>
 
-            <div className=" border-t-blue w-full rounded border-t-[2px] flex-col">
+            <div className="border-t-blue w-full flex-col rounded border-t-[2px]">
               <h2 className="text-gray mb-2 text-xs font-semibold">5 Years</h2>
-              <div className=" w-full">
+              <div className="w-full">
                 <LineChart duration="5 Years" />
               </div>
             </div>
@@ -114,7 +114,7 @@ const RenderCategory = ({
   category,
   title,
 }: {
-  category: any;
+  category: Record<string, number | string | null>;
   title: string;
 }) => {
   return (
@@ -123,7 +123,7 @@ const RenderCategory = ({
         {title}
       </h2>
       <ul className="mt-2 flex flex-col">
-        {Object.keys(category).map((key: any, index) => (
+        {Object.keys(category).map((key: string, index: number) => (
           <li
             key={key}
             className={`text-2xs flex flex-row p-1 align-text-top text-black ${index % 2 === 0 ? "rounded-[1px] bg-[#e6e6e6]" : "bg-white"} `}
@@ -132,7 +132,7 @@ const RenderCategory = ({
               {renderTitle(key)}
             </strong>{" "}
             {typeof category[key] === "number"
-              ? formatNumber( Math.round(category[key]*100)/100)
+              ? formatNumber(Math.round(category[key] * 100) / 100)
               : category[key]}
           </li>
         ))}

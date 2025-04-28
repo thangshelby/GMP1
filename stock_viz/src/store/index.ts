@@ -23,7 +23,8 @@ export const useGlobalState = create<GlobalStateType>((set) => ({
   paddingLeft: 30,
   paddingRight: 30,
 
-  setGlobalState: (newValue: any) => set((prev) => ({ ...prev, ...newValue })),
+  setGlobalState: (newValue: Partial<GlobalStateType>) =>
+    set((prev) => ({ ...prev, ...newValue })),
 }));
 
 interface PdfStore {
@@ -61,7 +62,7 @@ interface ChartControlStore {
 }
 
 export const useChartControlStore = create<ChartControlStore>((set) => ({
-  selectedIndicators: [],
+  selectedIndicators: ['volume'],
   setSelectedIndicators: (newVal: string[]) =>
     set({ selectedIndicators: newVal }),
   selectedChart: 0,

@@ -4,23 +4,24 @@ import React, { useEffect } from "react";
 import SummaryChart from "./charts/SummaryChart";
 import { usePdfStore } from "@/store";
 import { formatNumber } from "@/constants";
-import { fetchAPI } from "@/lib/utils";
 import { useSearchParams } from "next/navigation";
+import { getFinancialSummary } from "@/apis/report";
+import { useQuery } from "@tanstack/react-query";
+
 const FinancialSummary = () => {
   const symbol = useSearchParams().get("symbol") || "VCB";
 
   const { financialData, setFinancialData, businessData } = usePdfStore();
+
+  const result = useQuery({
+    queryKey: ["financial-summary", symbol],
+    queryFn: () => getFinancialSummary(symbol),
+  });
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetchAPI(`/reports/financial?symbol=${symbol}`);
-        setFinancialData(response);
-      } catch (error) {
-        console.error("Error fetching financial data:", error);
-      }
-    };
-    fetchData();
-  }, []);
+    if (result.isLoading) return;
+    setFinancialData(result.data);
+  }, [result.data, setFinancialData, result.isLoading]);
 
   const years = ["2020", "2021", "2022", "2023", "2024"];
   return (
@@ -46,7 +47,7 @@ const FinancialSummary = () => {
                 BALANCE SHEET
               </h2>
             </div>
-            <table className="border-gray-2 min-w-full table-auto border ">
+            <table className="border-gray-2 min-w-full table-auto border">
               <thead className="">
                 <tr className="pl-2">
                   <th className="border-gray-2 text-blue border-r-[1px] text-xs"></th>
@@ -61,29 +62,27 @@ const FinancialSummary = () => {
                 </tr>
               </thead>
               <tbody>
-                {Object.keys(financialData?.balance_sheet!).map(
-                  (key, index) => (
-                    <tr key={index} className={`${index % 2 === 0 ? "bg-[#e6e6e6]" : ""}`}>
-                      <td
-                        className={`border-gray-2 border-r-[1px] align-top text-xs text-black p-1 pl-2`}
-                      >
-                        
-                        {key}
-                      </td>
-                      {key in financialData?.balance_sheet! &&
-                        financialData?.balance_sheet[key].map(
-                          (value, index) => (
-                            <td
-                              key={index}
-                              className={`border-gray-2 border-r-[1px] text-center align-top text-xs text-black p-1`}
-                            >
-                              {formatNumber(parseFloat(value.toFixed(2)))}
-                            </td>
-                          ),
-                        )}
-                    </tr>
-                  ),
-                )}
+                {Object.keys(financialData?.balance_sheet).map((key, index) => (
+                  <tr
+                    key={index}
+                    className={`${index % 2 === 0 ? "bg-[#e6e6e6]" : ""}`}
+                  >
+                    <td
+                      className={`border-gray-2 border-r-[1px] p-1 pl-2 align-top text-xs text-black`}
+                    >
+                      {key}
+                    </td>
+                    {key in financialData?.balance_sheet &&
+                      financialData?.balance_sheet[key].map((value, index) => (
+                        <td
+                          key={index}
+                          className={`border-gray-2 border-r-[1px] p-1 text-center align-top text-xs text-black`}
+                        >
+                          {formatNumber(parseFloat(value.toFixed(2)))}
+                        </td>
+                      ))}
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>

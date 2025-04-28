@@ -77,16 +77,8 @@ export const indicatorFilter = [
     key: "volume",
   },
   {
-    title: "Moving Average 10",
+    title: "Moving Average",
     key: "sma",
-  },
-  {
-    title: "Moving Average 20",
-    key: "sma_20",
-  },
-  {
-    title: "Moving Average 50",
-    key: "sma_50",
   },
   {
     title: "Money Flow Index",

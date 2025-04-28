@@ -1,16 +1,16 @@
 "use client";
 import React, { useEffect, useRef } from "react";
 import { StockPriceDataType } from "@/types";
-import { fetchAPI } from "@/lib/utils";
 import { HashLoader } from "react-spinners";
 import {
   createChart,
   CandlestickSeries,
   AreaSeries,
   LineSeries,
-  BarSeries,
   HistogramSeries,
-  BaselineSeries,
+  IChartApi,
+  ISeriesApi,
+  SeriesType,
 } from "lightweight-charts";
 import { BandsIndicator } from "@/plugins/bands-indicator";
 import {
@@ -18,20 +18,22 @@ import {
   candleStickChartOptions,
   lineChartOptions,
   areaChartOptions,
-  barChartOptions,
-  histogramChartOptions,
 } from "@/constants/chartConfig";
-import { format, subMonths } from "date-fns";
+import { format, subYears } from "date-fns";
 import { useChartControlStore, usePdfStore } from "@/store";
 import { useSearchParams } from "next/navigation";
-import { SMA, BollingerBands } from "technicalindicators";
-
+import { BollingerBands } from "technicalindicators";
+import { getStockQuote } from "@/apis/stock.api";
+import { useQuery } from "@tanstack/react-query";
 const Chart = () => {
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const { setClosePrice } = usePdfStore();
-  const [chart, setChart] = React.useState<any>(null);
-
-  const currentChartRef = useRef<any>(null);
+  const [chart, setChart] = React.useState<IChartApi | null>(null);
+  const end_date = format(subYears(new Date(), 1), "yyyy-MM-dd");
+  const currentChartRef = useRef<ISeriesApi<SeriesType> | null>(null);
+  const [indicatorRefSeries, setIndicatorRefSeries] = React.useState<
+    Record<string, ISeriesApi<SeriesType> | undefined>
+  >({});
 
   const {
     selectedChart,
@@ -40,24 +42,26 @@ const Chart = () => {
     interval,
   } = useChartControlStore();
   const [stockData, setStockData] = React.useState<StockPriceDataType[]>([]);
-  const [loading, setLoading] = React.useState(true);
-  const symbol = useSearchParams().get("symbol");
-
+  const symbol = useSearchParams().get("symbol") || "VCB";
+  const result = useQuery({
+    queryKey: ["stocks/stock-quote", symbol, interval],
+    queryFn: () => getStockQuote(symbol, "2000-01-01", end_date, interval),
+  });
   //HANDLE FETCHDATA
   useEffect(() => {
-    const fetchData = async () => {
-      const end_date = format(subMonths(new Date(), 1), "yyyy-MM-dd");
+    if (!result.isSuccess) return;
 
-      const data = await fetchAPI(
-        `stocks/stock_quote?symbol=${symbol}&end_date=${end_date}&interval=${interval}`,
-      );
-      setCurrentStockPriceData(data[data.length - 1]);
-      setStockData(data);
-      setClosePrice(data[data.length - 1].close);
-      setLoading(false);
-    };
-    fetchData();
-  }, [symbol, interval]);
+    setStockData(result.data);
+    setCurrentStockPriceData(result.data[result.data.length - 1]);
+    setClosePrice(result.data[result.data.length - 1].close);
+  }, [
+    symbol,
+    interval,
+    setCurrentStockPriceData,
+    setClosePrice,
+    result.data,
+    result.isSuccess,
+  ]);
 
   //HANDLE CREATE MAIN CHART
   useEffect(() => {
@@ -69,50 +73,6 @@ const Chart = () => {
     });
 
     setChart(chart);
-
-    // Add series
-    const candlestickSeries = chart.addSeries(
-      CandlestickSeries,
-      candleStickChartOptions,
-    );
-
-    const volumeSeries = chart.addSeries(HistogramSeries, {
-      color: "#26a69a",
-      priceFormat: {
-        type: "volume",
-      },
-      priceScaleId: "", // set as an overlay by setting a blank priceScaleId
-      // set the positioning of the volume series
-      scaleMargins: {
-        top: 0.7, // highest point of the series will be 70% away from the top
-        bottom: 0,
-      },
-    });
-    volumeSeries.priceScale().applyOptions({
-      scaleMargins: {
-        top: 0.9, // highest point of the series will be 70% away from the top
-        bottom: 0,
-      },
-    });
-    volumeSeries.setData(
-      stockData.map((d) => ({
-        time: d.date || d.time || "",
-        value: d.volume || 0,
-        color: d.open > d.close ? "#813539" : "#1c5e5e",
-      })),
-    );
-
-    currentChartRef.current = candlestickSeries;
-
-    candlestickSeries.setData(
-      stockData.map((d) => ({
-        time: d.date || d.time || "",
-        open: d.open,
-        close: d.close,
-        high: d.high,
-        low: d.low,
-      })),
-    );
 
     chart.subscribeCrosshairMove((param) => {
       if (!param || !param.seriesData) return;
@@ -138,73 +98,142 @@ const Chart = () => {
     return () => {
       chart.remove();
     };
-  }, [stockData]);
+  }, [stockData, setCurrentStockPriceData, setClosePrice]);
 
   //HANDLE CHART TYPE CHANGE
   useEffect(() => {
-    if (stockData.length == 0 || !chart || !currentChartRef.current) {
-      return;
-    }
-    chart.removeSeries(currentChartRef.current);
+    if (stockData.length == 0 || chart == null) return;
 
+    if (currentChartRef.current != null) {
+      try {
+        chart.removeSeries(currentChartRef.current);
+      } catch (error) {
+        console.log("error", error);
+      }
+    }
     switch (selectedChart) {
       case 0:
         const candleSeries = chart.addSeries(
           CandlestickSeries,
           candleStickChartOptions,
         );
-        candleSeries.setData(stockData);
+        candleSeries.setData(
+          stockData.map((d) => ({
+            time: format(new Date(d.time), "yyyy-MM-dd") || "",
+            open: d.open,
+            close: d.close,
+            high: d.high,
+            low: d.low,
+          })),
+        );
         currentChartRef.current = candleSeries;
         break;
       case 1:
-        const lineSeries = chart.addSeries(LineSeries, lineChartOptions);
+        const lineSeries = chart.addSeries(LineSeries, {
+          ...lineChartOptions,
+          lineWidth: 1 as const,
+        });
         lineSeries.setData(
-          stockData.map((d) => ({ time: d.time, value: d.low })),
+          stockData.map((d) => ({
+            time: format(new Date(d.time), "yyyy-MM-dd") || "",
+            value: d.low,
+          })),
         );
         currentChartRef.current = lineSeries;
         break;
       case 2:
         const areaSeries = chart.addSeries(AreaSeries, areaChartOptions);
         areaSeries.setData(
-          stockData.map((d) => ({ time: d.time, value: d.close })),
+          stockData.map((d) => ({
+            time: format(new Date(d.time), "yyyy-MM-dd") || "",
+            value: d.close,
+          })),
         );
         currentChartRef.current = areaSeries;
         break;
       default:
         break;
     }
-  }, [selectedChart]);
+  }, [
+    selectedChart,
+    stockData,
+    setCurrentStockPriceData,
+    setClosePrice,
+    chart,
+  ]);
 
-  //HANDLE INDICATOR CHANGE
+  // //HANDLE INDICATOR CHANGE
   useEffect(() => {
-    if (selectedIndicators.length == 0 || !chart) return;
+    if (!chart) return;
+    // if (
+    //   selectedIndicators.includes("bb") &&
+    //   ("bb" in indicatorRefSeries == false ||
+    //     indicatorRefSeries["bb"] == undefined)
+    // ) {
+    //   const bb20 = BollingerBands.calculate({
+    //     period: 20,
+    //     values: stockData.map((d) => d.close),
+    //     stdDev: 2,
+    //   });
 
-    if (selectedIndicators.includes("sma")) {
-      const bb20 = BollingerBands.calculate({
-        period: 20,
-        values: stockData.map((d) => d.close),
-        stdDev: 2,
-      });
+    //   const boilingerBandSeries = chart.addSeries(LineSeries, {
+    //     lineWidth: 1,
+    //     color: "#2196F3",
+    //   });
+      
+    //   boilingerBandSeries.setData(
+    //     bb20.map((d, i) => ({
+    //       time: stockData[i + 19].time || "",
+    //       value: d.middle,
+    //     })).slice(0, bb20.length)
+    //   );
+    //   const bandIndicator = new BandsIndicator();
+    //   boilingerBandSeries.attachPrimitive(bandIndicator);
+    //   setIndicatorRefSeries((prev) => ({ ...prev, bb: boilingerBandSeries }));
+    // } else if ("bb" in indicatorRefSeries && indicatorRefSeries["bb"]) {
+    //   console.log("remove bb", indicatorRefSeries);
+    //   const boilingerBandSeries = indicatorRefSeries["bb"];
 
-      const middleLine = chart.addSeries(LineSeries, {
-        lineWidth: 1,
-        color: "#2196F3",
+    //   chart.removeSeries(boilingerBandSeries);
+    //   setIndicatorRefSeries((prev) => ({ ...prev, bb: undefined }));
+    // }
+
+    if (
+      selectedIndicators.includes("volume") &&
+      ("volume" in indicatorRefSeries == false || !indicatorRefSeries["volume"])
+    ) {
+      const volumeSeries = chart.addSeries(HistogramSeries, {
+        color: "#26a69a",
+        priceFormat: {
+          type: "volume",
+        },
+        priceScaleId: "", // set as an overlay by setting a blank priceScaleId
       });
-      middleLine.setData(
-        bb20.map((d, i) => ({
-          time: stockData[i + 19].time || "",
-          value: d.middle,
+      volumeSeries.priceScale().applyOptions({
+        scaleMargins: {
+          top: 0.7, // highest point of the series will be 70% away from the top
+          bottom: 0,
+        },
+      });
+      volumeSeries.setData(
+        stockData.map((d) => ({
+          time: d.date || d.time || "",
+          value: d.volume || 0,
+          color: d.open > d.close ? "#813539" : "#1c5e5e",
         })),
       );
-      const bandIndicator = new BandsIndicator();
-      middleLine.attachPrimitive(bandIndicator);
+      setIndicatorRefSeries((prev) => ({ ...prev, volume: volumeSeries }));
+    } else if ("volume" in indicatorRefSeries && indicatorRefSeries["volume"]) {
+      const volumeSeries = indicatorRefSeries["volume"];
+      chart.removeSeries(volumeSeries);
+      setIndicatorRefSeries((prev) => ({ ...prev, volume: undefined }));
     }
-  }, [selectedIndicators]);
+  }, [selectedIndicators, stockData, chart]);
 
-  if (loading) {
+  if (result.isLoading) {
     return (
       <div className="flex h-[450px] w-full items-center justify-center">
-        <HashLoader color="#2196F3" size={100} />
+        <HashLoader color="#2196F3" size={150} />
       </div>
     );
   }

@@ -8,8 +8,7 @@ export interface ReviewStockType {
   sector: string;
   industry: string;
   market_cap: number;
-  exchange: string;
-  quote?: StockPriceDataType[];
+  exchange: string
 }
 
 export interface symbolsSearchType {
@@ -41,10 +40,10 @@ export interface StockOverviewInformationType {
 
 export interface StockPriceDataType {
   close: number;
-  time?: string;
-  date?: string;
+  time: string;
   high: number;
   low: number;
+  date?: string;
   open: number;
   volume?: number;
 }

@@ -3,7 +3,8 @@ import React from "react";
 import { usePdfStore } from "@/store";
 import { useSearchParams } from "next/navigation";
 import BubbleChart from "./charts/BubbleChart";
-import { fetchAPI } from "@/lib/utils";
+import { getFinalAnalysis } from "@/apis/report";
+import { useQuery } from "@tanstack/react-query";
 
 const PDFPage4 = () => {
   const symbol = useSearchParams().get("symbol") || "VCB";
@@ -12,24 +13,16 @@ const PDFPage4 = () => {
 
   const [finalAnalysis, setFinalAnalysis] = React.useState<string>("");
 
+  const result = useQuery({
+    queryKey: ["final-analysis", symbol],
+    queryFn: () => getFinalAnalysis(symbol, financialData, businessData),
+  });
+
   React.useEffect(() => {
-    const fetchData = async () => {
-      const response2 = await fetchAPI(
-        `/reports/financial/final_analysis?symbol=${symbol}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ financialData, businessData }),
-        },
-      );
-      setCanCreatePdf(true);
-      setFinalAnalysis(response2);
-    };
-    fetchData();
-  }, []);
-  React.useEffect(() => {}, []);
+    if (result.isLoading) return;
+    setCanCreatePdf(true);
+    setFinalAnalysis(result.data);
+  }, [result.data, setCanCreatePdf, result.isLoading]);
 
   return (
     finalAnalysis && (

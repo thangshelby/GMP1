@@ -35,13 +35,13 @@ const PDFPage3 = () => {
                 </tr>
               </thead>
               <tbody>
-                {Object.keys(financialData?.income_statement!).map(
+                {Object.keys(financialData?.income_statement).map(
                   (key, index) => (
                     <tr key={index} className={`${index % 2 === 0 ? "bg-[#e6e6e6] p-1" : ""}`}>
                       <td className="border-gray-2 border-r-[1px] align-top text-xs text-black  p pl-2">
                         {key}
                       </td>
-                      {key in financialData?.income_statement! &&
+                      {key in financialData?.income_statement &&
                         financialData?.income_statement[key].map(
                           (value, index) => (
                             <td
@@ -93,13 +93,13 @@ const PDFPage3 = () => {
                 </tr>
               </thead>
               <tbody>
-                {Object.keys(financialData?.profitability_analysis!).map(
+                {Object.keys(financialData?.profitability_analysis).map(
                   (key, index) => (
                     <tr key={index} className={`${index % 2 === 0 ? "bg-[#e6e6e6] p-1" : ""}`}>
                       <td className="border-gray-2 border-r-[1px] align-top text-xs text-black  p pl-2">
                         {key}
                       </td>
-                      {key in financialData?.profitability_analysis! &&
+                      {key in financialData?.profitability_analysis &&
                         financialData?.profitability_analysis[key].map(
                           (value, index) => (
                             <td

@@ -11,7 +11,8 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-
+import { useQuery } from "@tanstack/react-query";
+import { getFinancialChartAssetEquity } from "@/apis/report";
 ChartJS.register(
   BarElement,
   CategoryScale,
@@ -43,38 +44,34 @@ const SummaryChart = ({ symbol }: { symbol: string }) => {
     width: 0,
     height: 0,
   });
+
   const [chartLiabilitesAndEquitySize, setChartLiabilitesAndEquitySize] =
     React.useState({ width: 0, height: 0 });
-  const chartAssetAndEquityRef = React.useRef<any>(null);
-  const chartLiabilitesAndEquityRef = React.useRef<any>(null);
+  const chartAssetAndEquityRef = React.useRef<HTMLDivElement>(null);
+  const chartLiabilitesAndEquityRef = React.useRef<HTMLDivElement>(null);
+
+  const { data } = useQuery({
+    queryKey: ["chartAssetAndEquity", symbol],
+    queryFn: () => getFinancialChartAssetEquity(symbol),
+  });
 
   React.useEffect(() => {
-    const fetchData = async () => {
-      const response2 = await fetch(
-        `http://localhost:5000/reports/financial/chart/asset_equity?symbol=${symbol}`,
-      );
-      if (!response2.ok) throw new Error("Failed to fetch data");
-      const result2 = await response2.json();
-      setChartAssetAndEquity(result2.res1);
-      setChartLiabilitesAndEquity(result2.res2);
-    };
-    const updateSize = () => {
-      setChartAssetAndEquitySize({
-        width: chartAssetAndEquityRef.current.clientWidth,
-        height: chartAssetAndEquityRef.current.clientHeight,
-      });
-      setChartLiabilitesAndEquitySize({
-        width: chartLiabilitesAndEquityRef.current.clientWidth,
-        height: chartLiabilitesAndEquityRef.current.clientHeight,
-      });
-    };
+    if (!data.isSuccess) return;
+    setChartAssetAndEquity(data.data.res1);
+    setChartLiabilitesAndEquity(data.data.res2);
+  }, [data]);
 
-    if (!chartAssetAndEquity && !chartLiabilitesAndEquity) {
-      fetchData();
-    }
+  React.useEffect(() => {
     if (chartAssetAndEquityRef.current && chartLiabilitesAndEquityRef.current) {
       {
-        updateSize();
+        setChartAssetAndEquitySize({
+          width: chartAssetAndEquityRef.current.clientWidth,
+          height: chartAssetAndEquityRef.current.clientHeight,
+        });
+        setChartLiabilitesAndEquitySize({
+          width: chartLiabilitesAndEquityRef.current.clientWidth,
+          height: chartLiabilitesAndEquityRef.current.clientHeight,
+        });
       }
     }
   }, [chartAssetAndEquityRef]);
@@ -199,7 +196,7 @@ const SummaryChart = ({ symbol }: { symbol: string }) => {
         ticks: {
           font: {
             size: 8,
-            weight: "bold" as "bold",
+            weight: "bold" as const,
             family: "Arial",
           },
         },
@@ -214,7 +211,7 @@ const SummaryChart = ({ symbol }: { symbol: string }) => {
         ticks: {
           font: {
             size: 8,
-            weight: "bold" as "bold",
+            weight: "bold" as const,
             family: "Arial",
           },
         },

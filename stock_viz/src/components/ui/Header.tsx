@@ -45,7 +45,6 @@ const Header = () => {
   const date = format(subYears(new Date(), 1), "yyyy-MM-dd");
 
   useEffect(() => {
-    // Listen for auth state changes
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
         setUser(user);
@@ -84,12 +83,14 @@ const Header = () => {
   });
 
   React.useEffect(() => {
-    if(!result.isSuccess) return 
+    if(!result.isSuccess) return
     const match = result.data.filter((stock: ReviewStockType) => {
       return stock.symbol.includes(input) || stock.name.includes(input);
     });
     setRicMatch(match);
   }, [input, result.data,result.isSuccess]);
+
+
   return (
     <div className="flex flex-row items-center justify-between p-2">
       <div className="flex flex-1 flex-row items-center gap-4">
@@ -274,6 +275,9 @@ const Header = () => {
 };
 
 export default Header;
+
+
+
 
 const Logo = () => {
   return (

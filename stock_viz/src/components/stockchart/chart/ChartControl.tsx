@@ -25,41 +25,40 @@ const ChartControl = () => {
   } = useChartControlStore();
 
   const { canCreatePdf } = usePdfStore();
-  const symbol=useSearchParams().get("symbol") || "VCB";
+  const symbol = useSearchParams().get("symbol") || "VCB";
 
   const generatePDF = async () => {
-      const pdf = new jsPDF({
-        orientation: "portrait",
-        unit: "px",
-        format: [794, 1123], // A4 Size in px
-      });
-  
-      for(let i=0; i<pdfPages.length; i++){
-        const node = document.getElementById(pdfPages[i].id) as HTMLElement;
-        const newPageData = await htmlToImage.toPng(node,{
-          quality:1,
-          pixelRatio: 2,
-        });
-        pdf.addImage(newPageData, "PNG", 0, 0, 794, 1123);
-        if(i < pdfPages.length - 1){
+    const pdf = new jsPDF({
+      orientation: "portrait",
+      unit: "px",
+      format: [794, 1123], // A4 Size in px
+    });
 
-          pdf.addPage(); // Add a new page for the next content
-        } // Avoid adding a new page after the last page
-      }
-  
-      pdf.save(`Financial Report for ${symbol}.pdf`);
-    };
+    for (let i = 0; i < pdfPages.length; i++) {
+      const node = document.getElementById(pdfPages[i].id) as HTMLElement;
+      const newPageData = await htmlToImage.toPng(node, {
+        quality: 1,
+        pixelRatio: 2,
+      });
+      pdf.addImage(newPageData, "PNG", 0, 0, 794, 1123);
+      if (i < pdfPages.length - 1) {
+        pdf.addPage(); // Add a new page for the next content
+      } // Avoid adding a new page after the last page
+    }
+
+    pdf.save(`Financial Report for ${symbol}.pdf`);
+  };
 
   return (
     <div className="relative flex flex-col px-4 py-2">
       <div className="flex flex-row items-center justify-between">
         {/* 2 BUTTON */}
         <div className="flex flex-row items-center gap-x-2">
-          <div className="bg-button text-md flex flex-row items-center gap-x-2 rounded-md px-2 py-1 text-white">
+          <div className="bg-button text-md flex flex-row items-center gap-x-2 rounded-md px-2 py-1 text-white hover:cursor-not-allowed">
             <FaPenNib size={10} />
             <p className="text-sm font-semibold">Draw</p>
           </div>
-          <div className="bg-button text-md flex flex-row items-center gap-x-2 rounded-md px-2 py-1 text-white">
+          <div className="bg-button text-md flex flex-row items-center gap-x-2 rounded-md px-2 py-1 text-white hover:cursor-not-allowed">
             <FaRegLightbulb size={10} />
             <p className="text-sm font-semibold">Idea</p>
           </div>
@@ -114,21 +113,21 @@ const ChartControl = () => {
             <IoMdArrowDropdown size={20} color="#e8e9eb" />
 
             {isOpenIndicatorFilter && (
-              <div className="chart-filter absolute top-[120%] left-0 z-50 flex w-32 flex-col rounded-md border-[0.1rem] p-[0.4rem] shadow-2xl">
+              <div className="chart-filter absolute top-[120%] left-0 z-50 flex w-40 flex-col rounded-xl border-[0.1rem] bg-[#22262f] p-[0.4rem] shadow-2xl">
                 {indicatorFilter.map((option) => (
                   <div
                     key={option.title}
                     onClick={() => {
-                      if (!selectedIndicators.includes(option.title)) {
+                      if (!selectedIndicators.includes(option.key)) {
                         setSelectedIndicators([
                           ...selectedIndicators,
-                          option.title,
+                          option.key,
                         ]);
                       }
 
                       setIsOpenIndicatorFilter(false);
                     }}
-                    className={`hover:bg-button text-2xs flex flex-row items-center gap-x-2 rounded-md bg-[#22262f] p-2 font-semibold text-white duration-200`}
+                    className={`hover:bg-button text-2xs flex flex-row items-center gap-x-2 p-2 font-semibold text-white duration-200`}
                   >
                     {option.title}
                   </div>
@@ -139,7 +138,7 @@ const ChartControl = () => {
 
           {/* DATE FILTER */}
           <div className="flex flex-row items-center">
-            {dateFilter.map((option, index) => (
+            {dateFilter.map((option) => (
               <p
                 onClick={() => {
                   setInterval(option.key);
