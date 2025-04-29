@@ -2,7 +2,7 @@
 import { FaPenNib, FaRegLightbulb } from "react-icons/fa";
 import { IoMdArrowDropdown } from "react-icons/io";
 import { SlCalender } from "react-icons/sl";
-import { option3, option4, dateFilter, indicatorFilter } from "@/constants";
+import { chartTypes, option4, dateFilter, indicatorFilter } from "@/constants";
 import { usePdfStore, useChartControlStore } from "@/store";
 import { FaFilePdf } from "react-icons/fa6";
 import React from "react";
@@ -74,15 +74,15 @@ const ChartControl = () => {
             }}
             className={` ${isOpenSelectChart ? "border-primary" : "border-secondary"} relative flex w-32 flex-row items-center gap-x-2 rounded-md border-[0.1rem] bg-[#22262f] px-2 py-1 hover:cursor-pointer`}
           >
-            <p className="text-md">{option3[selectedChart].icon}</p>
+            <p className="text-md">{chartTypes[selectedChart].icon}</p>
             <p className="text-2xs w-[100%] truncate font-medium text-white">
-              {option3[selectedChart].title}
+              {chartTypes[selectedChart].title}
             </p>
             <IoMdArrowDropdown size={20} color="#e8e9eb" />
 
             {isOpenSelectChart && (
               <div className="chart-filter absolute top-[120%] left-0 z-50 flex w-36 flex-col rounded-md border-1 p-2 shadow-2xl">
-                {option3.map((option, index) => (
+                {chartTypes.map((option, index) => (
                   <div
                     key={option.title}
                     onClick={() => {

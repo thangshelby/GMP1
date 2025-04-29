@@ -1,6 +1,6 @@
 "use client";
 
-import { useTranslations } from "@/lib/hooks/useTranslations";
+import { useTranslations } from "@/hooks/useTranslations";
 import { getLanguageByCode, getNextLanguage, supportedLanguages } from "@/lib/i18n/languages";
 import Image from "next/image";
 import { useState } from "react";

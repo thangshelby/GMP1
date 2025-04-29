@@ -37,11 +37,11 @@ export default function StockChart() {
 
   useEffect(() => {
     if (result.isSuccess) {
-      setNews(result.data.news.news_vci);
-      setNewsTCBS(result.data.news.news_tcbs);
-      setSubsidiaries(result.data.subsidiaries);
-      setOfficers(result.data.officers);
-      setOverview(result.data.overview[0]);
+      setNews(result.data.news?.news_vci || []);
+      setNewsTCBS(result.data?.news?.news_tcbs || []);
+      setSubsidiaries(result.data?.subsidiaries || []);
+      setOfficers(result.data?.officers || []);
+      // setOverview(result.data?.overview[0] || undefined);
 
     }
   }, [result.data, result.isSuccess]);

@@ -1,6 +1,6 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import * as d3 from "d3";
+import { scaleQuantile } from "d3";
 import { colorsAndRanges } from "@/constants";
 
 export function cn(...inputs: ClassValue[]) {
@@ -21,7 +21,7 @@ export const fetchAPI = async (url: string, option?: any) => {
   }
 };
 
- const colorScale = d3.scaleQuantile(
+ const colorScale = scaleQuantile(
   [-1, 1],
   colorsAndRanges.map((color) => color.color),
 );

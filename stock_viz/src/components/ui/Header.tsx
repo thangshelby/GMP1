@@ -10,7 +10,7 @@ import { CgProfile } from "react-icons/cg";
 import { IoMdArrowForward } from "react-icons/io";
 import "dotenv/config";
 import { initializeApp } from "firebase/app";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getSymbolReview } from "@/apis/market.api";
 import {
   getAuth,
@@ -19,9 +19,10 @@ import {
   signOut,
   User,
 } from "firebase/auth";
-import { ReviewStockType} from "@/types";
-import {subYears, format} from 'date-fns'
-
+import { ReviewStockType } from "@/types";
+import { subYears, format } from "date-fns";
+import { useSearch } from "@/hooks/useSearch";
+import { search } from "@/utils/search/search";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -38,11 +39,32 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
+const useStockData = () => {
+  const queryClient = useQueryClient();
+  const date = format(subYears(new Date(), 1), "yyyy-MM-dd");
+
+  // Prefetch the data
+  useEffect(() => {
+    queryClient.prefetchQuery({
+      queryKey: [`symbols/symbols_review`, "all"],
+      queryFn: () => getSymbolReview(date, "all"),
+    });
+  }, [queryClient, date]);
+
+  return useQuery<ReviewStockType[]>({
+    queryKey: [`symbols/symbols_review`, "all"],
+    queryFn: () => getSymbolReview(date, "all"),
+    refetchOnWindowFocus: false,
+    staleTime: 5 * 60 * 1000, // Data stays fresh for 5 minutes
+    gcTime: 10 * 60 * 1000, // Cache persists for 10 minutes
+  });
+};
+
 const Header = () => {
   const [input, setInput] = useState<string>("");
-  const [ricMatch, setRicMatch] = useState<ReviewStockType[]>([]);
   const [user, setUser] = useState<User | null>(null);
-  const date = format(subYears(new Date(), 1), "yyyy-MM-dd");
+
+  const result = useStockData();
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -74,22 +96,14 @@ const Header = () => {
     }
   };
 
-
-
-  const result = useQuery({
-    queryKey: [`symbols/symbols_review`, "all"],
-    queryFn: () => getSymbolReview(date, "all"),
-    refetchOnWindowFocus:false,
-  });
-
-  React.useEffect(() => {
-    if(!result.isSuccess) return
-    const match = result.data.filter((stock: ReviewStockType) => {
-      return stock.symbol.includes(input) || stock.name.includes(input);
-    });
-    setRicMatch(match);
-  }, [input, result.data,result.isSuccess]);
-
+  const results: ReviewStockType[] = useSearch(
+    result.data,
+    input.toUpperCase(),
+    search({
+      fields: ["name", "symbol"],
+      matchType: "contains", // Options: "exact", "startsWith", etc.
+    }),
+  );
 
   return (
     <div className="flex flex-row items-center justify-between p-2">
@@ -113,8 +127,8 @@ const Header = () => {
             </div>
             {input.length > 0 && (
               <div className="dow-2xl border-gray-2 absolute left-0 z-50 mt-[0.6rem] w-full gap-y-[0.6rem] overflow-y-hidden rounded-lg border-1 bg-[#22262f] p-2 hover:cursor-pointer">
-                {ricMatch.length ? (
-                  ricMatch.slice(0, 12).map((stock, index) => (
+                {results.length ? (
+                  results.slice(0, 12).map((stock, index) => (
                     <div
                       onClick={() => {
                         window.location.href = `/stockchart?symbol=${stock.symbol}`;
@@ -144,14 +158,14 @@ const Header = () => {
                         </p>
                       )}
 
-                      {stock.name.includes(input) ? (
+                      {stock.name.toUpperCase().includes(input) ? (
                         <p className="text-2xs truncate text-center font-semibold text-[#babdc7]">
-                          {stock.name.slice(0, stock.name.indexOf(input[0]))}
+                          {stock.name.toUpperCase().slice(0, stock.name.toUpperCase().indexOf(input[0]))}
                           <span className="text-2xs font-semibold text-[#d18325]">
                             {input}
                           </span>
-                          {stock.name.slice(
-                            stock.name.indexOf(input) + input.length,
+                          {stock.name.toUpperCase().slice(
+                            stock.name.toUpperCase().indexOf(input) + input.length,
                           )}
                         </p>
                       ) : (
@@ -175,8 +189,7 @@ const Header = () => {
           </div>
         </div>
       </div>
-      
-      
+
       <div className="flex flex-row items-center gap-2">
         <div className="hover:cursor-pointer">
           <CiBellOn color="white" size={"20px"} />
@@ -275,9 +288,6 @@ const Header = () => {
 };
 
 export default Header;
-
-
-
 
 const Logo = () => {
   return (

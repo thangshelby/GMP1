@@ -40,12 +40,17 @@ const Navbar = () => {
         <div className="flex flex-row items-center">
           <div className="flex flex-row items-center space-x-5">
             <p className="text-sm font-semibold text-white">
-              {t(`Navbar.NavbarRight.Day.${new Date().getDay()}`)}{" "}
-              {t(`Navbar.NavbarRight.Month.${new Date().getMonth() + 1}`)}{" "}
-              {new Date().getDate()}{" "}
-              {new Date().getFullYear() - 1} {new Date().getHours()}:
-              {new Date().getMinutes()}
-              {new Date().getHours() < 12 ? " AM" : " PM"}
+              {(() => {
+                const date = new Date();
+                return `${t(`Navbar.NavbarRight.Day.${date.getDay()}`)} ${t(
+                  `Navbar.NavbarRight.Month.${date.getMonth() + 1}`,
+                )} ${date.getDate()} ${
+                  date.getFullYear() - 1
+                } 
+                ${
+                  date.getHours() < 12 ? " AM" : " PM"
+                }`;
+              })()}
             </p>
             <div className="flex flex-row items-center gap-1">
               <div className="flex flex-row items-center gap-1">
@@ -53,16 +58,14 @@ const Navbar = () => {
                   onClick={handleLanguageChange}
                   className="bg-button relative h-5 w-14 rounded-full hover:cursor-pointer"
                 >
-                  <div
-                    className="absolute top-0 left-0 flex h-full w-full items-center justify-start overflow-hidden rounded-full"
-                  >
+                  <div className="absolute top-0 left-0 flex h-full w-full items-center justify-start overflow-hidden rounded-full">
                     <Image
-                    width={100}
-                    height={100}
-                    style={{
-                      width: "auto",
-                      height: "100%",
-                    }}
+                      width={100}
+                      height={100}
+                      style={{
+                        width: "auto",
+                        height: "100%",
+                      }}
                       src={
                         language === "en" ? "/images/en.png" : "/images/vn.png"
                       }
@@ -73,12 +76,16 @@ const Navbar = () => {
                     />
                   </div>
                 </div>
-                <p className="text-sm font-semibold text-white">{t('Navbar.NavbarRight.Select Language')}</p>
+                <p className="text-sm font-semibold text-white">
+                  {t("Navbar.NavbarRight.Select Language")}
+                </p>
               </div>
             </div>
             <div className="flex flex-row items-center gap-1">
               <IoIosHelpCircleOutline color="white" size={"18px"} />
-              <p className="text-sm font-semibold text-white">{t('Navbar.NavbarRight.Help')}</p>
+              <p className="text-sm font-semibold text-white">
+                {t("Navbar.NavbarRight.Help")}
+              </p>
             </div>
           </div>
         </div>

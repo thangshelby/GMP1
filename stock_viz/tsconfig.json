@@ -23,6 +23,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/maps/@mapssidebar", "src/app/maps/@mapsheader"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/maps/@mapssidebar", "src/app/maps/@mapsheader", "src/hooks/useSearch.js"],
   "exclude": ["node_modules"]
 }

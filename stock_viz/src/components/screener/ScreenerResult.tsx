@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/pagination";
 import { FaArrowRightLong, FaArrowLeftLong } from "react-icons/fa6";
 import { useSearchParams, useRouter } from "next/navigation";
-import { useTranslations } from "@/lib/hooks/useTranslations";
+import { useTranslations } from "@/hooks/useTranslations";
 
 const ScreenerResult = ({
   sortedCategory

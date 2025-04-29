@@ -12,7 +12,7 @@ import {
   MdOutlineKeyboardArrowUp,
 } from "react-icons/md";
 import ScreenerResult from "@/components/screener/ScreenerResult";
-import { useTranslations } from "@/lib/hooks/useTranslations";
+import { useTranslations } from "@/hooks/useTranslations";
 
 const Screener = () => {
   const { tScreener } = useTranslations();

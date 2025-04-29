@@ -4,12 +4,13 @@ import { MdOutlineZoomOutMap } from "react-icons/md";
 import { CiSettings } from "react-icons/ci";
 import { TbChartCandle } from "react-icons/tb";
 import { IoBarChart } from "react-icons/io5";
+import { FaChartArea } from "react-icons/fa";
 const width = 1200;
 const height = 450;
 
 const optons1 = ["Technology", "Consumer Electromics", "USA", "NASD"];
 
-const option3 = [
+const chartTypes = [
   {
     title: "Candle Chart",
     icon: <TbChartCandle size={16} color="#e8e9eb" />,
@@ -17,6 +18,10 @@ const option3 = [
   {
     title: "Line Chart",
     icon: <FaChartLine size={16} color="#e8e9eb" />,
+  },
+  {
+    title: "Area Chart",
+    icon: <FaChartArea size={16} color="#e8e9eb" />,
   },
   {
     title: "Bar Chart",
@@ -106,7 +111,7 @@ const dateFilter = [
   { title: "Monthly", key: "1M" },
 ];
 
-export { width, height, optons1, option3, option4, headerLinks, dateFilter };
+export { width, height, optons1, chartTypes, option4, headerLinks, dateFilter };
 export const footerContent =
   " © 2025 University of Economics and Law (UEL). All rights reserved. The content of this report is created for educational and research purposes and is the intellectual property of the author. It may not be copied, distributed, or reused in any form without prior written consent from the author or the university. The information in this report has been collected and compiled from reliable sources; however, UEL and the author bear no responsibility for any errors, omissions, or losses arising from the use of this content. All opinions and views expressed in this report are solely those of the author and do not represent the official stance of the University of Economics and Law. UEL and its logo are registered trademarks.";
 
