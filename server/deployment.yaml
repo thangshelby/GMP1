@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: python-server
+  labels:
+    app: python-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: python-server
+  template:
+    metadata:
+      labels:
+        app: python-server
+    spec:
+      containers:
+      - name: python-server
+        image: python:3.11
+        ports:
+        - containerPort: 8000
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+        volumeMounts:
+        - name: app-volume
+          mountPath: /app
+        - name: requirements-volume
+          mountPath: /requirements
+        command: ["/bin/sh", "-c"]
+        args:
+        - |
+          pip install -r /requirements/requirements.txt
+          cd /app
+          python main.py
+      volumes:
+      - name: app-volume
+        configMap:
+          name: app-config
+      - name: requirements-volume
+        configMap:
+          name: requirements-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: python-server-service
+spec:
+  selector:
+    app: python-server
+  ports:
+  - port: 80
+    targetPort: 8000
+  type: LoadBalancer 

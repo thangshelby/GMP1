@@ -1,0 +1,2 @@
+symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
+SSC	HOSE	Thực phẩm và đồ uống	CT	769	0.008	13.3	15.0	2002	142	2.6	0.035	0.008	0.221	Giống cây trồng Miền Nam	http://ssc.com.vn	217	3573

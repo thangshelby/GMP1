@@ -1,0 +1,2 @@
+symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
+VCI	HOSE	Dịch vụ tài chính	CK	15669	0.296	718.1	718.1	2007	389	2.5	-0.009	-0.002	-0.023	Chứng khoán Vietcap	https://www.vietcap.com.vn	300	8777

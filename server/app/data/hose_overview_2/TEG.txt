@@ -1,0 +1,2 @@
+symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
+TEG	HOSE	Bất động sản	CT	1897	0.052	120.8	120.8	2011	66	2.0	-0.043	-0.045	-0.318	TECGROUP	https://www.tegroup.com.vn	336	8633

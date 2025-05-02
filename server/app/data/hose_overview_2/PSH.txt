@@ -1,0 +1,2 @@
+symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
+PSH	HOSE	Điện, nước & xăng dầu khí đốt	CT	7209	0.0	126.2	126.2	2012	333	2.2	0.169	0.042	-0.607	TMại ĐT Dầu khí Nam Sông Hậu	https://nshpetro.vn	275	7573

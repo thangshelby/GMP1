@@ -1,0 +1,2 @@
+symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
+REE	HOSE	Điện, nước & xăng dầu khí đốt	CT	20147	0.49	471.0	471.0	2005	1947	3.1	0.022	0.007	0.281	Cơ Điện Lạnh REE	https://www.reecorp.com	274	7535

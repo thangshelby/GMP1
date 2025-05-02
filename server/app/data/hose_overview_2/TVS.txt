@@ -1,0 +1,2 @@
+symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
+TVS	HOSE	Dịch vụ tài chính	CK	2633	0.218	167.0	167.0	2006	113	2.4	-0.062	-0.106	-0.193	Chứng khoán Thiên Việt	https://www.tvs.vn	300	8777

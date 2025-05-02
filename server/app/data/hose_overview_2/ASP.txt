@@ -1,0 +1,2 @@
+symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
+ASP	HOSE	Điện, nước & xăng dầu khí đốt	CT	4360	0.49	37.3	37.3	2004	1520	2.2	0.004	0.015	-0.006	Dầu khí An Pha	http://www.anphapetrol.com	275	7573

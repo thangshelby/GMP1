@@ -1,0 +1,2 @@
+symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
+CLL	HOSE	Hàng & Dịch vụ Công nghiệp	CT	775	0.095	34.0	34.0	2007	84	3.0	0.085	0.083	-0.006	Cảng Cát Lái	http://catlaiport.com.vn	193	2777

@@ -1,0 +1,2 @@
+symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
+SVT	HOSE	Tài nguyên Cơ bản	CT	479	0.002	17.3	17.3	2003	10		0.097	0.11	0.299	Công nghệ SG Viễn Đông	http://www.savitechco.vn	156	1737

@@ -1,0 +1,2 @@
+symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
+PDN	HOSE	Hàng & Dịch vụ Công nghiệp	CT	386	0.002	37.0	37.0	2006	285	3.2	0.026	0.159	0.153	Cảng Đồng Nai	http://dongnai-port.com/Pages/Home.aspx	193	2777

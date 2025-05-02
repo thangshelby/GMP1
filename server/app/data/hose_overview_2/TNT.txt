@@ -1,0 +1,2 @@
+symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
+TNT	HOSE	Tài nguyên Cơ bản	CT	1842	0.022	51.0	51.0	2006	15	2.4	-0.063	0.036	-0.149	Tập đoàn TNT	https://tnt-group.vn	166	1775

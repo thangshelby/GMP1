@@ -1,0 +1,2 @@
+symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
+HCM	HOSE	Dịch vụ tài chính	CK	26602	0.426	720.0	720.8	2003	681	2.4	-0.064	-0.091	0.023	Chứng khoán HSC	https://www.hsc.com.vn	300	8777

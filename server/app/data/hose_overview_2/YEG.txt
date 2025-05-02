@@ -1,0 +1,2 @@
+symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
+YEG	HOSE	Truyền thông	CT	310	0.076	191.8	191.8	2006	189	2.0	-0.08	-0.171	0.391	Tập đoàn Yeah1	https://yeah1group.com	254	5553

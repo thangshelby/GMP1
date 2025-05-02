@@ -1,0 +1,2 @@
+symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
+HHP	HOSE	Tài nguyên Cơ bản	CT	2724	0.068	86.6	86.6	2012	227	2.2	0.101	0.086	-0.058	HHP Global	https://www.hhpglobaljsc.com	156	1737

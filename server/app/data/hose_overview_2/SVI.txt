@@ -1,0 +1,2 @@
+symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
+SVI	HOSE	Hàng & Dịch vụ Công nghiệp	CT	279	0.95	12.8	12.8	2003	664	3.1	0.169	0.162	-0.107	Bao bì Biên Hòa	https://sovi.com.vn	184	2723

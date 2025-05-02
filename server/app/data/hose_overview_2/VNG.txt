@@ -1,0 +1,2 @@
+symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
+VNG	HOSE	Du lịch và Giải trí	CT	1870	0.003	97.3	97.3	2006	1155	2.0	0.088	0.092	-0.059	DL Thành Thành Công	https://ttchospitality.vn	259	5753

@@ -1,0 +1,2 @@
+symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
+CLW	HOSE	Điện, nước & xăng dầu khí đốt	CT	416	0.047	13.0	13.0	2007	465	3.0	0.169	0.26	0.281	Cấp nước Chợ Lớn	http://www.capnuoccholon.com.vn	277	7577

@@ -1,0 +1,2 @@
+symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
+TRA	HOSE	Y tế	CT	1179	0.466	41.5	41.5	1999	1670	3.1	0.069	0.046	-0.028	Traphaco	https://traphaco.com.vn	238	4577

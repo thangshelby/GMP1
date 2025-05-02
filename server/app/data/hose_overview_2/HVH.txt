@@ -1,0 +1,2 @@
+symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
+HVH	HOSE	Xây dựng và Vật liệu	CT	2746	0.013	40.6	40.6	2010	197		0.06	0.375	1.359	Đầu tư và Công nghệ HVC	https://hvcgroup.net	181	2357

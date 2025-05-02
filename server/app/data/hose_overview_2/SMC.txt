@@ -1,0 +1,2 @@
+symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
+SMC	HOSE	Tài nguyên Cơ bản	CT	0	0.203	73.6	73.7	2004	616	2.2	-0.036	0.144	-0.33	Đầu tư Thương mại SMC	https://smc.vn	159	1757

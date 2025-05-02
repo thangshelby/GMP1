@@ -1,0 +1,2 @@
+symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
+HT1	HOSE	Xây dựng và Vật liệu	CT	9672	0.013	381.6	381.6	2007	2434	2.2	-0.056	-0.081	-0.149	VICEM Hà Tiên	https://www.vicemhatien.com.vn	180	2353

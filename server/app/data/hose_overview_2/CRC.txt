@@ -1,0 +1,2 @@
+symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
+CRC	HOSE	Xây dựng và Vật liệu	CT	2238	0.001	60.0	60.0	2010	30		0.093	0.21	0.211	Create Capital Việt Nam	http://createcapital.vn	180	2353

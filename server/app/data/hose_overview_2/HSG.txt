@@ -1,0 +1,2 @@
+symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
+HSG	HOSE	Tài nguyên Cơ bản	CT	0	0.072	621.0	621.0	2001	8159	2.5	-0.056	-0.1	-0.256	Tập đoàn Hoa Sen	https://hoasengroup.vn	159	1757

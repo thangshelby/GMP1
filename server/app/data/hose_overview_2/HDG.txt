@@ -1,0 +1,2 @@
+symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
+HDG	HOSE	Bất động sản	CT	12759	0.195	336.3	336.3	2005	746	2.2	-0.087	-0.114	-0.095	Tập đoàn Hà Đô	https://hado.com.vn	336	8633

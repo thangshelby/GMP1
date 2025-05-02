@@ -1,0 +1,2 @@
+symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
+EVF	HOSE	Dịch vụ tài chính	NH	70443	0.004	760.6	760.6	2008	289	2.7	-0.037	-0.076	-0.298	Tài chính Điện lực	http://www.evnfc.vn	298	8773

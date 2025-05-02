@@ -1,8 +1,24 @@
-from vnstock import Vnstock
+import os
 
-stock = Vnstock().stock(symbol='VCB',source='VCI')
-df= stock.quote.history(start='2000-01-01',end='2025-03-19',interval='1D')
-# df = stock.quote.history(start='2024-01-01', end='2025-03-19', interval='1D')
-print(df)
+import redis
+from dotenv import load_dotenv
+
+load_dotenv()
+
+host = os.getenv('REDIS_HOST')
+port = os.getenv('REDIS_PORT')
+pw= os.getenv('REDIS_PASSWORD')
+ssl= os.getenv('REDIS_SSL')
+
+r = redis.Redis(
+  host=host,
+  port=port,
+  password=pw,
+  ssl=ssl
+)
+
+# r.set('foo', 'bar')
+print(r.get('foo'))
+    
 
 

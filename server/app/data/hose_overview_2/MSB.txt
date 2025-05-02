@@ -1,0 +1,2 @@
+symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
+MSB	HOSE	Ngân hàng	NH	34015	0.274	2600.0	2600.0	1991	6678	2.8	-0.011	0.019	0.04	MSB Bank	https://msb.com.vn	289	8355

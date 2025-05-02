@@ -1,0 +1,2 @@
+symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
+MHC	HOSE	Hàng & Dịch vụ Công nghiệp	CT	6597	0.009	43.5	43.5	1998	37	2.6	0.18	0.119	-0.068	CTCP MHC	https://mhc.vn	194	2779

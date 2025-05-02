@@ -1,0 +1,2 @@
+symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
+MIG	HOSE	Bảo hiểm	BH	0	0.166	201.4	198.6	2012	1914	2.7	-0.009	-0.031	0.053	Bảo hiểm Quân đội	https://www.mic.vn	292	8536

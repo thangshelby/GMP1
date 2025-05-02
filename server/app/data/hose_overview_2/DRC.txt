@@ -1,0 +1,2 @@
+symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
+DRC	HOSE	Ô tô và phụ tùng	CT	7256	0.084	118.8	118.8	2005	1935	2.4	-0.08	-0.093	-0.19	Cao su Đà Nẵng	https://drc.com.vn	213	3357

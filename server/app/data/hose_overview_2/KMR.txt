@@ -1,0 +1,2 @@
+symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
+KMR	HOSE	Hàng cá nhân & Gia dụng	CT	0	0.626	56.9	56.9	2007	236	2.4	0.022	0.027	-0.073	MIRAE	http://miraejsc.com	226	3763

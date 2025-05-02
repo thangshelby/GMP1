@@ -1,0 +1,2 @@
+symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
+HSL	HOSE	Thực phẩm và đồ uống	CT	2922	0.02	38.6	38.6	2015	34		-0.036	-0.042	-0.238	Thực phẩm Hồng Hà	http://www.honghagroup.com.vn	218	3577

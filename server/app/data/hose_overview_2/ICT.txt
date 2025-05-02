@@ -1,0 +1,2 @@
+symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
+ICT	HOSE	Công nghệ Thông tin	CT	1504	0.003	32.2	32.2	2001	334	2.6	-0.012	-0.009	0.097	Viễn thông - Tin học Bưu điện	https://www.ctin.vn	310	9537

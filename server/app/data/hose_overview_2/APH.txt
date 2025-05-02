@@ -1,0 +1,2 @@
+symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
+APH	HOSE	Hàng & Dịch vụ Công nghiệp	CT	0	0.28	243.9	243.9	2017	4069	2.5	0.02	-0.002	-0.141	Tập đoàn An Phát Holdings	https://anphatholdings.vn	184	2723

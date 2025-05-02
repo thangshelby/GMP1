@@ -1,0 +1,2 @@
+symbol	exchange	industry	company_type	no_shareholders	foreign_percent	outstanding_share	issue_share	established_year	no_employees	stock_rating	delta_in_week	delta_in_month	delta_in_year	short_name	website	industry_id	industry_id_v2
+OCB	HOSE	Ngân hàng	NH	20103	0.194	2465.8	2465.8	1996	7026	2.4	0.017	0.011	-0.077	Ngân hàng Phương Đông	https://www.ocb.com.vn	289	8355
