@@ -74,9 +74,9 @@ def find_near_valid_date(date):
     return date
 
 def convert_timestamp_to_datestring(df):
+    df = df.reset_index(drop=True)
     df['time'] = pd.to_datetime(df['time'])
-    df['time'] = df['time'].dt.strftime('%Y-%m-%d %H:%M:%S')
-    
+    df['time'] = df['time'].dt.strftime('%Y-%m-%d')
     return df
 
 def prepare_data_for_market_review():
@@ -124,7 +124,7 @@ def prepare_data_for_market_review():
                 curStock['industry'] = industry
                 curStock['signal'] = signal
                 curStock['symbol'] = symbol
-                curStock['exchange  '] = company_overview['exchange'].iloc[0]
+                curStock['exchange'] = company_overview['exchange'].iloc[0]
                 
                 last_close = df.tail(1)['close'].iloc[0]
                 curStock['last'] = round(last_close, 2) 

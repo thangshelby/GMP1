@@ -21,7 +21,7 @@ market_bp = Blueprint('market_bp', __name__)
 def fetch_market_overview():
     date = request.args.get('date')
     date_before = (datetime.strptime(date, '%Y-%m-%d') -
-                   timedelta(days=1)).strftime('%Y-%m-%d')
+                   timedelta(days=1)).strftime('%Y-%m-%d') 
 
     cache_key = f"market_overview_{date}"
     cached_data = redis_client.get(cache_key)
@@ -160,8 +160,8 @@ def fetch_symbols():
     cache_key = f"symbols_review_{date}_{prepare_for}_{time_frame}"
     cached_data = redis_client.get(cache_key)
 
-    # if cached_data:
-    #     return json.loads(cached_data)
+    if cached_data:
+        return json.loads(cached_data)
 
     response = []
     sources = hose+hnx

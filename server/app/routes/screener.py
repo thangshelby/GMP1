@@ -28,8 +28,8 @@ def fetch_symbols():
     cache_key= f'screener_{date}_{page}'
 
     cached_data = redis_client.get(cache_key)   
-    if cached_data:
-        return json.loads(cached_data)  # Trả về dữ liệu cache
+    # if cached_data:
+    #     return json.loads(cached_data) 
     
     sources= hose+hnx
     
@@ -38,28 +38,9 @@ def fetch_symbols():
     for symbol in sources[start:end]:
         cache_key_for_stock= f'stock_review_{symbol}_{date}'
         cached_data= redis_client.get(cache_key_for_stock)
-        if cached_data:
-            df=None
-            try:
-                df= pd.read_csv(f'./app/data/hose/{symbol}.txt', sep='\t')
-            except:
-                try:
-                    print('hnx')
-                    df= pd.read_csv(f'./app/data/hnx/{symbol}.txt', sep='\t')
-                except:
-                    end+=1
-                    continue
-            
-            df= df[df['time']<=date]
-            df.dropna(inplace=True)
-            tempRes= json.loads(cached_data)
-            tempRes['quote']= df.iloc[:,-60:].to_dict(orient='records')
-            response['data'].append(tempRes)
-        else:       
-            end+=1
-            continue
-            
-        
+        tempRes= json.loads(cached_data)
+        tempRes['change']= tempRes['change_1D']
+        response['data'].append(tempRes)
     redis_client.setex(cache_key, 24*60*60*7, json.dumps(response))
     return response
     

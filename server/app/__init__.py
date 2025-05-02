@@ -13,7 +13,7 @@ def create_app():
     # Register routes
     app.register_blueprint(stock.stock_bp, url_prefix='/stocks')
    
-    app.register_blueprint(report.report_bp, url_prefix='/reports')
+    app.register_blueprint(report.report_bp, url_prefix='/reports') 
     
     app.register_blueprint(company.company_bp, url_prefix='/company')
     
