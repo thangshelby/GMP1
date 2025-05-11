@@ -2,7 +2,6 @@ import React from "react";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
@@ -11,7 +10,6 @@ import {
 import MiniBarChart from "./MiniBarChart";
 import { formatNumber } from "@/constants";
 const FinancialReportTable = ({
-  selectedCategory,
   selectedFilter,
   data,
   specialProperties,
@@ -21,7 +19,9 @@ const FinancialReportTable = ({
     data: number[];
     timeFrame: number;
   };
-  data: any;
+  data: {
+    [key: string]: number[];
+  };
   specialProperties: string[];
 }) => {
   return (
@@ -68,7 +68,7 @@ const FinancialReportTable = ({
 
                 {data[key]
                   .slice(0, years.length)
-                  .map((item: any, index: number) => (
+                  .map((item: number, index: number) => (
                     <TableCell key={index}>
                       <div
                         className={`flex flex-col text-[11px] font-normal text-white`}

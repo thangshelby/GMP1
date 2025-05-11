@@ -41,7 +41,7 @@ export default function StockChart() {
       setNewsTCBS(result.data?.news?.news_tcbs || []);
       setSubsidiaries(result.data?.subsidiaries || []);
       setOfficers(result.data?.officers || []);
-      // setOverview(result.data?.overview[0] || undefined);
+      setOverview(result.data?.overview[0] || undefined);
 
     }
   }, [result.data, result.isSuccess]);

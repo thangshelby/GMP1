@@ -1,4 +1,5 @@
-import React, { useEffect } from "react";
+'use client'
+import { useEffect, useState } from "react";
 import {
   Table,
   TableBody,
@@ -20,10 +21,9 @@ const CompanyOfficer = ({
 }: {
   companyOfficers: CompanyOfficerType[];
 }) => {
-  const [workingType, setWorkingType] = React.useState("đang làm việc");
-  const [filteredOfficers, setFilteredOfficers] =
-    React.useState(companyOfficers);
-  React.useEffect(() => {
+  const [workingType, setWorkingType] = useState("đang làm việc");
+  const [filteredOfficers, setFilteredOfficers] = useState(companyOfficers);
+  useEffect(() => {
     if (workingType === "all") {
       setFilteredOfficers(companyOfficers);
     } else {
@@ -32,7 +32,7 @@ const CompanyOfficer = ({
       );
       setFilteredOfficers(filtered);
     }
-  }, [workingType]);
+  }, [workingType, companyOfficers, setFilteredOfficers]);
   return (
     <div className="w-[60%] rounded-sm border-1 border-white p-1">
       <Table>

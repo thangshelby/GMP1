@@ -6,7 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getNews } from "@/apis/news.api";
 import { Skeleton } from "@/components/ui/skeleton";
 import Image from "next/image";
-export const News = () => {
+export default function News () {
   const [selectedCategory, setSelectedCategory] =
     React.useState<keyof typeof newsCateories>("stock");
   const [selectedSubCategory, setSelectedSubCategory] = React.useState("share");
@@ -78,7 +78,6 @@ export const News = () => {
   );
 };
 
-export default News;
 
 const NewsItemSkeleton = () => {
   return (

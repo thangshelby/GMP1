@@ -35,3 +35,7 @@ export const getFinalAnalysis= async (symbol: string, financialData: FinancialDa
   return response.data;
 };
 
+export const getFinancialReport = async (symbol: string, period: string) => {
+  const response = await http.get(`/reports/financial_report?symbol=${symbol}&period=${period}`);
+  return response.data;
+};

@@ -16,7 +16,7 @@ export default function StockChartLayout({
   return (
     <div className="relative flex flex-col bg-[#171921]">
       <div className="pb-20">
-        {/* <StockChartOverview /> */}
+        <StockChartOverview />
         <StockChartContainer />
         {/* <PdfTemplate /> */}
       </div>

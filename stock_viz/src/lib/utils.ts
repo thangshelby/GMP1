@@ -9,7 +9,7 @@ export function cn(...inputs: ClassValue[]) {
 
 const BASE_URL = "http://127.0.0.1:5000/";
 
-export const fetchAPI = async (url: string, option?: any) => {
+export const fetchAPI = async (url: string, option?: RequestInit) => {
   try {
     const response = await fetch(`${BASE_URL}${url}`, option);
 

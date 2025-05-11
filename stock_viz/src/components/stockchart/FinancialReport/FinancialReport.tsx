@@ -2,8 +2,9 @@
 
 import React, { Suspense } from "react";
 import FinancialReportTable from "./FinancialReportTable";
-import { fetchAPI } from "@/lib/utils";
 import { useSearchParams } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
+import { getFinancialReport } from "@/apis/report";
 
 const FinancialReport = () => {
   const [selectedCategory, setSelectedCategory] = React.useState(
@@ -13,27 +14,18 @@ const FinancialReport = () => {
     data: number[];
     timeFrame: number;
   }>({ data: [], timeFrame: 0 });
-  const [data, setData] = React.useState<any>();
-
+ 
 
   const symbol = useSearchParams().get("symbol") || "VCB";
 
-  React.useEffect(() => {
-    const fetchData = async () => {
-      const response = await fetchAPI(
-        `/reports/financial_report?symbol=${symbol}&period=year`,
-        {
-          method: "GET",
-        },
-      );
+  const results=useQuery({
+    queryKey:["financial_report", symbol, selectedCategory, selectedFilter],
+    queryFn:()=>getFinancialReport(symbol, selectedFilter.timeFrame === 0 ? "year" : "quarter"),
+  })
 
-      setData(response);
-    };
-    fetchData();
-  }, []);
-
+ 
   return (
-    data && (
+    results.data && (
       <div className="flex w-full flex-col gap-y-2 bg-[#22262f]">
         <div className="flex w-full flex-row items-center justify-between">
           {/* CATEGORY */}
@@ -101,7 +93,7 @@ const FinancialReport = () => {
           <FinancialReportTable
             selectedCategory={selectedCategory}
             selectedFilter={selectedFilter}
-            data={data[selectedCategory]}
+            data={results.data[selectedCategory]}
             specialProperties={
               financialReportCategories.find(
                 (item) => item.key === selectedCategory,

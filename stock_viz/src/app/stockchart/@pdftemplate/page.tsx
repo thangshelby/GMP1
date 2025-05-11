@@ -24,7 +24,7 @@ export default function PdfTemplate() {
       }}
       className="flex w-full flex-col items-center justify-center space-y-4"
     >
-      {/* {pdfPages.map((page) => (
+      {pdfPages.map((page) => (
         <div
           key={page.id}
           id={page.id}
@@ -44,7 +44,7 @@ export default function PdfTemplate() {
             <FooterSection />
           </div>
         </div>
-      ))} */}
+      ))}
     </div>
   );
 }

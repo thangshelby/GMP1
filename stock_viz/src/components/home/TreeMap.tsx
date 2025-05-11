@@ -1,6 +1,6 @@
 "use client";
 
-import * as d3 from "d3";
+import { group, sum, treemapBinary, hierarchy, treemap, select } from "d3";
 import React, { useEffect, useRef, useState } from "react";
 import { ReviewStockType } from "@/types";
 import { format, subYears } from "date-fns";
@@ -45,22 +45,18 @@ const Treemap = () => {
   useEffect(() => {
     if (!ref.current || result.isLoading === true || result.isError === true)
       return;
-    // d3.select(ref.current).selectAll("*").remove();
+    // select(ref.current).selectAll("*").remove();
 
-    const nestedData = d3.group(
-      result.data,
-      (d: ReviewStockType) => d.industry,
-    );
-
+    const nestedData = group(result.data, (d: ReviewStockType) => d.industry);
 
     const hierarchyData: TreemapNode = {
       name: "Tổng thị trường",
       value: 0,
-      change: d3.sum(result.data, (d: ReviewStockType) => d.change) || 0,
+      change: sum(result.data, (d: ReviewStockType) => d.change) || 0,
       children: Array.from(nestedData, ([industry, stocks]) => ({
         name: industry,
         value: 0,
-        change: d3.sum(stocks, (d: ReviewStockType) => d.change) || 0,
+        change: sum(stocks, (d: ReviewStockType) => d.change) || 0,
         children: stocks.map((stock: ReviewStockType) => ({
           name: stock.symbol,
           value: stock.market_cap,
@@ -72,9 +68,8 @@ const Treemap = () => {
     const width = ref.current?.clientWidth ?? 0;
     const height = ref.current?.clientWidth ?? 0;
 
-    const root = d3
-      .treemap<TreemapNode>()
-      .tile(d3.treemapBinary)
+    const root = treemap<TreemapNode>()
+      .tile(treemapBinary)
       .size([width, height])
       .paddingInner(paddingInner)
       .paddingOuter(paddingOuter)
@@ -82,8 +77,7 @@ const Treemap = () => {
         return paddingTop;
       })
       .round(true)(
-      d3
-        .hierarchy(hierarchyData)
+      hierarchy(hierarchyData)
 
         .sum((d) => {
           if (d.name.length <= 5) {
@@ -95,10 +89,9 @@ const Treemap = () => {
           return (b.value || 0) - (a.value || 0);
         }),
     );
-    setCurRoot(root);
+    setCurRoot(root as Node);
 
-    d3.select(ref.current)
-
+    select(ref.current)
       .attr("viewBox", [0, 0, width, height])
       .attr("width", width)
       .attr("height", height)
@@ -146,97 +139,96 @@ const Treemap = () => {
         </div>
       )}
       <Link href={`/maps`}>
-      <svg className="w-full" ref={ref}>
-        {/* TREE MAP SYMBOLS */}
-        <g>
-          {curRoot &&
-            curRoot?.children.map((child) =>
-              child.children.map((child2, index) => (
+        <svg className="w-full" ref={ref}>
+          {/* TREE MAP SYMBOLS */}
+          <g>
+            {curRoot &&
+              curRoot?.children.map((child) =>
+                child.children.map((child2, index) => (
+                  <g key={index}>
+                    <rect
+                      x={child2.x0}
+                      y={child2.y0}
+                      width={child2.x1 - child2.x0}
+                      height={child2.y1 - child2.y0}
+                      fill={`${colorScale(child2.data.change)}`}
+                    />
+                    {child2.x1 - child2.x0 >= 20 &&
+                      child2.y1 - child2.y0 >= 15 && (
+                        <text
+                          x={(child2.x0 + child2.x1) / 2}
+                          y={(child2.y0 + child2.y1) / 2}
+                          fill="white"
+                          fontSize={handleTextChildren(child2)}
+                          fontWeight="bold"
+                          textAnchor="middle"
+                          style={{
+                            textShadow: "2px 2px  5px #000",
+                            fontFamily:
+                              "'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif",
+                          }}
+                        >
+                          <tspan dy="-0.5em">{child2.data.name} </tspan>
+                          <tspan x={(child2.x0 + child2.x1) / 2} dy="1.2em">
+                            {child2.data.change.toFixed(2)}%
+                          </tspan>
+                        </text>
+                      )}
+                  </g>
+                )),
+              )}
+          </g>
+
+          {/* TREE MAP  SECTORS */}
+          <g>
+            {curRoot &&
+              curRoot?.children.map((child, index) => (
                 <g key={index}>
                   <rect
-                    x={child2.x0}
-                    y={child2.y0}
-                    width={child2.x1 - child2.x0}
-                    height={child2.y1 - child2.y0}
-                    fill={`${colorScale(child2.data.change)}`}
+                    x={child.x0 + paddingOuter}
+                    y={child.y0}
+                    width={child.x1 - child.x0 - paddingOuter * 2}
+                    height={paddingTop}
+                    fill={`${colorScale(child.data.change)}`}
+                    stroke="#22262f"
                   />
-                  {child2.x1 - child2.x0 >= 20 &&
-                    child2.y1 - child2.y0 >= 15 && (
-                      <text
-                        x={(child2.x0 + child2.x1) / 2}
-                        y={(child2.y0 + child2.y1) / 2}
-                        fill="white"
-                        fontSize={handleTextChildren(child2)}
-                        fontWeight="bold"
-                        textAnchor="middle"
-                        style={{
-                          textShadow: "2px 2px  5px #000",
-                          fontFamily:
-                            "'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif",
-                        }}
-                      >
-                        <tspan dy="-0.5em">{child2.data.name} </tspan>
-                        <tspan x={(child2.x0 + child2.x1) / 2} dy="1.2em">
-                          {child2.data.change.toFixed(2)}%
-                        </tspan>
-                      </text>
-                    )}
+                  <text
+                    x={child.x0 + 5}
+                    y={
+                      child.y0 +
+                      fontSize +
+                      Math.floor((paddingTop - fontSize) / 4)
+                    }
+                    className="text-industry"
+                    textAnchor="start"
+                    fill="#f3f3f5"
+                    fontSize={handleFontSizeParent(child)}
+                    fontWeight="600"
+                  >
+                    {handleTextParent(child)}
+                  </text>
+
+                  {handleFontSizeParent(child) > 0 && (
+                    <g>
+                      <polygon
+                        points={`${child.x0 + 4},${child.y0 + paddingTop} ${child.x0 + 4 + 10 / 2},${child.y0 + paddingTop + 6} ${child.x0 + 4 + 10},${child.y0 + paddingTop} `}
+                        stroke="#22262f"
+                        transform={`translate(0,0)`}
+                        strokeWidth={1}
+                        fill={`${colorScale(child.data.change)}`}
+                      />
+                      <polyline
+                        points={`${child.x0 + 4 + 1},${child.y0 + paddingTop} ${child.x0 + 4 + 10 - 1},${child.y0 + paddingTop} `}
+                        stroke={`${colorScale(child.data.change)}`}
+                        strokeWidth={1}
+                      />
+                    </g>
+                  )}
                 </g>
-              )),
-            )}
-        </g>
-
-        {/* TREE MAP  SECTORS */}
-        <g>
-          {curRoot &&
-            curRoot?.children.map((child, index) => (
-              <g key={index}>
-                <rect
-                  x={child.x0 + paddingOuter}
-                  y={child.y0}
-                  width={child.x1 - child.x0 - paddingOuter * 2}
-                  height={paddingTop}
-                  fill={`${colorScale(child.data.change)}`}
-                  stroke="#22262f"
-                />
-                <text
-                  x={child.x0 + 5}
-                  y={
-                    child.y0 +
-                    fontSize +
-                    Math.floor((paddingTop - fontSize) / 4)
-                  }
-                  className="text-industry"
-                  textAnchor="start"
-                  fill="#f3f3f5"
-                  fontSize={handleFontSizeParent(child)}
-                  fontWeight="600"
-                >
-                  {handleTextParent(child)}
-                </text>
-
-                {handleFontSizeParent(child) > 0 &&  (
-                  <g>
-                    <polygon
-                      points={`${child.x0 + 4},${child.y0 + paddingTop} ${child.x0 + 4 + 10 / 2},${child.y0 + paddingTop + 6} ${child.x0 + 4 + 10},${child.y0 + paddingTop} `}
-                      stroke="#22262f"
-                      transform={`translate(0,0)`}
-                      strokeWidth={1}
-                      fill={`${colorScale(child.data.change)}`}
-                    />
-                    <polyline
-                      points={`${child.x0 + 4 + 1},${child.y0 + paddingTop} ${child.x0 + 4 + 10 - 1},${child.y0 + paddingTop} `}
-                      stroke={`${colorScale(child.data.change)}`}
-                      strokeWidth={1}
-                    />
-                  </g>
-                )}
-              </g>
-            ))}
-        </g>
-      </svg>
+              ))}
+          </g>
+        </svg>
       </Link>
-
     </div>
   );
 };

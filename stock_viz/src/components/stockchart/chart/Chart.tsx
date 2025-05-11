@@ -117,7 +117,13 @@ const Chart = () => {
       indicatorRefSeries,
       setIndicatorRefSeries,
     );
-  }, [selectedIndicators, stockData, chart]);
+  }, [
+    selectedIndicators,
+    stockData,
+    chart,
+    result.isLoading,
+    indicatorRefSeries,
+  ]);
 
   if (result.isLoading) {
     return (

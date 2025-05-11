@@ -4,7 +4,7 @@ import "./globals.css";
 import { Footer, Header, Navbar } from "../components";
 import QueryProvider from "./query-provider";
 import I18nProvider from "./i18n-provider";
-
+import { Suspense } from "react";
 const roboto = Roboto({
   variable: "--font-roboto",
   subsets: ["latin"],
@@ -32,7 +32,9 @@ export default function RootLayout({
           <I18nProvider>
             <Header />
             <Navbar />
-            {children}
+            <Suspense fallback={<div>Loading...</div>}>
+              {children}
+            </Suspense>
             <Footer />
           </I18nProvider>
         </QueryProvider>
