@@ -5,10 +5,10 @@ import OverviewMarketChart from "./OverviewMarketChart";
 import { useQuery } from "@tanstack/react-query";
 import { getMarketOverview } from "@/apis/market.api";
 import { Skeleton } from "@/components/ui/skeleton";
-import { format, subYears,subDays } from "date-fns";
+import { format, subYears,subDays,subMonths } from "date-fns";
 
 const OverviewMarketChartContainer = () => {
-  const today = format(subYears(subDays(new Date(), 1), 1), "yyyy-MM-dd");
+  const today = format(subYears(subMonths(new Date(), 1), 1), "yyyy-MM-dd");
   const result = useQuery({
     queryKey: ["market_overview"],
     queryFn: () => getMarketOverview(today),

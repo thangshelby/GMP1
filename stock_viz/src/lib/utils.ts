@@ -7,20 +7,6 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-const BASE_URL = "http://127.0.0.1:5000/";
-
-export const fetchAPI = async (url: string, option?: RequestInit) => {
-  try {
-    const response = await fetch(`${BASE_URL}${url}`, option);
-
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.log(error);
-    return [];
-  }
-};
-
  const colorScale = scaleQuantile(
   [-1, 1],
   colorsAndRanges.map((color) => color.color),

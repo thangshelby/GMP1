@@ -243,7 +243,7 @@ const OverviewMarketChart = ({
               <div style={{ height: `${100*realTimeVolumeHeight}%` }} className={`bg-blue`}></div>
             </div>
           </div>
-          <span className="text-2xs text-secondary-3 inline-block font-extralight">
+          <span className="text-2xs text-secondary-3 inline-block font-light">
             RealTime <span>Volume</span>
           </span>
         </div>
