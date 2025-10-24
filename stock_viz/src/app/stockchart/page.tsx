@@ -20,7 +20,6 @@ import {
 } from "@/components";
 import { getCompanyMetadata } from "@/apis/compant";
 import { useQuery } from "@tanstack/react-query";
-import SummaryChart from "@/components/pdf/charts/SummaryChart";
 export default function StockChart() {
   const symbol = useSearchParams().get("symbol") || "VCB";
   const [newsVCI, setNews] = useState<CompanyNewsTypeSourceVCI[]>([]);
@@ -62,7 +61,6 @@ export default function StockChart() {
             <CompanyOfficer companyOfficers={officers} />
           </div>
         </div>
-        <SummaryChart symbol={symbol} />
 
         <FinancialReport />
       </div>

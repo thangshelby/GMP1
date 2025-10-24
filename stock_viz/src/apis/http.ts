@@ -1,6 +1,7 @@
 import axios, { AxiosInstance } from "axios";
 
-const baseURL = "http://98.93.94.125:5000";
+// const baseURL = "http://98.93.94.125:5000";
+const baseURL = "http://localhost:5000";
 
 class Http {
   instance: AxiosInstance;
