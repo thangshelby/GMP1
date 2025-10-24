@@ -8,6 +8,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getSymbolReview } from "@/apis/market.api";
 import { getColor as colorScale } from "@/lib/utils";
 import Link from "next/link";
+import { Skeleton } from "../ui/skeleton";
 
 interface TreemapNode {
   name: string;
@@ -78,7 +79,6 @@ const Treemap = () => {
       })
       .round(true)(
       hierarchy(hierarchyData)
-
         .sum((d) => {
           if (d.name.length <= 5) {
             return d.value;
@@ -132,9 +132,9 @@ const Treemap = () => {
   };
 
   return (
-    <div className="h-full w-full rounded-sm border-[1px] border-gray-300 p-2 hover:cursor-pointer">
+    <div className="min-h-auto w-full rounded-sm border border-gray-300 p-2 hover:cursor-pointer">
       {result.isLoading && (
-        <div className="flex h-[200px] items-center justify-center">
+        <div className="flex h-full w-full items-center justify-center">
           <LoadingTable />
         </div>
       )}
@@ -143,7 +143,7 @@ const Treemap = () => {
           {/* TREE MAP SYMBOLS */}
           <g>
             {curRoot &&
-              curRoot?.children.map((child) =>
+              curRoot?.children?.map((child) =>
                 child.children.map((child2, index) => (
                   <g key={index}>
                     <rect
@@ -182,7 +182,7 @@ const Treemap = () => {
           {/* TREE MAP  SECTORS */}
           <g>
             {curRoot &&
-              curRoot?.children.map((child, index) => (
+              curRoot?.children?.map((child, index) => (
                 <g key={index}>
                   <rect
                     x={child.x0 + paddingOuter}
@@ -236,9 +236,5 @@ const Treemap = () => {
 export default Treemap;
 
 function LoadingTable() {
-  return (
-    <div className="flex h-[350px] items-center justify-center">
-      <div className="h-16 w-16 animate-spin rounded-full border-4 border-gray-300 border-t-transparent"></div>
-    </div>
-  );
+  return <Skeleton className="h-full w-full rounded-xs" />;
 }

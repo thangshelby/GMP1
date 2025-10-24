@@ -15,7 +15,7 @@ const CompanySubsidiary = ({
   subsidiaries: CompanySubsidiaryType[];
 }) => {
   return (
-    <div className="w-[40%] rounded-sm border-1 border-white p-1 overflow-hidden">
+    <div className="h-auto w-full overflow-auto rounded-sm border border-white p-1">
       <Table>
         <TableHeader>
           <TableRow>
@@ -29,7 +29,7 @@ const CompanySubsidiary = ({
           </TableRow>
         </TableHeader>
         <TableBody>
-          {subsidiaries.slice(0,7).map((item, index) => (
+          {subsidiaries.slice(0, 7).map((item, index) => (
             <TableRow key={index}>
               <TableCell className="text-primary truncate text-[11px] font-normal">
                 {item.sub_company_name

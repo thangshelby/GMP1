@@ -16,10 +16,11 @@ import {
   CompanyOverview,
   CompanySubsidiary,
   FinancialReport,
+  StockChartSkeleton,
 } from "@/components";
 import { getCompanyMetadata } from "@/apis/compant";
 import { useQuery } from "@tanstack/react-query";
-
+import SummaryChart from "@/components/pdf/charts/SummaryChart";
 export default function StockChart() {
   const symbol = useSearchParams().get("symbol") || "VCB";
   const [newsVCI, setNews] = useState<CompanyNewsTypeSourceVCI[]>([]);
@@ -27,7 +28,6 @@ export default function StockChart() {
   const [subsidiaries, setSubsidiaries] = useState<CompanySubsidiaryType[]>([]);
   const [officers, setOfficers] = useState<CompanyOfficerType[]>([]);
   const [overview, setOverview] = useState<CompanyOverviewType>();
- 
 
   const result = useQuery({
     queryKey: [`company/company_metadata?symbol=${symbol}`],
@@ -42,25 +42,30 @@ export default function StockChart() {
       setSubsidiaries(result.data?.subsidiaries || []);
       setOfficers(result.data?.officers || []);
       setOverview(result.data?.overview[0] || undefined);
-
     }
   }, [result.data, result.isSuccess]);
 
-  return (
-    <div className="flex w-full flex-col items-center justify-center gap-8 bg-[#22262f] p-4 py-12">
-      <div className="flex flex-col space-y-2">
-      <div className="flex w-full flex-row items-end space-x-2">
-          <CompanyOverview companyOverview={overview} />  
-          <CompanySubsidiary subsidiaries={subsidiaries} />
-        </div>
-        <div className="flex w-full flex-row items-start space-x-2">
-          <CompanyOfficer companyOfficers={officers} />
-          <CompanyNews newsVCI={newsVCI} newsTCBS={newsTCBS} />
-        </div>
-      
-      </div>
+  if (result.isLoading) {
+    return <StockChartSkeleton />;
+  }
 
-      <FinancialReport />
+  return (
+    <div className="w-full bg-[#22262f] p-4 py-12">
+      <div className="flex flex-col gap-8 px-20">
+        <div className="flex flex-row gap-2">
+          <div className="flex w-2/3 flex-col items-end gap-2">
+            <CompanyNews newsVCI={newsVCI} newsTCBS={newsTCBS} />
+            <CompanyOverview companyOverview={overview} />
+          </div>
+          <div className="flex w-1/3 flex-col items-start gap-2">
+            <CompanySubsidiary subsidiaries={subsidiaries} />
+            <CompanyOfficer companyOfficers={officers} />
+          </div>
+        </div>
+        <SummaryChart symbol={symbol} />
+
+        <FinancialReport />
+      </div>
     </div>
   );
 }

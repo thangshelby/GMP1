@@ -27,7 +27,7 @@ def get_AI_analyze(symbol,type=None,summary_data=None,table_data=None,final_data
     if cached_data:
         return cached_data.decode('utf-8')
     
-    api_key= os.getenv('GEMINI_API_KEY')
+    api_key= "AIzaSyDYHx33O5kzncMXO4VlHdaXUuQC4VtfzHg"
     genai.configure(api_key=api_key)
 
     # Cấu hình model
@@ -61,6 +61,7 @@ def get_AI_analyze(symbol,type=None,summary_data=None,table_data=None,final_data
         chat_session.history.append({"role": "model", "parts": [model_response]})
         
         redis_client.set(cache_key, model_response, ex=3600)  
+        print(model_response)
         return model_response
     except Exception as e:
         pass
@@ -73,10 +74,10 @@ def find_near_valid_date(date):
         date = date.strftime('%Y-%m-%d')
     return date
 
-def convert_timestamp_to_datestring(df):
+def convert_timestamp_to_datestring(df, dateType='%Y-%m-%d'):
     df = df.reset_index(drop=True)
     df['time'] = pd.to_datetime(df['time'])
-    df['time'] = df['time'].dt.strftime('%Y-%m-%d')
+    df['time'] = df['time'].dt.strftime(dateType)
     return df
 
 def prepare_data_for_market_review():
@@ -109,7 +110,7 @@ def prepare_data_for_market_review():
                 # Get the last row values
                 last_row = company_overview.tail(1)
                 short_name = last_row['short_name'].iloc[0].split('(')[0]
-                
+
                 curStock['name'] = short_name
                 curStock['sector'] = last_row['icb_name2'].iloc[0]
                 

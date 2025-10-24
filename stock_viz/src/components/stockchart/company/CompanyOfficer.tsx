@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import { useEffect, useState } from "react";
 import {
   Table,
@@ -34,7 +34,7 @@ const CompanyOfficer = ({
     }
   }, [workingType, companyOfficers, setFilteredOfficers]);
   return (
-    <div className="w-[60%] rounded-sm border-1 border-white p-1">
+    <div className="w-full flex-1 overflow-auto rounded-sm border border-white p-1">
       <Table>
         <TableHeader>
           <TableRow>

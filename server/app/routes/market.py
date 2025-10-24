@@ -1,16 +1,11 @@
 import json
 from datetime import datetime, timedelta
-from math import floor
-
 import pandas as pd
 import pandas_ta as ta
 import redis
 from flask import Blueprint, request
 from vnstock import Vnstock
-
 from app.constant.constant import hnx, hose, upcom
-from app.database.model import DbModel
-from app.utils.stock import analyze_stock_signal
 from app.utils.utils import convert_timestamp_to_datestring, find_near_valid_date
 
 redis_client = redis.Redis(host='localhost', port=6379, db=0)
@@ -38,7 +33,7 @@ def fetch_market_overview():
         df = stock.quote.history(
             symbol=symbol, start=start, end=end, interval=interval)
         df = df.dropna()
-        df = convert_timestamp_to_datestring(df)
+        df = convert_timestamp_to_datestring(df, '%Y-%m-%d-%H-%M')
         return df
 
     hose_market = fetch_market('VNINDEX', date, date, '5m')
@@ -66,7 +61,7 @@ def fetch_market_overview():
         'hnx_close': hnx_close,
         'upcom_close': upcom_close,
     }
-
+    
     redis_client.setex(cache_key, 24*60*60*7, json.dumps(res))
     return res
 

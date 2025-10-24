@@ -1,7 +1,6 @@
 import os
 
 import pandas as pd
-import yfinance as yf
 from vnstock import Vnstock
 
 

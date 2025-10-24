@@ -32,9 +32,7 @@ export default function RootLayout({
           <I18nProvider>
             <Header />
             <Navbar />
-            <Suspense fallback={<div>Loading...</div>}>
-              {children}
-            </Suspense>
+            <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
             <Footer />
           </I18nProvider>
         </QueryProvider>

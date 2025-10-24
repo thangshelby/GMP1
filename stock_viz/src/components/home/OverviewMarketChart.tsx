@@ -23,19 +23,18 @@ const OverviewMarketChart = ({
   const chartRef = useRef<SVGSVGElement | null>(null);
   const [realTimeVolumeHeight, setRealTimeVolumeHeight] = React.useState(0);
   useEffect(() => {
-    const totalVolume =
-      data.slice(0, data.length - 1).reduce((acc, item) => {
-        return acc + item.volume!;
-      }, 0) ;
-
+    const totalVolume = data.slice(0, data.length - 1).reduce((acc, item) => {
+      return acc + item.volume!;
+    }, 0);
 
     let realTimeVolumeHeight =
-      data[data.length - 1].volume! / ((totalVolume/data.length-1)*2);
+      data[data.length - 1].volume! / ((totalVolume / data.length - 1) * 2);
     if (realTimeVolumeHeight > 1) {
-      realTimeVolumeHeight = realTimeVolumeHeight - Math.floor(realTimeVolumeHeight);
+      realTimeVolumeHeight =
+        realTimeVolumeHeight - Math.floor(realTimeVolumeHeight);
     }
     setRealTimeVolumeHeight(realTimeVolumeHeight);
-  }, [data])
+  }, [data]);
   const margin = { top: 20, right: 50, bottom: 10, left: 0 };
   useEffect(() => {
     if (!chartRef.current) return;
@@ -237,10 +236,13 @@ const OverviewMarketChart = ({
             </div>
             <div className="h-[170px] w-2 border-1 border-[#929cb3]">
               <div
-                style={{ height: `${100-(100*realTimeVolumeHeight)}%` }}
+                style={{ height: `${100 - 100 * realTimeVolumeHeight}%` }}
                 className={`bg-transparent`}
               ></div>
-              <div style={{ height: `${100*realTimeVolumeHeight}%` }} className={`bg-blue`}></div>
+              <div
+                style={{ height: `${100 * realTimeVolumeHeight}%` }}
+                className={`bg-blue`}
+              ></div>
             </div>
           </div>
           <span className="text-2xs text-secondary-3 inline-block font-light">

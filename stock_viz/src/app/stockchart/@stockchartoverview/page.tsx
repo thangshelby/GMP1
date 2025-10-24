@@ -1,8 +1,9 @@
 "use client";
-import { useSearchParams } from "next/navigation"
+import { useSearchParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { getStockOverviewInformation } from "@/apis/stock.api";
 import { subYears, format } from "date-fns";
+import { StockOverviewSkeleton } from "@/components/ui/skeleton";
 
 export default function StockChartOverview() {
   const symbol = useSearchParams().get("symbol");
@@ -14,9 +15,14 @@ export default function StockChartOverview() {
     refetchOnWindowFocus: false,
   });
 
+  // Hiển thị skeleton khi đang loading
+  if (result.isLoading) {
+    return <StockOverviewSkeleton />;
+  }
+
   if (result.isSuccess) {
     return (
-      <div className="flex flex-row items-center justify-between bg-[#181b22] px-[2rem] py-[1rem]">
+      <div className="flex flex-row items-center justify-between bg-[#181b22] px-8 py-4">
         {/* HEADER 1 */}
         <div className="flex flex-col">
           <div className="flex flex-row items-end gap-x-[0.8rem]">
@@ -74,6 +80,9 @@ export default function StockChartOverview() {
       </div>
     );
   }
+
+  // Hiển thị skeleton nếu có lỗi
+  return <StockOverviewSkeleton />;
 }
 
 const stockTabs = [

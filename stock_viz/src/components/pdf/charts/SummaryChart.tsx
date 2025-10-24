@@ -54,11 +54,12 @@ const SummaryChart = ({ symbol }: { symbol: string }) => {
     queryKey: ["chartAssetAndEquity", symbol],
     queryFn: () => getFinancialChartAssetEquity(symbol),
   });
-
+  console.log(data);
   React.useEffect(() => {
-    if (!data.isSuccess) return;
-    setChartAssetAndEquity(data.data.res1);
-    setChartLiabilitesAndEquity(data.data.res2);
+    if (!data) return;
+    console.log(data.data);
+    setChartAssetAndEquity(data.res1);
+    setChartLiabilitesAndEquity(data.res2);
   }, [data]);
 
   React.useEffect(() => {

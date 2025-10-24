@@ -14,34 +14,31 @@ import FinancialSummary from "./pdf/FinancialSummary";
 import PDFPage3 from "./pdf/PDFPage3";
 import PDFPage4 from "./pdf/PDFPage4";
 
-import FinancialReport from "./stockchart/financialreport/FinancialReport";
+import FinancialReport from "./stockchart/FinancialReport/FinancialReport";
 
 import CompanyNews from "./stockchart/company/CompanyNews";
 import CompanyOverview from "./stockchart/company/CompanyOverview";
 import CompanySubsidiary from "./stockchart/company/CompanySubsidiary";
 import CompanyOfficer from "./stockchart/company/CompanyOfficer";
+import StockChartSkeleton from "./stockchart/StockChartSkeleton";
 
 export {
   Header,
   Navbar,
   Footer,
-
   StockTable,
   Treemap,
-  
   Chart,
   ChartControl,
   ChartInformation,
-
   BusinessSummary,
   FinancialSummary,
   PDFPage3,
   PDFPage4,
-
   FinancialReport,
-
   CompanyNews,
   CompanyOverview,
   CompanySubsidiary,
   CompanyOfficer,
+  StockChartSkeleton,
 };

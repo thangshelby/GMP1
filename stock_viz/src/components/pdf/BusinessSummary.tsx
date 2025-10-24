@@ -7,7 +7,7 @@ import { usePdfStore } from "@/store";
 import { formatNumber } from "@/constants";
 import { useQuery } from "@tanstack/react-query";
 import { getBusinessReport } from "@/apis/report";
-const BusinessSummary = () => {
+export default function BusinessSummary() {
   const { businessData, setBusinessData } = usePdfStore();
   const symbol = useSearchParams().get("symbol") || "VCB";
   const start_date = format(subYears(new Date(), 2), "yyyy-MM-dd");
@@ -41,7 +41,7 @@ const BusinessSummary = () => {
           </div>
 
           {/* Business Summary */}
-          <div className="border-blue rounded border-t-[2px] bg-white">
+          <div className="border-blue rounded border-t-2 bg-white">
             <h2 className="border-b-gray text-blue border-dashed pb-1 text-xs font-medium uppercase">
               Business Summary
             </h2>
@@ -52,7 +52,7 @@ const BusinessSummary = () => {
 
           {/* Charts Section */}
           <div className="flex flex-row justify-between space-x-6">
-            <div className="border-t-blue w-full flex-col rounded border-t-[2px]">
+            <div className="border-t-blue w-full flex-col rounded border-t-2">
               <h2 className="text-gray mb-2 text-xs font-semibold">6 Months</h2>
 
               <div className="w-full">
@@ -60,7 +60,7 @@ const BusinessSummary = () => {
               </div>
             </div>
 
-            <div className="border-t-blue w-full flex-col rounded border-t-[2px]">
+            <div className="border-t-blue w-full flex-col rounded border-t-2">
               <h2 className="text-gray mb-2 text-xs font-semibold">5 Years</h2>
               <div className="w-full">
                 <LineChart duration="5 Years" />
@@ -97,9 +97,7 @@ const BusinessSummary = () => {
       </div>
     )
   );
-};
-
-export default BusinessSummary;
+}
 
 const renderTitle = (title: string) => {
   const res = title
@@ -118,8 +116,8 @@ const RenderCategory = ({
   title: string;
 }) => {
   return (
-    <div className="border-t-blue flex-1 rounded border-t-[2px] bg-white">
-      <h2 className="border-b-gray text-blue border-b-[1px] border-dashed py-[2px] text-xs font-medium uppercase">
+    <div className="border-t-blue flex-1 rounded border-t-2 bg-white">
+      <h2 className="border-b-gray text-blue border-b-2 border-dashed py-[2px] text-xs font-medium uppercase">
         {title}
       </h2>
       <ul className="mt-2 flex flex-col">

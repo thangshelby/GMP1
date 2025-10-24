@@ -61,6 +61,7 @@ const Chart = () => {
     const chart = createChart(chartContainerRef.current!, {
       ...mainChartContainerOptions,
       width: chartContainerRef.current.clientWidth,
+      height: chartContainerRef.current.clientHeight,
     });
 
     setChart(chart);
@@ -124,21 +125,20 @@ const Chart = () => {
     result.isLoading,
     indicatorRefSeries,
   ]);
-
-  if (result.isLoading) {
-    return (
-      <div className="flex h-[450px] w-full items-center justify-center">
-        <HashLoader color="#2196F3" size={150} />
-      </div>
-    );
-  }
+  console.log(result.isLoading);
   return (
     <div
-      style={{ display: result.isLoading ? "none" : "block" }}
-      className="h-full w-full"
+      style={{ display: result.isLoading ? "block" : "block" }}
+      className="h-[450px] w-full xl:h-[500px] 2xl:h-[550px]"
       id="chartContainer"
       ref={chartContainerRef}
-    />
+    >
+      {result.isLoading && (
+        <div className="flex h-full w-full items-center justify-center">
+          <HashLoader color="#2196F3" size={150} />
+        </div>
+      )}
+    </div>
   );
 };
 

@@ -1,20 +1,20 @@
-import axios,{AxiosInstance} from 'axios';
+import axios, { AxiosInstance } from "axios";
 
-const baseURL = 'http://localhost:5000';
+const baseURL = "http://98.93.94.125:5000";
 
-class Http{
-  instance:AxiosInstance;
-  constructor(){
+class Http {
+  instance: AxiosInstance;
+  constructor() {
     this.instance = axios.create({
       baseURL,
-      timeout:30000,
-      headers:{
-        'Content-Type':'application/json'}
-    })
-   }
+      timeout: 30000,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  }
 }
 
-const http=new Http().instance;
+const http = new Http().instance;
 
-export default  http;
-
+export default http;

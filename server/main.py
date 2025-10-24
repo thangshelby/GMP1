@@ -1,14 +1,22 @@
+# import google.generativeai as genai
+# api_key= "AIzaSyDYHx33O5kzncMXO4VlHdaXUuQC4VtfzHg"
+# genai.configure(api_key=api_key)
+
+# model = genai.GenerativeModel(model_name="gemini-2.0-flash-exp")
+
+# chat_session = model.start_chat(history=[])
+
+# response = chat_session.send_message("Hello, how are you?")
+# print(response.text)
+
+from vnstock import Vnstock
 import pandas as pd
-import numpy as np
+stock = Vnstock().stock(symbol='VCB', source='VCI')
+df= stock.quote.history(symbol='VCB', start='2024-01-01', end='2024-02-01', interval='1D')
 
-# Tạo DataFrame với 10 hàng và 5 cột, một số ô chứa giá trị NaN
-financial_data = pd.DataFrame({
-    'Revenue':    [1000, 1500, np.nan, 1700, 2000, 1800, np.nan, 1600, 2100, 1900],
-    'Expenses':   [800, 950, 1000, np.nan, 1100, 1050, 990, np.nan, 1150, 1080],
-    'Profit':     [200, 550, np.nan, 700, 900, 750, np.nan, 600, 950, 820],
-    'Assets':     [5000, np.nan, 5100, 5300, np.nan, 5500, 5400, 5200, np.nan, 5600],
-    'Liabilities':[3000, 3200, np.nan, 3100, 3300, np.nan, 3400, 3150, 3350, np.nan]
-})
+df= df.dropna()
+df = df.reset_index(drop=True)
+df['time'] = pd.to_datetime(df['time'])
+df['time'] = df['time'].dt.strftime('%Y-%m-%d-%H-%M')
 
-
-financial_data.to_csv('', index=False)
+print(df)

@@ -25,7 +25,7 @@ const StockTable = ({ exchange }: { exchange: string }) => {
     refetchOnWindowFocus: false,
   });
   return (
-    <div className="border-secondary-3 relative z-20 w-full rounded-sm border-1">
+    <div className="border-secondary-3 relative z-20 w-full rounded-sm border">
       <Table className="">
         <TableHeader className="border-b-0">
           <TableRow className="text-secondary border-b-0 text-xs font-extralight">
@@ -64,7 +64,7 @@ const StockTable = ({ exchange }: { exchange: string }) => {
 
 const StockTableRowSkeleton = () => {
   return (
-    <TableRow className="group border-b-0 text-xs hover:cursor-pointer hover:bg-[#353945]">
+    <TableRow className="group hover:bg-button border-b-0 text-xs hover:cursor-pointer">
       <TableCell className="text-primary px-2 py-[1px] text-start font-medium hover:underline">
         <Skeleton className="h-4 w-16" />
       </TableCell>
