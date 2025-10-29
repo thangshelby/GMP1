@@ -106,7 +106,7 @@ const Header = () => {
   );
 
   return (
-    <div className="flex flex-row items-center justify-between p-2">
+    <div className="flex flex-row items-center justify-between p-2 xl:p-4">
       <div className="flex flex-1 flex-row items-center gap-4">
         <Logo />
 

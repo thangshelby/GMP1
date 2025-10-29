@@ -27,7 +27,7 @@ const Navbar = () => {
             <Link
               href={category.link}
               key={category.title}
-              className={`${pathName == category.link && "bg-[#62697d]"} py-1 hover:cursor-pointer hover:bg-[#62697d]`}
+              className={`${pathName == category.link && "bg-[#62697d]"} py-1 hover:cursor-pointer hover:bg-[#62697d] xl:py-2`}
             >
               <p className="px-2 text-sm font-semibold text-white">
                 {t(`Navbar.NavbarLeft.${category.title}`)}
@@ -44,12 +44,8 @@ const Navbar = () => {
                 const date = new Date();
                 return `${t(`Navbar.NavbarRight.Day.${date.getDay()}`)} ${t(
                   `Navbar.NavbarRight.Month.${date.getMonth() + 1}`,
-                )} ${date.getDate()} ${
-                  date.getFullYear() - 1
-                } 
-                ${
-                  date.getHours() < 12 ? " AM" : " PM"
-                }`;
+                )} ${date.getDate()} ${date.getFullYear() - 1} 
+                ${date.getHours() < 12 ? " AM" : " PM"}`;
               })()}
             </p>
             <div className="flex flex-row items-center gap-1">

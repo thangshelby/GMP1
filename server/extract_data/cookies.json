@@ -1,0 +1,39 @@
+[
+  {
+    "domain": "wichart.vn",
+    "hostOnly": true,
+    "httpOnly": false,
+    "name": "refresh-wtoken",
+    "path": "/",
+    "sameSite": "no_restriction",
+    "secure": true,
+    "session": true,
+    "storeId": null,
+    "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjo3MTg0OCwibmFtZSI6Ik5nw7QgTmd1eeG7hW4gxJDhu6ljIFRo4bqvbmciLCJwaG9uZSI6bnVsbCwiZW1haWwiOiJuLm5kdWN0aGFuZ2dAZ21haWwuY29tIiwidmFpdHJvIjpudWxsLCJlbWFpbF92ZXJpZmllZF9hdCI6bnVsbCwiZ29vZ2xlX2lkIjoiMTE3MjAzODA0MTY0NzA3MzY1NDcyIiwiZmFjZWJvb2tfaWQiOm51bGwsImJpcnRoX2RheSI6bnVsbH0sImlhdCI6MTc2MTcwMzkzNSwiZXhwIjoxNzYyMzA4NzM1fQ.Rr3CNvNfbikbSnWQmoRM1KhyeocFwmcHYaMvkxJgyZM"
+  },
+  {
+    "domain": "wichart.vn",
+    "expirationDate": 1793239935.156606,
+    "hostOnly": true,
+    "httpOnly": true,
+    "name": "deviceToken",
+    "path": "/",
+    "sameSite": "no_restriction",
+    "secure": true,
+    "session": false,
+    "storeId": null,
+    "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVJRCI6IjkwOGRhZTE3OWJmNjdlMzIwYTIzMmZhYzkwMTA4NjYyIiwiZXhwaXJlcyI6IjIwMjYtMTAtMjlUMDI6MTI6MTUuNzY4WiIsImlhdCI6MTc2MTcwMzkzNX0.QMe6IKoU74jVnLuVZ7r7MiEZj_USnt9Y71gSwnbjcsE"
+  },
+  {
+    "domain": "wichart.vn",
+    "hostOnly": true,
+    "httpOnly": false,
+    "name": "wtoken",
+    "path": "/",
+    "sameSite": "no_restriction",
+    "secure": true,
+    "session": true,
+    "storeId": null,
+    "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjo3MTg0OCwibmFtZSI6Ik5nw7QgTmd1eeG7hW4gxJDhu6ljIFRo4bqvbmciLCJwaG9uZSI6bnVsbCwiZW1haWwiOiJuLm5kdWN0aGFuZ2dAZ21haWwuY29tIiwidmFpdHJvIjpudWxsLCJlbWFpbF92ZXJpZmllZF9hdCI6bnVsbCwiZ29vZ2xlX2lkIjoiMTE3MjAzODA0MTY0NzA3MzY1NDcyIiwiZmFjZWJvb2tfaWQiOm51bGwsImJpcnRoX2RheSI6bnVsbH0sImlhdCI6MTc2MTcwMzkzNSwiZXhwIjoxNzYxNzA3NTM1fQ.wc1I9LQcMGLtNK6EoZHVQwWLM1TuW_O9vqkweiz_zto"
+  }
+]

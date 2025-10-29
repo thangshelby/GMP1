@@ -18,8 +18,16 @@ import {
   HierarchyRectangularNode,
 } from "d3";
 import { useSearchParams } from "next/navigation";
-import { handleTextIndustry, handleTextFontSizeSymbol, handleFontSizeIndustry, paddingOuter, paddingTop, fontSize } from "@/constants/treeMap";
+import {
+  handleTextIndustry,
+  handleTextFontSizeSymbol,
+  handleFontSizeIndustry,
+  paddingOuter,
+  paddingTop,
+  fontSize,
+} from "@/constants/treeMap";
 import LoadingTable from "@/components/ui/Loading";
+
 const Treemap = () => {
   const date = format(subYears(new Date(), 1), "yyyy-MM-dd");
   const [symbol, setSymbol] =
@@ -38,8 +46,6 @@ const Treemap = () => {
     queryFn: () => getSymbolReview(date, exchange, timeframe),
     refetchOnWindowFocus: false,
   });
-
-
 
   //CREATE DATA FOR TREE MAP
   const treeData = useMemo(() => {
@@ -174,7 +180,7 @@ const Treemap = () => {
       result.isError === true
     )
       return;
- 
+
     if (!treeData || !treeData.root) return;
 
     const { root } = treeData;
@@ -235,7 +241,9 @@ const Treemap = () => {
               );
 
               // Draw symbol text if large enough
-              const fontSize = handleTextFontSizeSymbol(symbol as unknown as NodeType);
+              const fontSize = handleTextFontSizeSymbol(
+                symbol as unknown as NodeType,
+              );
 
               if (fontSize !== "0") {
                 ctx.fillStyle = "white";
@@ -376,7 +384,7 @@ const Treemap = () => {
   ]);
 
   return (
-    <div className="flex w-full flex-col items-center gap-6 p-4 overflow-hidden">
+    <div className="flex w-full flex-col items-center gap-6 overflow-hidden p-4">
       {result.isLoading && (
         <div className="flex h-[200px] w-full items-center justify-center">
           <LoadingTable />
@@ -385,7 +393,7 @@ const Treemap = () => {
 
       <canvas
         ref={canvasRef}
-        className="w-full "
+        className="w-full"
         style={{ aspectRatio: "2/1" }}
       />
 
@@ -435,4 +443,3 @@ const warning = [
   "Double‑click a ticker to display detailed information in a new window.",
   "Hover mouse cursor over a ticker to see its main competitors in a stacked view with a 3-month history graph.",
 ];
-

@@ -6,7 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getNews } from "@/apis/news.api";
 import { Skeleton } from "@/components/ui/skeleton";
 import Image from "next/image";
-export default function News () {
+export default function News() {
   const [selectedCategory, setSelectedCategory] =
     React.useState<keyof typeof newsCateories>("stock");
   const [selectedSubCategory, setSelectedSubCategory] = React.useState("share");
@@ -40,44 +40,49 @@ export default function News () {
           </div>
         ))}
       </div>
-      <div className="flex flex-row items-center justify-start px-10">
-        <span className="text-secondary-2 text-xs font-bold">View By</span>
+      <div className="mx-auto mt-4 flex max-w-7xl flex-col gap-4">
+        <div className="flex flex-row items-center justify-start px-10">
+          <span className="text-secondary-2 text-xs font-bold">View By</span>
 
-        <div className="flex flex-row items-center pl-4">
-          {Object.keys(newsCateories[selectedCategory]).map((subCategory) => (
-            <div
-              className={`${subCategory == selectedSubCategory ? "border-primary bg-button border-[1px] text-white" : "text-secondary font-medium"} rounded-sm px-2 py-[2px] text-sm hover:cursor-pointer`}
-              key={subCategory}
-              onClick={() => setSelectedSubCategory(subCategory)}
-            >
-              {subCategory
-                .split("_")
-                .join(" ")
-                .replace(/^\w/, (c) => c.toUpperCase())}
-            </div>
-          ))}
+          <div className="flex flex-row items-center pl-4">
+            {Object.keys(newsCateories[selectedCategory]).map((subCategory) => (
+              <div
+                className={`${subCategory == selectedSubCategory ? "border-primary bg-button border-[1px] text-white" : "text-secondary font-medium"} rounded-sm px-2 py-[2px] text-sm hover:cursor-pointer`}
+                key={subCategory}
+                onClick={() => setSelectedSubCategory(subCategory)}
+              >
+                {subCategory
+                  .split("_")
+                  .join(" ")
+                  .replace(/^\w/, (c) => c.toUpperCase())}
+              </div>
+            ))}
+          </div>
         </div>
+
+        {result.isLoading && (
+          <div className="flex w-[80%] flex-col px-6">
+            {Array.from({ length: 10 }).map((_, index) => (
+              <NewsItemSkeleton key={index} />
+            ))}
+          </div>
+        )}
+
+        {result.isSuccess && (
+          <div className="flex w-[80%] flex-col px-6">
+            {result.data.map((item: NewsItemProp, index: number) => (
+              <NewsItem
+                item={item}
+                id={index}
+                key={item.title + index.toString()}
+              />
+            ))}
+          </div>
+        )}
       </div>
-
-      {result.isLoading && (
-        <div className="flex w-[80%] flex-col px-6">
-          {Array.from({ length: 10 }).map((_, index) => (
-            <NewsItemSkeleton key={index} />
-          ))}
-        </div>
-      )}
-
-      {result.isSuccess && (
-        <div className="flex w-[80%] flex-col px-6">
-          {result.data.map((item: NewsItemProp, index: number) => (
-            <NewsItem item={item} id={index} key={item.title + index.toString()} />
-          ))}
-        </div>
-      )}
     </div>
   );
-};
-
+}
 
 const NewsItemSkeleton = () => {
   return (
@@ -86,21 +91,19 @@ const NewsItemSkeleton = () => {
         <Skeleton className="h-6 w-1/2" />
         <Skeleton className="h-6 w-full" />
         <Skeleton className="h-6 w-1/4" />
-
       </div>
       <Skeleton className="h-24 w-32 rounded-lg" />
     </div>
   );
 };
 
-
-const NewsItem = ({item,id}:{item:NewsItemProp,id:number}) => {
+const NewsItem = ({ item, id }: { item: NewsItemProp; id: number }) => {
   return (
     <div
       onClick={() => {
         window.open(item.link, "_blank");
       }}
-      key={item.title+ id.toString()}
+      key={item.title + id.toString()}
       className="border-b-secondary flex flex-row justify-between border-b-1 p-2 hover:cursor-pointer"
     >
       <div className="flex w-[70%] flex-col gap-1">
@@ -116,10 +119,12 @@ const NewsItem = ({item,id}:{item:NewsItemProp,id:number}) => {
           {format(new Date(item.public_date), "MMMM dd, yyyy")}
         </span>
       </div>
-      <Image className="h-24 w-32 rounded-lg" src={item.img_src} alt={item.title} style={{
-        width: "auto",
-        height: "100%",
-      }} />
+      <img
+        className="h-24 w-32 rounded-lg"
+        src={item.img_src}
+        alt={item.title}
+        loading="lazy"
+      />
     </div>
   );
 };

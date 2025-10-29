@@ -18,8 +18,10 @@ const OverviewIndicatorMarket = () => {
         ? Array.from({ length: 4 }, (_, index) => (
             <div
               key={index}
-              className="border-secondary-2 h-14 w-[22%] flex-col items-center justify-center gap-1 rounded-md border p-2"
-            ></div>
+              className="border-secondary-2 flex h-14 w-[22%] items-center justify-center gap-1 rounded-md border p-2"
+            >
+              <div className="border-secondary-2 inline-block h-8 w-8 animate-spin rounded-full border-2 border-t-transparent"></div>
+            </div>
           ))
         : Object.keys(result.data).map((categoryKey) => {
             return renderOverview(categoryKey, result.data[categoryKey]);

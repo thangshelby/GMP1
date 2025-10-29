@@ -1,6 +1,7 @@
 import axios, { AxiosInstance } from "axios";
 
-const baseURL = "https://thangshelby.duckdns.org";
+// const baseURL = "https://thangshelby.duckdns.org";
+const baseURL = "http://13.229.219.28:5000";
 // const baseURL = "http://localhost:5000";
 
 class Http {
