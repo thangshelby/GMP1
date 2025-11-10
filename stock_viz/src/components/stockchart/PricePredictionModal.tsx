@@ -98,13 +98,13 @@ const PricePredictionModal: React.FC<PricePredictionModalProps> = ({
   // const holdPercent = (analystData.hold / totalAnalysts) * 100;
 
   // Calculate overall rating (0-100 scale)
-  const rating =
-    ((analystData.strongBuy * 100 +
-      analystData.buy * 75 +
-      analystData.hold * 50 +
-      analystData.sell * 25) /
-      totalAnalysts) *
-    1;
+  // const rating =
+  //   ((analystData.strongBuy * 100 +
+  //     analystData.buy * 75 +
+  //     analystData.hold * 50 +
+  //     analystData.sell * 25) /
+  //     totalAnalysts) *
+  //   1;
 
   // Calculate gauge angle (-90 to 90 degrees, where -90 is left, 0 is top, 90 is right)
   // const gaugeAngle = (rating / 100) * 180 - 90;
