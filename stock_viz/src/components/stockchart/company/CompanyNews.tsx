@@ -15,7 +15,13 @@ const CompanyNews = ({
   newsTCBS: CompanyNewsTypeSourceTCBS[];
   newsWichart: CompanyNewsTypeSourceWichart[];
 }) => {
-  console.log(typeof newsWichart, newsWichart, newsWichart.length);
+  console.log(
+    typeof newsWichart,
+    newsWichart,
+    newsWichart.length,
+    newsTCBS,
+    newsVCI,
+  );
   return (
     <div className="flex w-full flex-col rounded-sm border border-white bg-[#1c2331] p-1">
       {newsWichart.map((item, index) => (

@@ -26,34 +26,34 @@ interface PricePredictionModalProps {
 }
 
 // Mock data - trong thực tế bạn sẽ lấy từ API
-const generateMockData = () => {
-  const months = [
-    "Jan '25",
-    "Feb '25",
-    "Mar '25",
-    "Apr '25",
-    "May '25",
-    "Jun '25",
-    "Jul '25",
-    "Aug '25",
-    "Sep '25",
-    "Oct '25",
-    "Nov '25",
-    "Dec '25",
-    "Jan '26",
-  ];
+// const generateMockData = () => {
+//   const months = [
+//     "Jan '25",
+//     "Feb '25",
+//     "Mar '25",
+//     "Apr '25",
+//     "May '25",
+//     "Jun '25",
+//     "Jul '25",
+//     "Aug '25",
+//     "Sep '25",
+//     "Oct '25",
+//     "Nov '25",
+//     "Dec '25",
+//     "Jan '26",
+//   ];
 
-  return months.map((month, index) => {
-    const basePrice = 140 + index * 5;
-    return {
-      month,
-      current: index < 6 ? basePrice + Math.random() * 20 : null,
-      avgForecast: index >= 5 ? basePrice + 40 : null,
-      minForecast: index >= 5 ? basePrice - 20 : null,
-      maxForecast: index >= 5 ? basePrice + 100 : null,
-    };
-  });
-};
+//   return months.map((month, index) => {
+//     const basePrice = 140 + index * 5;
+//     return {
+//       month,
+//       current: index < 6 ? basePrice + Math.random() * 20 : null,
+//       avgForecast: index >= 5 ? basePrice + 40 : null,
+//       minForecast: index >= 5 ? basePrice - 20 : null,
+//       maxForecast: index >= 5 ? basePrice + 100 : null,
+//     };
+//   });
+// };
 
 const PricePredictionModal: React.FC<PricePredictionModalProps> = ({
   isOpen,
@@ -93,9 +93,9 @@ const PricePredictionModal: React.FC<PricePredictionModalProps> = ({
     analystData.sell +
     analystData.strongSell;
 
-  const strongBuyPercent = (analystData.strongBuy / totalAnalysts) * 100;
-  const buyPercent = (analystData.buy / totalAnalysts) * 100;
-  const holdPercent = (analystData.hold / totalAnalysts) * 100;
+  // const strongBuyPercent = (analystData.strongBuy / totalAnalysts) * 100;
+  // const buyPercent = (analystData.buy / totalAnalysts) * 100;
+  // const holdPercent = (analystData.hold / totalAnalysts) * 100;
 
   // Calculate overall rating (0-100 scale)
   const rating =
@@ -107,7 +107,7 @@ const PricePredictionModal: React.FC<PricePredictionModalProps> = ({
     1;
 
   // Calculate gauge angle (-90 to 90 degrees, where -90 is left, 0 is top, 90 is right)
-  const gaugeAngle = (rating / 100) * 180 - 90;
+  // const gaugeAngle = (rating / 100) * 180 - 90;
 
   // // Price forecast data
   // const minForecast = 165.0;
