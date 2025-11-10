@@ -18,8 +18,19 @@ import {
   FinancialReport,
   StockChartSkeleton,
 } from "@/components";
-import { getCompanyMetadata } from "@/apis/compant";
+import { getCompanyMetadata, getCompanyNewsWichart } from "@/apis/compant";
 import { useQuery } from "@tanstack/react-query";
+
+interface CompanyMetadataType {
+  news: {
+    news_vci: CompanyNewsTypeSourceVCI[];
+    news_tcbs: CompanyNewsTypeSourceTCBS[];
+  };
+  subsidiaries: CompanySubsidiaryType[];
+  officers: CompanyOfficerType[];
+  overview: CompanyOverviewType[];
+}
+
 export default function StockChart() {
   const symbol = useSearchParams().get("symbol") || "VCB";
   const [newsVCI, setNews] = useState<CompanyNewsTypeSourceVCI[]>([]);
@@ -28,23 +39,36 @@ export default function StockChart() {
   const [officers, setOfficers] = useState<CompanyOfficerType[]>([]);
   const [overview, setOverview] = useState<CompanyOverviewType>();
 
-  const result = useQuery({
+  const result = useQuery<CompanyMetadataType>({
     queryKey: [`company/company_metadata?symbol=${symbol}`],
-    queryFn: () => getCompanyMetadata(symbol),
+    queryFn: async () => {
+      const response = await getCompanyMetadata(symbol);
+      return response;
+    },
     refetchOnWindowFocus: false,
   });
 
+  const newsWichart = useQuery({
+    queryKey: [`company/company_news_wichart?symbol=${symbol}`],
+    queryFn: async () => {
+      const response = await getCompanyNewsWichart(symbol);
+      return response;
+    },
+    refetchOnWindowFocus: false,
+  });
+  console.log(newsWichart.data);
+
   useEffect(() => {
-    if (result.isSuccess) {
-      setNews(result.data.news?.news_vci || []);
-      setNewsTCBS(result.data?.news?.news_tcbs || []);
-      setSubsidiaries(result.data?.subsidiaries || []);
-      setOfficers(result.data?.officers || []);
-      setOverview(result.data?.overview[0] || undefined);
+    if (result.isSuccess && result.data) {
+      setNews(result.data.news.news_vci || []);
+      setNewsTCBS(result.data.news.news_tcbs || []);
+      setSubsidiaries(result.data.subsidiaries || []);
+      setOfficers(result.data.officers || []);
+      setOverview(result.data.overview?.[0] || undefined);
     }
   }, [result.data, result.isSuccess]);
 
-  if (result.isLoading) {
+  if (result.isLoading || !newsWichart.data) {
     return <StockChartSkeleton />;
   }
 
@@ -53,7 +77,11 @@ export default function StockChart() {
       <div className="flex flex-col gap-8 px-20">
         <div className="flex flex-row gap-2">
           <div className="flex w-2/3 flex-col items-end gap-2">
-            <CompanyNews newsVCI={newsVCI} newsTCBS={newsTCBS} />
+            <CompanyNews
+              newsVCI={newsVCI}
+              newsTCBS={newsTCBS}
+              newsWichart={newsWichart.data.news}
+            />
             <CompanyOverview companyOverview={overview} />
           </div>
           <div className="flex w-1/3 flex-col items-start gap-2">

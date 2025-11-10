@@ -8,7 +8,7 @@ export interface ReviewStockType {
   sector: string;
   industry: string;
   market_cap: number;
-  exchange: string
+  exchange: string;
 }
 
 export interface symbolsSearchType {
@@ -189,6 +189,28 @@ export interface CompanyNewsTypeSourceTCBS {
   rsi: number;
   source: string;
   title: string;
+}
+
+export interface CompanyNewsTypeSourceWichart {
+  Close: number; // 55.451
+  Date: string; // "2024-01-02"
+  High: number; // 55.5104
+  Low: number; // 54.5808
+  Market: string; // "HSX"
+  Open: number; // 55.0456
+  Ticker: string; // "VCB"
+  Volume: number; // 1785800
+  datepost: string; // "1/2/2024"
+  lead1_close: number; // 56.1151
+  lead1_date: string; // "1/3/2024"
+  pct_inday: string; // "0.7%"
+  pct_lead1: string; // "1%"
+  pct_prev5: string; // "1%"
+  prev5_close: number; // 54.9861
+  prev5_date: string; // "12/26/2023"
+  sentiment: number | null; // NaN (use null for invalid number)
+  sentiment_raw: string; // "positive"
+  title: string; // "Vàng nhẫn đem lại mức lợi nhuận 8 triệu đồng/lượng trong 2023, cao hơn vàng miếng"
 }
 
 export interface CompanySubsidiaryType {

@@ -125,7 +125,6 @@ const Chart = () => {
     result.isLoading,
     indicatorRefSeries,
   ]);
-  console.log(result.isLoading);
   return (
     <div
       style={{ display: result.isLoading ? "block" : "block" }}

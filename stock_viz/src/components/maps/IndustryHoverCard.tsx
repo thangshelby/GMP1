@@ -6,13 +6,12 @@ import React, {
   memo,
   useMemo,
 } from "react";
-import {HierarchyRectangularNode } from  'd3'
+import { HierarchyRectangularNode } from "d3";
 import { useQuery } from "@tanstack/react-query";
-import { TreemapNodeType,ReviewStockType } from "@/types";
+import { TreemapNodeType, ReviewStockType } from "@/types";
 import LineChartSimple from "./LineChartSimple";
 import { getStocksQuote } from "@/apis/stock.api";
 import { getColor as colorScale, formatNumber } from "@/lib/utils";
-
 
 interface IndustryHoverCardProps {
   treeData: HierarchyRectangularNode<TreemapNodeType>;
@@ -21,8 +20,8 @@ interface IndustryHoverCardProps {
   symbol: HierarchyRectangularNode<TreemapNodeType> | null;
 }
 
-interface StockData  {
-  data: ReviewStockType
+interface StockData {
+  data: ReviewStockType;
   quote: number[];
 }
 
@@ -44,7 +43,7 @@ const IndustryHoverCard = ({
   // State
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [symbolHover, setSymbolHover] = useState<SymbolHoverState | null>(null);
-  const contentRef = useRef<HTMLDivElement>(null)
+  const contentRef = useRef<HTMLDivElement>(null);
 
   // Update symbol hover state when symbol changes
   useEffect(() => {
@@ -52,7 +51,6 @@ const IndustryHoverCard = ({
       setSymbolHover(null);
       return;
     }
-
 
     setSymbolHover({
       symbol: symbol.data.name,
@@ -76,8 +74,6 @@ const IndustryHoverCard = ({
 
   const currentSymbolData = useMemo(() => {
     if (!industryQuery.data || !symbolHover) return null;
-
-    console.log(industryQuery.data)
 
     return industryQuery.data.find(
       (item: StockData) => item.data.symbol === symbolHover.symbol,

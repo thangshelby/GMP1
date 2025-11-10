@@ -50,7 +50,6 @@ const Treemap = () => {
   //CREATE DATA FOR TREE MAP
   const treeData = useMemo(() => {
     if (!result.data) return null;
-    console.log(result.data);
     const nestedDataBySector = group(
       result.data,
       (d: ReviewStockType) => d.sector,

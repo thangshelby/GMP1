@@ -5,15 +5,20 @@ import { SlCalender } from "react-icons/sl";
 import { chartTypes, option4, dateFilter, indicatorFilter } from "@/constants";
 import { usePdfStore, useChartControlStore } from "@/store";
 import { FaFilePdf } from "react-icons/fa6";
+import { BsRobot } from "react-icons/bs";
 import React from "react";
 import { jsPDF } from "jspdf";
 import * as htmlToImage from "html-to-image";
 import { pdfPages } from "@/app/stockchart/@pdftemplate/page";
 import { useSearchParams } from "next/navigation";
+import { MdOnlinePrediction } from "react-icons/md";
+import PricePredictionModal from "../PricePredictionModal";
 
 const ChartControl = () => {
   const [isOpenSelectChart, setIsOpenSelectChart] = React.useState(false);
   const [isOpenIndicatorFilter, setIsOpenIndicatorFilter] =
+    React.useState(false);
+  const [isPricePredictionOpen, setIsPricePredictionOpen] =
     React.useState(false);
   const {
     setSelectedChart,
@@ -164,11 +169,20 @@ const ChartControl = () => {
                     e.preventDefault();
                   }
             }
-            className={`bg-primary text-md flex flex-row items-center gap-x-2 rounded-md px-2 py-1 text-white ${canCreatePdf ? "hover:cursor-pointer hover:bg-blue-600" : "opacity-40 hover:cursor-not-allowed"}`}
+            className={`bg-primary text-md flex flex-row items-center gap-x-2 rounded-md px-2 py-1 font-semibold text-white ${canCreatePdf ? "hover:cursor-pointer hover:bg-blue-600" : "opacity-40 hover:cursor-not-allowed"}`}
           >
             <FaFilePdf size={10} />
 
             <p className="text-[11px] font-semibold">Generate Free PDF</p>
+          </div>
+
+          <div
+            onClick={() => setIsPricePredictionOpen(true)}
+            className="text-md flex flex-row items-center gap-x-2 rounded-md bg-emerald-500 px-2 py-1 font-semibold text-white hover:cursor-pointer hover:bg-emerald-600"
+          >
+            <MdOnlinePrediction size={10} />
+
+            <p className="text-[11px] font-semibold">Price Prediction</p>
           </div>
 
           {option4.map((option, index) => (
@@ -184,6 +198,12 @@ const ChartControl = () => {
           ))}
         </div>
       </div>
+
+      <PricePredictionModal
+        isOpen={isPricePredictionOpen}
+        onClose={() => setIsPricePredictionOpen(false)}
+        symbol={symbol}
+      />
     </div>
   );
 };
