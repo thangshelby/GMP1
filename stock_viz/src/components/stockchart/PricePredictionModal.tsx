@@ -78,20 +78,20 @@ const PricePredictionModal: React.FC<PricePredictionModalProps> = ({
   };
 
   // Mock analyst data
-  const analystData = {
-    strongBuy: 23,
-    buy: 8,
-    hold: 0,
-    sell: 0,
-    strongSell: 0,
-  };
+  // const analystData = {
+  //   strongBuy: 23,
+  //   buy: 8,
+  //   hold: 0,
+  //   sell: 0,
+  //   strongSell: 0,
+  // };
 
-  const totalAnalysts =
-    analystData.strongBuy +
-    analystData.buy +
-    analystData.hold +
-    analystData.sell +
-    analystData.strongSell;
+  // const totalAnalysts =
+  //   analystData.strongBuy +
+  //   analystData.buy +
+  //   analystData.hold +
+  //   analystData.sell +
+  //   analystData.strongSell;
 
   // const strongBuyPercent = (analystData.strongBuy / totalAnalysts) * 100;
   // const buyPercent = (analystData.buy / totalAnalysts) * 100;
