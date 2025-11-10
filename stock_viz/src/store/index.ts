@@ -91,30 +91,30 @@ export const useParentHoverStore = create<ParentHoverStore>((set) => ({
     set({ parentHover: newVal }),
 }));
 
-interface PriceStore {
-  Close: number;
-  Open: number;
-  High: number;
-  Low: number;
-  Volume: number;
-  Date: string;
-  Time: string;
-  Ticker: string;
-  Symbol: string;
-  Industry: string;
-  Sector: string;
-}
+// interface PriceStore {
+//   Close: number;
+//   Open: number;
+//   High: number;
+//   Low: number;
+//   Volume: number;
+//   Date: string;
+//   Time: string;
+//   Ticker: string;
+//   Symbol: string;
+//   Industry: string;
+//   Sector: string;
+// }
 
-export const usePriceStore = create<PriceStore>((set) => ({
-  Close: 0,
-  Open: 0,
-  High: 0,
-  Low: 0,
-  Volume: 0,
-  Date: "",
-  Time: "",
-  Ticker: "",
-  Symbol: "",
-  Industry: "",
-  Sector: "",
-}));
+// export const usePriceStore = create<PriceStore>((set) => ({
+//   Close: 0,
+//   Open: 0,
+//   High: 0,
+//   Low: 0,
+//   Volume: 0,
+//   Date: "",
+//   Time: "",
+//   Ticker: "",
+//   Symbol: "",
+//   Industry: "",
+//   Sector: "",
+// }));

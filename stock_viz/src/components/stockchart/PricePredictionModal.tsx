@@ -1,21 +1,21 @@
 "use client";
-import React, { useState, useEffect } from "react";
+// import React, { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-} from "recharts";
+// import {
+//   LineChart,
+//   Line,
+//   XAxis,
+//   YAxis,
+//   CartesianGrid,
+//   Tooltip,
+//   Legend,
+//   ResponsiveContainer,
+// } from "recharts";
 import { format, subYears } from "date-fns";
 import { useQuery } from "@tanstack/react-query";
 import { getStockOverviewInformation } from "@/apis/stock.api";
@@ -60,7 +60,7 @@ const PricePredictionModal: React.FC<PricePredictionModalProps> = ({
   onClose,
   symbol,
 }) => {
-  const chartData = generateMockData();
+  // const chartData = generateMockData();
   const today = format(subYears(new Date(), 1), "yyyy-MM-dd");
   const result = useQuery({
     queryKey: ["stock_overview_information", symbol],
@@ -68,8 +68,6 @@ const PricePredictionModal: React.FC<PricePredictionModalProps> = ({
     refetchOnWindowFocus: false,
     enabled: isOpen && !!symbol,
   });
-
-  console.log(result.data);
 
   // Get current price from result.data.last
   const currentPrice = result.data?.last || 0;
@@ -111,10 +109,10 @@ const PricePredictionModal: React.FC<PricePredictionModalProps> = ({
   // Calculate gauge angle (-90 to 90 degrees, where -90 is left, 0 is top, 90 is right)
   const gaugeAngle = (rating / 100) * 180 - 90;
 
-  // Price forecast data
-  const minForecast = 165.0;
-  const avgForecast = 234.52;
-  const maxForecast = 350.0;
+  // // Price forecast data
+  // const minForecast = 165.0;
+  // const avgForecast = 234.52;
+  // const maxForecast = 350.0;
 
   // Next session prediction data - Using current price with random variations
   const predictedOpen = currentPrice * (1.01 * getRandomVariation());

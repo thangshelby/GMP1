@@ -5,7 +5,7 @@ import { SlCalender } from "react-icons/sl";
 import { chartTypes, option4, dateFilter, indicatorFilter } from "@/constants";
 import { usePdfStore, useChartControlStore } from "@/store";
 import { FaFilePdf } from "react-icons/fa6";
-import { BsRobot } from "react-icons/bs";
+// import { BsRobot } from "react-icons/bs";
 import React from "react";
 import { jsPDF } from "jspdf";
 import * as htmlToImage from "html-to-image";
